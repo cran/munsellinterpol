@@ -1,3 +1,23 @@
+
+
+
+
+
+
+hypot<-function(a, b){
+# sqrt(a^2 + b^2) without under/overflow. **/
+# http://www.java2s.com/Tutorial/Java/0120__Development/sqrta2b2withoutunderoverflow.htm
+r<-0.0
+if (abs(a) > abs(b)) {
+         r <- b/a
+         r <- abs(a)*sqrt(1+r^2)
+      } else if (b != 0) {
+         r <- a/b
+         r <- abs(b)*sqrt(1+r^2)
+      }
+r
+}
+
 MunsellToXYZ<-function(MunsellSpec, InterpolateByLuminanceFactor=TRUE)
 {#Convert a Munsell specification into XYZ coordinates, by interpolating over the extrapolated Munsell renotation data.
 tmpxyY<-MunsellToxyY(MunsellSpec, InterpolateByLuminanceFactor)
@@ -130,7 +150,8 @@ if (Status.ind != 1) return(list(Status.dist = -99,Status.num  = -99,Status.ind 
 # rInput and thetaInput are the values the inversion algorithm will attempt to match
 x <- xyY[,1];y <- xyY[,2]
 thetaInput <- atan2(y-ycenter, x-xcenter)
-rInput <- sqrt(abs(x-xcenter)^2 + abs(y-ycenter)^2)
+#rInput <- sqrt(abs(x-xcenter)^2 + abs(y-ycenter)^2)
+rInput <- hypot(x-xcenter, y-ycenter)
 thetaInput <- ((180/pi) * thetaInput) %% 360 # Convert to degrees
 thetaR <- c(thetaInput, rInput)
 # Use the following parameters for the inversion algorithm.  ConvergenceThreshold
@@ -220,7 +241,8 @@ while (NumOfTries <= MaxNumOfTries){
    # hue angles, with their corresponding thetas and theta differences, will be tried.
    # Make a list, thetaDiffsVec, of the corresponding theta differences.
    thetaCur <- atan2(yCur-ycenter, xCur-xcenter)
-rCur <- sqrt(abs(xCur-xcenter)^2 + abs(yCur-ycenter)^2)
+#rCur <- sqrt(abs(xCur-xcenter)^2 + abs(yCur-ycenter)^2)
+rCur <- hypot((xCur-xcenter), (yCur-ycenter))
 thetaCur <- ((180/pi) * thetaCur) %% 360 # Convert to degrees
    thetaDiff <- (360 - thetaInput + thetaCur) %% 360
    if (thetaDiff > 180) thetaDiff <- thetaDiff-360 # Adjust for wraparound if necessary
@@ -271,8 +293,8 @@ thetaCur <- ((180/pi) * thetaCur) %% 360 # Convert to degrees
 	  if (AttemptExtrapolation == FALSE){
      
 	        thetaCurTemp <- atan2(yCurTemp-ycenter, xCurTemp-xcenter)
-rCurTemp <- sqrt(abs(xCurTemp-xcenter)^2 + abs(yCurTemp-ycenter)^2)
-	     
+#rCurTemp <- sqrt(abs(xCurTemp-xcenter)^2 + abs(yCurTemp-ycenter)^2)
+rCurTemp <- hypot((xCurTemp-xcenter), (yCurTemp-ycenter))
          thetaCurTemp           <- ((180/pi)*thetaCurTemp) %% 360 # Express in degrees
          thetaDiff              <- (360 - thetaInput + thetaCurTemp) %% 360
          if (thetaDiff > 180)	thetaDiff = thetaDiff-360	# Adjust for wraparound if necessary
@@ -353,8 +375,8 @@ rCurTemp <- sqrt(abs(xCurTemp-xcenter)^2 + abs(yCurTemp-ycenter)^2)
    if (Status.ind != 1) return(list(Status.ind = 2,Status.dist = EuclideanDifference,Status.num  = NumOfTries))
 
    thetaCur <- atan2(yCur-ycenter, xCur-xcenter)
-rCur <- sqrt(abs(xCur-xcenter)^2 + abs(yCur-ycenter)^2)
-   
+#rCur <- sqrt(abs(xCur-xcenter)^2 + abs(yCur-ycenter)^2)
+rCur <- hypot((xCur-xcenter), (yCur-ycenter))
    thetaCur <- ((180/pi)*thetaCur) %% 360					# Express theta of current point in degrees
 
    # For this iteration, keep hue (corresponding to thetaCur) constant,
@@ -398,8 +420,8 @@ if (NumOfTries >= 2000) OneChroma <- cbind(NumOfTries, rTempValues, TempMunsellC
 	  if (Status.ind != 1) return(list(Status.ind = 2,Status.dist = EuclideanDifference,Status.num  = NumOfTries))
 
 	  thetaCurTemp <- atan2(yCurTemp-ycenter, xCur-xcenter)
-rCurTemp <- sqrt(abs(xCur-xcenter)^2 + abs(yCurTemp-ycenter)^2)
-
+#rCurTemp <- sqrt(abs(xCur-xcenter)^2 + abs(yCurTemp-ycenter)^2)
+rCurTemp <- hypot((xCur-xcenter), (yCurTemp-ycenter))
       thetaCurTemp  <- ((180/pi)*thetaCurTemp) %% 360 	# Express in degrees
 
 	  # Add r and chroma to lists
@@ -548,10 +570,12 @@ return(list(Status.ind  = 1, sRGB=RGB, OutOfGamutFlag=OutOfGamutFlag))
 
 IsWithinMacAdamLimits <- function(xyY, Illuminant){
 # Select list of optimal colours from stored lists
+data("OptimalColoursForIlluminantC", envir = environment())
+data("OptimalColoursForIlluminantD65", envir = environment())
 if ((length(xyY) %% 3) != 0)  stop('XYZ matrix must be n x 3')
 if (is.null(dim(xyY))) if (length(xyY)>2) xyY<-matrix(xyY, ncol=3,byrow=TRUE)
-if (Illuminant=='C') OptColoursInxyY = OptimalColoursForIlluminantC else {
-if (Illuminant=='D65') OptColoursInxyY = OptimalColoursForIlluminantD65 else stop('ERROR in data.')
+if (Illuminant=='C') OptColoursInxyY = get("OptimalColoursForIlluminantC", envir  = environment()) else {
+if (Illuminant=='D65') OptColoursInxyY = get("OptimalColoursForIlluminantD65", envir  = environment()) else stop('ERROR in data.')
 }
 # Convert optimal colours from xyY format to XYZ format.  In XYZ format, the
 # colour solid is convex, so existing R routines can be used.
@@ -936,7 +960,7 @@ if (any(grepl('N',munsellSTR))) return(0)
 -1
 }
 
-ColorLabFormatToMunsellSpec <- function(ColorLabMunsellVector=NA,HueDecimals=NA,ValueDecimals=0,ChromaDecimals=NA)
+ColorLabFormatToMunsellSpec <- function(ColorLabMunsellVector=NA,HueDecimals=NA,ValueDecimals=NA,ChromaDecimals=NA)
 {# Convert a ColorLab format specification into a Munsell specification.
 # Based on: MunsellAndKubelkaMunkToolbox by Paul Centore 
 if (any(is.na(ColorLabMunsellVector))) stop('ColorLabMunsellVector must be a numeric vector')
@@ -1108,7 +1132,8 @@ tmp <- MunsellToxyYfromExtrapolatedRenotation(CLMVPlus)
   YPlus <- tmp$Y
 if (Status.ind != 1) return(list(Status.ind = 2))# No renotation data available for bounding colour. Set error code and return
 THPlus <- atan2(yPlus-yGrey, xPlus-xGrey)
-RPlus <- sqrt(abs(xPlus-xGrey)^2 + abs(yPlus-yGrey)^2)
+#RPlus <- sqrt(abs(xPlus-xGrey)^2 + abs(yPlus-yGrey)^2)
+RPlus <- hypot((xPlus-xGrey), (yPlus-yGrey))
 THPlus          <- ((180/pi) * THPlus) %% 360 # Convert to degrees
 tmp <- MunsellToxyYfromExtrapolatedRenotation(CLMVMinus)
   Status.ind <- tmp$Status.ind
@@ -1118,6 +1143,7 @@ tmp <- MunsellToxyYfromExtrapolatedRenotation(CLMVMinus)
 if (Status.ind != 1) return(list(Status.ind = 2)) # No renotation data available for bounding colour.  Set error code and return
 THMinus <- atan2(yMinus-yGrey, xMinus-xGrey)
 RMinus <- sqrt(abs(xMinus-xGrey)^2 + abs(yMinus-yGrey)^2)
+RMinus <- hypot((xMinus-xGrey), (yMinus-yGrey))
 THMinus <- ((180/pi) * THMinus) %% 360 # Convert to degrees
 LowerTempHueAngle <- MunsellHueToChromDiagHueAngle(MunsellHueNumberMinus, CLHueLetterIndexMinus) ;
 TempHueAngle      <- MunsellHueToChromDiagHueAngle(HueNumber,             HueLetterCode)	
@@ -1168,6 +1194,8 @@ if (InterpStyle.Linear == TRUE) { # Use linear interpolation
 MunsellToxyYfromExtrapolatedRenotation<-function(ColorLabColour){
 HueListLetters <- c('R', 'YR', 'Y', 'GY', 'G', 'BG', 'B', 'PB', 'P', 'RP')
 ColorLabHueLetters <- c('B', 'BG', 'G', 'GY', 'Y', 'YR', 'R', 'RP', 'P', 'PB')
+data("MunsellRenotation", envir = environment())
+MunsellRenotation<-get("MunsellRenotation", envir  = environment())
 # A one-element colour vector is achromatic grey
 if (length(ColorLabColour) == 1){
 V  <- ColorLabColour[1]
@@ -1186,6 +1214,8 @@ if (C != 0)   if (((C %% 2) != 0) || (C < 2) || (C > 38)){ # Input chroma is not
       return(list(Status.ind = 5))
    }
 if (length(ColorLabColour) == 1){
+
+
   w <- which(MunsellRenotation[["H"]]=='N' & MunsellRenotation[["V"]]==V & MunsellRenotation[["C"]]==C)
   if (length(w)==0) return(list(Status.ind = 2))
   m<-MunsellRenotation[w,] 

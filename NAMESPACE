@@ -1,2 +1,5 @@
 exportPattern("^[[:alpha:]]+")
-import(geometry)
+importFrom(geometry, delaunayn, tsearchn)
+importFrom(stats, approx)
+importFrom(utils, data)
+

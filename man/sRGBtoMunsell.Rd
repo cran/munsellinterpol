@@ -25,7 +25,7 @@ The Munsell and Kubelka-Munk Toolbox
 }
 \author{Jose Gama}
 \examples{
-#sRGBtoMunsell(c(23,45,67))
+sRGBtoMunsell(c(23,45,67))
 }
 \keyword{datasets}
 

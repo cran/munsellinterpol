@@ -18,7 +18,7 @@
 \alias{MunsellSpecToColorLabFormat}
 \alias{lab2perc}
 \alias{IsWithinMacAdamLimits}
-\title{Internal RAHRS functions}
+\title{Internal munsellinterpolation functions}
 \description{Ignore these.}
 \keyword{internal}
 
