@@ -1,29 +1,40 @@
 \name{xyz2lab}
 \alias{xyz2lab}
-\title{Convert XYZ coordinates to CIE lab}
-\description{\code{xyz2lab} Converts XYZ coordinates to CIE lab.
-}
-\usage{xyz2lab(C,bbb) }
+\title{Convert XYZ coordinates to CIE Lab}
+
+\description{Convert XYZ coordinates to CIE Lab}
+
+\usage{xyz2lab( XYZ, white=c(95.047,100,108.883) ) }
 \arguments{
-  \item{C}{ XYZ coordinates}
-  \item{bbb}{ Reference white, by default Observer = 2deg, Illuminant = D65}
+\item{XYZ}{a numeric Nx3 matrix with CIE XYZ coordinates in the rows, or a vector that can be converted to such a matrix, by row.}
+\item{white}{XYZ for the reference white.  The default is Illuminant D65, 2-degree observer}
 }
+
 \value{
-  CIE lab coordinates
+An Nx3 matrix with the CIE Lab coordinates in the rows.
+The rownames of the input are copied to the output.
 }
-\source{
-Logicol S.r.l., 2014
-EasyRGB color search engine
-\url{http://www.easyrgb.com/}
-}
+
+
 \references{
-Logicol S.r.l., 2014
-EasyRGB color search engine
-\url{http://www.easyrgb.com/}
+CIE 15: Technical Report: Colorimetry.
+CIE 15:2004.
+3rd edition.
+ISBN 3901906339.
+
+Lab Color Space.
+\url{https://en.wikipedia.org/wiki/Lab_color_space}
 }
-\author{Jose Gama}
+
+\author{Jose Gama and Glenn Davis}
+
+\seealso{
+\code{\link{lab2xyz}()}
+}
+
 \examples{
-xyz2lab(c(0.310897, 0.306510, 74.613450))
+xyz2lab( c(90.310897, 99.306510, 74.613450) )
 }
+
 \keyword{datasets}
 

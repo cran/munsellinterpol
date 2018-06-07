@@ -1,24 +1,26 @@
 Package: munsellinterpol
 Type: Package
-Title: Interpolate Munsell Renotation Data from Hue/Chroma to CIE/sRGB
-Version: 1.0.2
+Title: Interpolate Munsell Renotation Data from Hue/Chroma to CIE/RGB
+Version: 2.0.1
 Encoding: UTF-8
-Authors@R: c(person(given = "Jose", family = "Gama", role = c("aut","cre","trl"),email = "rxprtgama@gmail.com"),
-       person(given = "Paul", family = "Centore", role = c("aut","cph"),email = "centore@99main.com"))
-Description: Methods for interpolating data in the Munsell color system following the ASTM D-1535 standard. Hues and chromas with decimal values can be interpolated and converted to/from the Munsell color system and CIE xyY, CIE XYZ, sRGB, CIE Lab or CIE Luv. Chromas can be odd and hue steps can be real numbers. Based on the work by Paul Centore, "The Munsell and Kubelka-Munk Toolbox".
+Date: 2018-06-06
+Authors@R: c(person(given = "Jose", family = "Gama", role = c("aut","trl"), email = "rxprtgama@gmail.com"),
+        person(given = "Paul", family = "Centore", role = c("aut","cph"), email = "centore@99main.com"),
+        person(given = "Glenn", family = "Davis", role = c("aut","cre"), email = "gdavis@gluonics.com")  )
+Description: Methods for interpolating data in the Munsell color system following the ASTM D-1535 standard. Hues and chromas with decimal values can be interpolated and converted to/from the Munsell color system and CIE xyY, CIE XYZ, CIE Lab, CIE Luv, or RGB.  Based on the work by Paul Centore, "The Munsell and Kubelka-Munk Toolbox".
 License: GPL (>= 3)
-LazyLoad: no
-LazyData: no
-Depends: R (>= 2.10), geometry
-Author: Jose Gama [aut, cre, trl],
-  Paul Centore [aut, cph]
-Maintainer: Jose Gama <rxprtgama@gmail.com>
+LazyLoad: yes
+LazyData: yes
+Depends: R (>= 3.2.0), geometry, rootSolve
+Imports: spacesRGB
+Suggests: microbenchmark, mgcv, knitr, rmarkdown, flextable
+Author: Jose Gama [aut, trl],
+  Paul Centore [aut, cph],
+  Glenn Davis [aut, cre]
+Maintainer: Glenn Davis <gdavis@gluonics.com>
 Repository: CRAN
-Repository/R-Forge/Project: munsellinterpol
-Repository/R-Forge/Revision: 14
-Repository/R-Forge/DateTimeStamp: 2015-07-22 15:36:13
-Date/Publication: 2015-07-23 06:58:30
 NeedsCompilation: no
-Packaged: 2015-07-22 15:45:12 UTC; rforge
-X-CRAN-Comment: Archived on 2014-12-07 as maintainer address
-        <jgama@abo.fi> bounced.
+VignetteBuilder: knitr
+BuildVignettes: yes
+Packaged: 2018-06-06 20:36:13 UTC; Glenn
+Date/Publication: 2018-06-07 17:43:13 UTC

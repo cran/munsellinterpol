@@ -1,5 +1,54 @@
-exportPattern("^[[:alpha:]]+")
-importFrom(geometry, delaunayn, tsearchn)
-importFrom(stats, approx)
-importFrom(utils, data)
+#  exportPattern("^[[:alpha:]]+")
 
+
+# functions written by Jose Gama and Glenn Davis
+export( # hypot,
+        lab2xyz,
+        labtoMunsell,
+        luv2xyz,
+        luvtoMunsell,
+        MunsellHVC,
+        MunsellToLab,
+        MunsellToLuv,
+        MunsellTosRGB,
+        MunsellToxyY,
+        MunsellToXYZ,
+        srgb2xyz,
+        sRGBtoMunsell,
+        xyY2XYZ,
+        xyYtoMunsell,
+        xyz2lab,
+        xyz2luv,
+        xyz2srgb,
+        XYZ2xyY,
+        XYZtoMunsell,
+        IsWithinMacAdamLimits,
+        MunsellSpecToColorlabFormat,
+        ColorlabFormatToMunsellSpec
+        )
+
+
+# functions added by Glenn Davis
+export( adaptxyY,
+        adaptXYZ,
+        HVCfromMunsellName,
+        HueStringFromNumber,
+        MunsellNameFromHVC,
+        HueNumberFromString,        
+        VfromY,
+        YfromV,
+        plotLociHC,
+        plotPatchesH,
+        ColorBlockFromMunsell,
+#       sectionOptimals,        
+        RGBtoMunsell,
+        MunsellToRGB
+        )
+
+# importFrom(akima, bilinear, bicubic)
+importFrom(rootSolve,multiroot)
+importFrom(geometry, delaunayn, tsearchn)
+importFrom(stats, approx, spline, splinefun, predict, residuals, formula, lm, polym, coef )
+importFrom(graphics, abline, grid, lines, polygon, par, plot,
+                plot.new, plot.window, points, rect, segments, text, title)
+importFrom(utils, data, read.table, str, flush.console, object.size )

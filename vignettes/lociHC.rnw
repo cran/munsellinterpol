@@ -1,0 +1,175 @@
+% lightness.rnw
+% Time-stamp: "lightness.rnw"
+
+\documentclass[11pt]{article}
+
+% Set margins to be narrow
+\RequirePackage[left=1in,top=0.75in,right=1in,bottom=0.75in]{geometry}
+
+%\VignetteIndexEntry{Loci of Constant Hue and Chroma}
+%\VignetteEngine{knitr::knitr}
+
+\RequirePackage{color}
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\definecolor{blue}{rgb}{0,0,0.8}
+\definecolor{lightblue}{rgb}{0.2,0.2,0.9}
+\definecolor{darkred}{rgb}{0.6,0.0,0.0}
+\definecolor{red}{rgb}{0.7,0,0}
+\definecolor{darkgreen}{rgb}{0.0,0.4,0.0}
+\definecolor{lightgray}{rgb}{0.7,0.7,0.7}
+\definecolor{darkorange}{rgb}{0.75, 0.45, 0}
+\definecolor{purple}{rgb}{0.65, 0, 0.75}
+\definecolor{goldenrod}{rgb}{0.80, 0.61, 0.11}
+\definecolor{lightyellow}{rgb}{0.98,0.94,0.83}
+
+
+\RequirePackage{fancyvrb}
+\RequirePackage[T1]{fontenc}
+\RequirePackage{ae}       % ComputerModern Fonts
+\RequirePackage{fancyhdr}
+\RequirePackage{float}
+\RequirePackage{hyperref}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\cfoot{page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+% \code mini environment ttfamily->texttt
+\newcommand\code{\bgroup\@codex}
+\def\@codex#1{{\color{darkred} \normalfont\ttfamily\hyphenchar\font=-1 #1}\egroup}
+
+% This environment defines the look of R ouput
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{
+  fontsize=\small,
+  formatcom=\color{darkblue}
+}
+
+\begin{document}
+% \SweaveOpts{concordance=TRUE}
+
+\title{ {\Huge Loci of Constant Hue and Chroma} }
+\author{Glenn Davis  \url{    <gdavis@gluonics.com>}}
+\maketitle
+% \thispagestyle{fancy}
+
+% Setup stuff.
+<<setup, echo=FALSE, results="hide">>=
+require("knitr",quietly=TRUE)
+opts_chunk$set(fig.path="figs/ag2-", fig.align="center",
+  fig.width=7, fig.height=7, comment="")
+knit_hooks$set(output = function(x, options) {
+  paste('\\begin{Soutput}\n', x, '\\end{Soutput}\n', sep = '')
+})
+options(width=90)
+par( omi=c(0,0,0,0), mai=c(0.2,0.2,0.2,0.2) )
+if(!file.exists("figs")) dir.create("figs")
+@
+
+% ----------------------------------------------------------------------------
+\section*{Introduction}
+
+The plots that Dorothy Nickerson made in \cite{Newhall1943}
+and later in \cite{Wyszecki1982}, are beautiful and a labor of love.
+But they often do not cover regions of high Chroma.
+And obviously one cannot zoom in to inspect problem areas in detail,
+which is often useful in development.
+The function \code{plotLociHC()} is designed to improve this situation.
+
+
+<<packs, echo=TRUE, message=FALSE>>=
+library( munsellinterpol )
+@
+
+\setcounter{figure}{0}  
+
+% ----------------------------------------------------------------------------
+
+\section*{Zoom Out}
+
+Pick value 8/ for demonstration
+
+<<lee11, echo=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 8/' >>=
+par( omi=c(0,0,0,0), mai=c(0.41,0.7,0.6,0.2) )
+plotLociHC( value=8 )
+@
+The gridpoints marked with a black disk are published in \cite{Newhall1943}.
+The gridpoints marked with a open circle are from \code{all.dat},
+and almost certainly described in \cite{Schleter1958}, but not published.
+And the other gridpoints are pre-extrapolated by this package;
+see the \textbf{munsellinterpol} User Guide for details.
+The blue curve is the CIE inverted-U,
+and the red curve is the MacAdam limit for the given Value=8.
+
+In \code{plotLociHC()}
+by default the largest "real" chroma is determined ($C_{max}$=24 for 8/),
+the complete oval at the chroma is computed,
+and the plot limits are set for that oval.
+
+Plotting higher chroma in the 10GY area is easy:
+<<lee12, echo=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 8/' >>=
+par( omi=c(0,0,0,0), mai=c(0.41,0.7,0.6,0.2) )
+plotLociHC( value=8, hue=seq(5,55,by=2.5), chroma=seq(2,34,by=2) )
+@
+And so we see that \code{all.dat} goes up to C=32 for 10GY, 2.5G, and 5G.
+
+
+% ----------------------------------------------------------------------------
+
+\section*{Zoom In}
+
+For inversion, the region that gave me the most grief was V < 1 and H near 5P (85).
+Here is a sample
+<<lee13, echo=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 0.4/' >>=
+par( omi=c(0,0,0,0), mai=c(0.41,0.7,0.6,0.2) )
+plotLociHC( value=0.4, hue=seq(80,90,by=2.5), chroma=seq(2,12,by=2) )
+@
+It is clear that the curves are not passing through the points from \code{all.dat}.
+This is by design, because these points on the opposite side of the hue circle
+produced badly injective forward maps using cubic interpolation in V.
+The gridlines for non-real points with V<1 were extrapolated using a thin-plate spline
+with the function \code{mgcv::gam()}.
+It is also clear that this spline is not extraplating lines of constant hue
+into straight lines - they bend.
+Finding a better way to handle extrapolation with V<1 is an area for a future
+version of the package.
+
+
+% ----------------------------------------------------------------------------
+
+\section*{Bilinear vs Bicubic Interpolation}
+
+In the function \code{MunsellToxyY()} 
+the default interpolation method for Hue and Chroma is bicubic.
+This interpolation method computes a weighted average of points on a 4x4 grid.
+The alternative is bilinear, which only requires a 2x2 grid.
+The difference in "flops" is a factor of 16
+(the difference in time only about 2 or 3) - but is that really worth it ?
+Here is the original plot, except using bilinear interpolation
+<<lee14, echo=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 8/, with bilinear interpolation' >>=
+par( omi=c(0,0,0,0), mai=c(0.41,0.7,0.6,0.2) )
+plotLociHC( value=8, hcinterp='bilinear' )
+@
+Most of this plot is similar to the first one,
+but in the high curvature region near 10GY the lines are perfectly straight
+so the plot looks like a spider web.
+It is certainly not $C^1$
+and does not match Dorothy Nickerson's plots well,
+so 'yes' I think that bicubic is worth it.
+
+\bibliographystyle{apalike}
+\bibliography{bibliography}
+
+
+% ----------------------------------------------------------------------------
+
+
+\section*{Appendix}
+This document was prepared \today \quad with the following configuration:
+<<finish, echo=FALSE, results="asis">>=
+knit_hooks$set(output = function(x, options) { x })
+toLatex(sessionInfo(), locale=FALSE)
+@
+
+
+\end{document}

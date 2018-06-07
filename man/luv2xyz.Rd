@@ -3,27 +3,32 @@
 \title{Convert CIE Luv coordinates to XYZ}
 \description{\code{luv2xyz} Converts CIE Luv coordinates to XYZ.
 }
-\usage{luv2xyz(C,bbb) }
+
+\usage{luv2xyz( Luv, white=c(95.047,100,108.883) ) }
 \arguments{
-  \item{C}{ CIE Luv coordinates}
-  \item{bbb}{ Reference white, by default Observer = 2deg, Illuminant = D65}
+  \item{Luv}{CIE Luv coordinates. An Nx3 matrix, or a vector that can be converted to such a matrix. Each row of the matrix has Luv.}
+  \item{white}{ XYZ for the reference white.  The default is Illuminant=D65, 2 observer }
 }
 \value{
-  CIE XYZ coordinates
+An Nx3 matrix with the CIE XYZ coordinates. Each row of the matrix has XYZ.
+The rownames are set to those of Luv.
 }
-\source{
-Logicol S.r.l., 2014
-EasyRGB color search engine
-\url{http://www.easyrgb.com/}
-}
+
 \references{
-Logicol S.r.l., 2014
-EasyRGB color search engine
-\url{http://www.easyrgb.com/}
+CIE 15: Technical Report: Colorimetry.
+CIE 15:2004.
+3rd edition.
+ISBN 3901906339.
+
+Luv Color Space.
+\url{https://en.wikipedia.org/wiki/Luv_color_space}
 }
-\author{Jose Gama}
+
+\author{Jose Gama and Glenn Davis}
+
 \examples{
-luv2xyz(c(0.310897, 0.306510, 74.613450))
+luv2xyz(c(55, -5.06510, 14.613450))
 }
+
 \keyword{datasets}
 

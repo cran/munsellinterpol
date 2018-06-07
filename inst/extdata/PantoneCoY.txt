@@ -1,0 +1,19 @@
+#
+#   Pantone Color of the Years
+#
+#   source:   https://en.wikipedia.org/wiki/Pantone#Color_of_the_Year
+#
+#   The wikipedia article does not say these RGBs are sRGBs,
+#   but Pantone affirms that they *are* sRGBs on separate pages under pantone.com.
+
+Year	Name	Code	R	G	B
+2010	Turquoise	15-5519	69	181	170
+2011	Honeysuckle	18-2120	217	79	112
+2012	Tangerine Tango	17-1463	221	65	36
+2013	Emerald	17-5641	0	148	115
+2014	Radiant Orchid	18-3224	177	99	163
+2015	Marsala	18-1438	149	82	81
+2016	Rose Quartz	13-1520	247	202	201
+2016	Serenity	15-3913	146	168	209
+2017	Greenery	15-0343	136	176	75
+2018	Ultra Violet	18-3838	95	75	139

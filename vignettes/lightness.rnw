@@ -1,0 +1,202 @@
+% lightness.rnw
+% Time-stamp: "lightness.rnw"
+
+\documentclass[11pt]{article}
+
+% Set margins to be narrow
+\RequirePackage[left=1in,top=0.75in,right=1in,bottom=0.75in]{geometry}
+
+%\VignetteIndexEntry{Uniform Lightness Scales}
+%\VignetteEngine{knitr::knitr}
+
+\RequirePackage{color}
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\definecolor{blue}{rgb}{0,0,0.8}
+\definecolor{lightblue}{rgb}{0.2,0.2,0.9}
+\definecolor{darkred}{rgb}{0.6,0.0,0.0}
+\definecolor{red}{rgb}{0.7,0,0}
+\definecolor{darkgreen}{rgb}{0.0,0.4,0.0}
+\definecolor{lightgray}{rgb}{0.7,0.7,0.7}
+\definecolor{darkorange}{rgb}{0.75, 0.45, 0}
+\definecolor{purple}{rgb}{0.65, 0, 0.75}
+\definecolor{goldenrod}{rgb}{0.80, 0.61, 0.11}
+\definecolor{lightyellow}{rgb}{0.98,0.94,0.83}
+
+
+\RequirePackage{fancyvrb}
+\RequirePackage[T1]{fontenc}
+\RequirePackage{ae}       % ComputerModern Fonts
+\RequirePackage{fancyhdr}
+\RequirePackage{float}
+\RequirePackage{hyperref}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\cfoot{page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+
+% \code mini environment ttfamily->texttt
+\newcommand\code{\bgroup\@codex}
+\def\@codex#1{{\color{darkred} \normalfont\ttfamily\hyphenchar\font=-1 #1}\egroup}
+
+% This environment defines the look of R ouput
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{
+  fontsize=\small,
+  formatcom=\color{darkblue}
+}
+
+\begin{document}
+% \SweaveOpts{concordance=TRUE}
+
+\title{ {\Huge Uniform Lightness Scales} }
+\author{Glenn Davis  \url{    <gdavis@gluonics.com>}}
+\maketitle
+% \thispagestyle{fancy}
+
+% Setup stuff.
+<<setup, echo=FALSE, results="hide">>=
+require("knitr",quietly=TRUE)
+opts_chunk$set(fig.path="figs/ag2-", fig.align="center",
+  fig.width=7, fig.height=7, comment="")
+knit_hooks$set(output = function(x, options) {
+  paste('\\begin{Soutput}\n', x, '\\end{Soutput}\n', sep = '')
+})
+options(width=90)
+par( omi=c(0,0,0,0), mai=c(0.2,0.2,0.2,0.2) )
+if(!file.exists("figs")) dir.create("figs")
+@
+
+% ----------------------------------------------------------------------------
+\section*{Introduction}
+
+A \textit{Uniform Lightness Scale} is a reparameterization of luminance factor,
+so that equal numerical steps in lightness produce equal perceptual steps.
+The goal of this \textbf{munsellinterpol} vignette is to 
+treat Munsell Value (V) as a Uniform Lightness Scale,
+compare the different definitions of Value,
+and compare Munsell Value with CIE Lightness.
+Featured functions in this vignette are: 
+\code{VfromY()} and
+\code{YfromV()}.
+
+
+<<packs, echo=TRUE, message=FALSE>>=
+library( munsellinterpol )
+@
+
+\setcounter{figure}{0}  
+
+% ----------------------------------------------------------------------------
+
+\section*{Munsell Value and Luminance Factor}
+
+In the search for a perceptually uniform Munsell Value scale,
+there have been many refinements:
+from \cite{Priest}, to \cite{Munsell1933}, to \cite{Newhall1943}
+to \cite{ASTM-D1535-08}.
+For definitions of these, see the man page for \code{VfromY()}.
+
+
+<<lee11, echo=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Value V  vs.  Luminance Factor Y' >>=
+par( omi=c(0,0,0,0), mai=c(0.5,0.5,0.1,0.1) )
+plot( c(0,100), c(0,10), type='n', xlab='', ylab='', las=1, tcl=0,
+        lab=c(10,8,7), mgp=c(3,0.25,0) )
+title( xlab='Y', line=1.5 ) ;  title( ylab='Value', line=1.5 )
+grid( lty=1 ) ;  abline( h=0, v=0 )
+V = seq( 0, 10, by=0.125 )
+color = unlist( list(ASTM='black',OSA='black',MgO='black',Munsell='red',Priest='blue') )
+for( w in names(color) )
+    lines( YfromV(V,w), V, col=color[w], lty=ifelse(w=='MgO',2,1), lwd=0.75 )
+lty = ifelse( names(color)=='MgO', 2, 1 )
+legend( "bottomright", names(color), bty='n', lty=lty, lwd=1.5, col=color, inset=0.1 )
+@
+
+Note that for MgO, Y=102.568 when V=10. 
+This luminance factor
+for this curve is relative to MgO instead of the perfect reflecting diffuser.
+
+The curves for ASTM and OSA quintics are indistinguishable at this scale.
+Plot the difference between them.
+
+<<lee12, echo=TRUE, fig.pos="H", fig.height=3.5, out.width='1.0\\linewidth', fig.cap='The Difference between ASTM and OSA Definitions of Value' >>=
+par( omi=c(0,0,0,0), mai=c(0.5,1,0.1,0.1) )
+Y = seq( 0, 100, by=0.5 )
+delta = VfromY(Y,'OSA') - VfromY(Y,'ASTM')
+plot( range(Y), range(delta), type='n', xlab='', ylab='', las=1, tcl=0,
+        lab=c(10,8,7), mgp=c(3,0.25,0) )
+title( xlab='Y', line=1.5 ) ;  title( ylab='{OSA Value} - {ASTM Value}', line=3 )
+grid( lty=1 ) ;  abline( h=0, v=0 )
+lines( Y, delta, lwd=0.75 )
+@
+This difference is negligible.
+
+
+
+% ----------------------------------------------------------------------------
+
+\section*{CIE Lightness and Munsell Value}
+
+Most modern work uses the CIE Lightness function  ,
+which is actually a simplified version of Munsell Value,
+but on different domains.
+The linear domain for Y is [0,1] and the perceptually uniform domain
+for Lightness is [0,100].
+Here is the definition:
+
+<<Lightness, echo=TRUE, message=FALSE>>=
+
+Lightness_from_linear  <-  function( Y )  {
+ifelse( Y < (24/116)^3, (116/12)^3 * Y, 116*Y^(1/3) - 16 )
+}
+@
+
+And here is the comparison plot, properly scaled for the difference in domains.
+
+<<lee13, echo=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Comparing Lightness and Munsell Value' >>=
+par( omi=c(0,0,0,0), mai=c(0.5,0.75,0.1,0.1) )
+Y = (0:100)/100
+L = Lightness_from_linear( Y )
+plot( range(Y), range(L), type='n', xlab='', ylab='', las=1, tcl=0,
+        lab=c(10,8,7), mgp=c(3,0.25,0) )
+title( xlab='Y   (luminance factor)', line=1.5 ); title( ylab='Lightness', line=2 )
+grid( lty=1 ) ;  abline( h=0, v=0 )
+lines( Y, L, lwd=0.75 )
+V = VfromY( 100 * Y, 'ASTM' )
+lines( Y, 10*V, lty=2 )
+legend(  "bottomright", c("Lightness (CIE)","10*Value (ASTM)"), lty=c(1,2),
+            bty='n', inset=0.1 )
+@
+The agreement is very good.
+Let's examine the ratio.
+
+<<lee14, echo=TRUE, fig.pos="H", fig.height=3, out.width='1.0\\linewidth', fig.cap='Comparing Lightness and Munsell Value' >>=
+par( omi=c(0,0,0,0), mai=c(0.5,0.75,0.1,0.1) )
+quotient = L / V
+plot( range(Y), range(quotient,na.rm=T), type='n', xlab='', ylab='', las=1, tcl=0,
+        lab=c(10,8,7), mgp=c(3,0.25,0) )
+title( xlab='Y   (luminance factor)', line=1.5 )
+title( ylab='Lightness / Value', line=3 )
+grid( lty=1 ) ;  abline( h=0, v=0 )
+lines( Y, quotient )
+@
+So Value $\simeq$ Lightness/10  is a good approximation.
+
+
+% \pagebreak
+
+\bibliographystyle{apalike}
+\bibliography{bibliography}
+
+
+% ----------------------------------------------------------------------------
+
+
+\section*{Appendix}
+This document was prepared \today \quad with the following configuration:
+<<finish, echo=FALSE, results="asis">>=
+knit_hooks$set(output = function(x, options) { x })
+toLatex(sessionInfo(), locale=FALSE)
+@
+
+
+\end{document}

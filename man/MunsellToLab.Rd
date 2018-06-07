@@ -1,32 +1,52 @@
 \name{MunsellToLab}
 \alias{MunsellToLab}
-\title{Convert a Munsell specification into CIE Lab coordinates}
+\title{Convert a Munsell specification to CIE Lab coordinates}
 \description{\code{MunsellToLab} Converts a 
-Munsell specification into CIE Lab coordinates, by interpolating over the 
+Munsell specification to CIE Lab coordinates, by interpolating over the 
 extrapolated Munsell renotation data
 }
-\usage{MunsellToLab(MunsellSpec, InterpolateByLuminanceFactor=TRUE) }
+
+\usage{MunsellToLab( MunsellSpec, white=c(95.047,100,108.883), adaption='bradford', ... ) }
 \arguments{
-  \item{MunsellSpec}{ standard Munsell specification or a Munsell vector in 
-  ColorLab format }
-  \item{InterpolateByLuminanceFactor}{ logical, TRUE = interpolation by 
-  luminance factor }
+  \item{MunsellSpec}{ a numeric Nx3 matrix with HVC values in the rows, or a vector that can be converted to such a matrix, by row.\cr
+\code{MunsellSpec} can also be a character vector with Munsell Notations,
+which is converted to an Nx3 matrix using \code{\link{HVCfromMunsellName}()} }
+  \item{white}{ XYZ for the destination white.  The default is Illuminant=D65, 2 observer }
+  \item{adaption}{ method for chromatic adaption, see \code{\link{adaption}} for valid values.
+  Also see \bold{Details}. }
+  \item{...}{other parameters passed to \code{\link{MunsellToXYZ}()} }
 }
+
 \value{
-  \item{L, a, b}{ CIE Lab coordinates of MunsellSpec illuminated by Illuminant C}
-  \item{Status.ind}{ status of the operation}
+An Nx3 matrix with the Lab coordinates in each row.
+The rownames are copied from input to output.
 }
-\source{
-Paul Centore 2014
-The Munsell and Kubelka-Munk Toolbox
-\url{http://www.99main.com/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
+
+\details{
+The conversion is done in 3 steps.
+\itemize{
+\item HVC \rarrow XYZ using \code{\link{MunsellToXYZ}()}
+\item XYZ is adapted from Illuminant C to the given \code{white} using
+the given \code{\link{adaption}} method
+\item XYZ \rarrow Lab using \code{\link{xyz2lab}()} with the given \code{white}
 }
+}
+
 \references{
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
 \url{http://www.99main.com/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
 }
-\author{Jose Gama}
+
+\author{Jose Gama and Glenn Davis}
+
+\seealso{
+\code{\link{labtoMunsell}()},
+\code{\link{MunsellToXYZ}()},
+\code{\link{xyz2lab}()}
+}
+
+
 \examples{
 MunsellToLab('7.6P 8.9/2.2')
 }

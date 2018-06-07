@@ -1,0 +1,293 @@
+#
+#   The central/centroid colors are tabulated in:
+#
+#       Central Notations for the Revised ISCC-NBS Color-Name Blocks 
+#       Kelly, Kenneth Low
+#       Journal of Research of the National Bureau of Standards
+#       Research Paper 2911
+#       Vol. 61  No. 5   
+#       November 1958
+#
+#   Electronic versions are available at:
+#       https://archive.org/details/jresv61n5p427
+#
+#   All the * and + and - symbols have been removed.
+#   WARNING: 3 of the central/centroid colors have *very* small chromas=0.06.
+#   In my opinion, the very small chromas=0.06 can be ignored,
+#   and so it may be preferred to change these 3 central colors to exact neutrals.
+#       263	white	N 9.25/
+#       264	light gray	N 7.5/
+#       265	medium gray	N 5.5/
+#
+#   transcribed by Glenn Davis  <gdavis@gluonics.com>
+
+
+Number	Name	MunsellSpec
+1	vivid pink	1.5R 7/13
+2	strong pink	1.5R 7.5/9.1
+3	deep pink	1.9R 6.0/11.1
+4	light pink	2.5R 8.6/5.2
+5	moderate pink	2.5R 7.2/5.2
+6	dark pink	2.5R 6.0/6.0
+7	pale pink	2.5R 8.8/2.3
+8	grayish pink	2.5R 7.2/2.3
+9	pinkish white	7.6R 9.2/1.0
+10	pinkish gray	7.6R 7.5/1.0
+11	vivid red	5R 4/15
+12	strong red	4.0R 4.5/12.0
+13	deep red	5.0R 2.8/9.9
+14	very deep red	5.0R 1.4/9.0
+15	moderate red	4.0R 4.5/9.1
+16	dark red	4.5R 2.8/6.8
+17	very dark red	3.5R 1.2/4.9
+18	light grayish red	4.9R 6.0/3.4
+19	grayish red	4.6R 4.5/4.7
+20	dark grayish red	3.5R 2.7/2.2
+21	blackish red	3.5R 1.1/1.6
+22	reddish gray	6.5R 5.5/1.1
+23	dark reddish gray	6.0R 3.5/1.1
+24	reddish black	6.0R 0.9/0.8
+25	vivid yellowish pink	8.0R 7/13
+26	strong yellowish pink	8.0R 7.5/9.0
+27	deep yellowish pink	5.6R 6.0/12.4
+28	light yellowish pink	0.7YR 8.6/4.8
+29	moderate yellowish pink	0.7YR 7.2/4.8
+30	dark yellowish pink	7.0R 6.0/6.0
+31	pale yellowish pink	2.1YR 8.8/2.2
+32	grayish yellowish pink	0.5YR 7.2/2.3
+33	brownish pink	6.5YR 7.2/2.2
+34	vivid reddish orange	9.5R 5.5/15.5
+35	strong reddish orange	9.5R 5.5/12.0
+36	deep reddish orange	9.5R 4.0/12.0
+37	moderate reddish orange	9.5R 5.5/9.1
+38	dark reddish orange	9.5R 4.0/9.1
+39	grayish reddish orange	0.5YR 5.5/6.0
+40	strong reddish brown	0.5YR 3.0/11.2
+41	deep reddish brown	9.8R 1.5/7.5
+42	light reddish brown	0.5YR 5.5/4.1
+43	moderate reddish brown	9.6R 3.4/5.2
+44	dark reddish brown	9.5R 1.3/3.6
+45	light grayish reddish brown	3.0YR 5.5/2.3
+46	grayish reddish brown	9.9R 3.4/2.3
+47	dark grayish reddish brown	9.5R 2.0/2.0
+48	vivid orange	4.5YR 6.6/16
+49	brilliant orange	4.5YR 8.0/12.1
+50	strong orange	4.5YR 6.5/12.1
+51	deep orange	4.5YR 5.0/12.1
+52	light orange	4.5YR 8/8.1
+53	moderate orange	4.6YR 6.5/8.1
+54	brownish orange	4.5YR 5.0/8.2
+55	strong brown	5.0YR 3.5/8
+56	deep brown	5.0YR 2.1/6
+57	light brown	5.5YR 5.5/4.6
+58	moderate brown	5.5YR 3.5/3.9
+59	dark brown	5.5YR 1.6/3.6
+60	light grayish brown	6.5YR 5.5/2.2
+61	grayish brown	5.6YR 3.5/2.0
+62	dark grayish brown	5.5YR 2.0/1.7
+63	light brownish gray	6.8YR 5.5/1.0
+64	brownish gray	6.4YR 3.5/0.9
+65	brownish black	7.5YR 0.8/0.8
+66	vivid orange yellow	9.0YR 7.2/16
+67	brilliant orange yellow	9.0YR 8.4/12.1
+68	strong orange yellow	9.0YR 7.2/12.1
+69	deep orange yellow	9.0YR 6.0/12.1
+70	light orange yellow	9.0YR 8.6/8.1
+71	moderate orange yellow	9.0YR 7.2/8.1
+72	dark orange yellow	9.0YR 6.0/8.1
+73	pale orange yellow	9.1YR 8.6/4.4
+74	strong yellowish brown	9.0YR 4.6/9.6
+75	deep yellowish brown	9.5YR 2.9/6
+76	light yellowish brown	9.2YR 6.6/4.7
+77	moderate yellowish brown	9.5YR 4.5/4.0
+78	dark yellowish brown	9.5YR 2.2/3.7
+79	light grayish yellowish brown	9.5YR 6.4/2.4
+80	grayish yellowish brown	9.5YR 4.6/2.1
+81	dark grayish yellow brown	9.5YR 2.4/1.8
+82	vivid yellow	4.0Y 7.8/14.5
+83	brilliant yellow	4.0Y 8.8/9.5
+84	strong yellow	4.0Y 7.2/9.5
+85	deep yellow	4.0Y 6.0/9.5
+86	light yellow	4.0Y 8.8/6.6
+87	moderate yellow	4.0Y 7.2/6.6
+88	dark yellow	4.0Y 6.0/6.6
+89	pale yellow	4.2Y 8.9/3.6
+90	grayish yellow	4.2Y 7.2/3.6
+91	dark grayish yellow	4.0Y 6.0/4.1
+92	yellowish white	4.1Y 9.2/1.3
+93	yellowish gray	4.1Y 7.5/1.3
+94	light olive brown	2.5Y 5.0/8.4
+95	moderate olive brown	2.5Y 3.5/6
+96	dark olive brown	2.5Y 1.8/2.5
+97	vivid greenish yellow	9.5Y 7.8/14.5
+98	brilliant greenish yellow	9.5Y 8.8/9.5
+99	strong greenish yellow	9.5Y 7.2/9.5
+100	deep greenish yellow	9.5Y 6.0/9.5
+101	light greenish yellow	9.5Y 8.8/6.6
+102	moderate greenish yellow	9.5Y 7.2/6.6
+103	dark greenish yellow	9.5Y 6.0/6.6
+104	pale greenish yellow	9.5Y 8.9/4.1
+105	grayish greenish yellow	9.5Y 7.2/4.1
+106	light olive	8.1Y 5.1/8.0
+107	moderate olive	8.0Y 3.5/5.8
+108	dark olive	8.0Y 1.7/3.2
+109	light grayish olive	8.3Y 5.5/2.4
+110	grayish olive	8.1Y 3.5/2.3
+111	dark grayish olive	8.0Y 2.0/2.0
+112	light olive gray	7.4Y 5.5/1.3
+113	olive gray	8.1Y 3.5/1.0
+114	olive black	9.0Y 0.9/0.8
+115	vivid yellow green	5.0GY 7.5/14.5
+116	brilliant yellow green	5.0GY 8.5/9.1
+117	strong yellow green	5.0GY 6.0/9.1
+118	deep yellow green	5.0GY 4.0/9.1
+119	light yellow green	5.0GY 8.6/5.2
+120	moderate yellow green	5.0GY 6.0/5.2
+121	pale yellow green	3.5GY 8.7/2.2
+122	grayish yellow green	4.4GY 6.1/2.2
+123	strong olive green	5.0GY 3.2/7.8
+124	deep olive green	5.0GY 2.4/7.1
+125	moderate olive green	5.0GY 3.5/5.2
+126	dark olive green	5.0GY 1.8/3.7
+127	grayish olive green	5.0GY 3.5/2.2
+128	dark grayish olive green	5.0GY 2.0/2.0
+129	vivid yellowish green	0.5G 7/15.5
+130	brilliant yellowish green	0.5G 8.0/9.1
+131	strong yellowish green	0.5G 5.5/9.1
+132	deep yellowish green	0.5G 3.5/11.5
+133	very deep yellowish green	0.5G 2.0/9.2
+134	very light yellowish green	0.5G 9.1/5.1
+135	light yellowish green	0.5G 7.5/5.1
+136	moderate yellowish green	0.5G 5.5/5.1
+137	dark yellowish green	0.5G 3.5/5.1
+138	very dark yellowish green	0.5G 1.5/4.9
+139	vivid green	6.5G 5.2/18
+140	brilliant green	6.0G 7.4/9.1
+141	strong green	6.0G 4.5/9.1
+142	deep green	6.0G 2.3/9.1
+143	very light green	6.0G 8.6/5.1
+144	light green	6.0G 6.5/5.1
+145	moderate green	6.0G 4.5/5.1
+146	dark green	6.0G 2.7/5.0
+147	very dark green	6.0G 1.3/4.9
+148	very pale green	9.0G 8.7/1.8
+149	pale green	9.0G 6.5/1.8
+150	grayish green	9.0G 4.5/1.8
+151	dark grayish green	9.0G 2.8/1.6
+152	blackish green	9.0G 1.1/1.4
+153	greenish white	7.0G 9.2/0.8
+154	light greenish gray	7.0G 7.5/0.8
+155	greenish gray	7.0G 5.5/0.8
+156	dark greenish gray	7.0G 3.5/0.8
+157	greenish black	7.5G 0.9/0.7
+158	vivid bluish green	4.5BG 5.3/15.5
+159	brilliant bluish green	4.5BG 7.3/9.0
+160	strong bluish green	4.5BG 4.5/9.0
+161	deep bluish green	4.5BG 2.3/9.0
+162	very light bluish green	4.5BG 8.5/5.0
+163	light bluish green	4.5BG 6.5/5.0
+164	moderate bluish green	4.5BG 4.5/5.0
+165	dark bluish green	4.5BG 2.7/5.0
+166	very dark bluish green	4.5BG 1.3/4.9
+167	vivid greenish blue	4.5B 5.2/13
+168	brilliant greenish blue	4.5B 6.8/9.0
+169	strong greenish blue	4.5B 4.5/9.0
+170	deep greenish blue	4.5B 2.5/9.0
+171	very light greenish blue	4.5B 8.2/5.2
+172	light greenish blue	4.5B 6.5/5.2
+173	moderate greenish blue	4.5B 4.5/5.2
+174	dark greenish blue	4.5B 2.7/5.0
+175	very dark greenish blue	4.5B 1.3/4.9
+176	vivid blue	3.0PB 4.2/15
+177	brilliant blue	3.0PB 6.4/11.0
+178	strong blue	3.0PB 4.2/11.0
+179	deep blue	3.0PB 2.0/9.0
+180	very light blue	2.4PB 8.2/7.2
+181	light blue	2.7PB 6.5/7.3
+182	moderate blue	2.9PB 4.2/7.2
+183	dark blue	2.8PB 1.7/5.0
+184	very pale blue	0.9PB 8.4/3.0
+185	pale blue	0.9PB 6.5/3.0
+186	grayish blue	0.9PB 4.2/3.0
+187	dark grayish blue	9.5B 2.6/1.9
+188	blackish blue	9.5B 1.1/1.5
+189	bluish white	9.5B 9.1/1.0
+190	light bluish gray	9.5B 7.5/1.0
+191	bluish gray	9.5B 5.5/1.0
+192	dark bluish gray	9.5B 3.5/1.0
+193	bluish black	9.5B 1.0/0.7
+194	vivid purplish blue	8.0PB 2.5/22
+195	brilliant purplish blue	8.0PB 6.0/10.8
+196	strong purplish blue	8.0PB 4.1/11.4
+197	deep purplish blue	8.0PB 1.6/9.1
+198	very light purplish blue	7.0PB 7.8/6.1
+199	light purplish blue	7.5PB 6.0/6.8
+200	moderate purplish blue	8.0PB 3.5/6.9
+201	dark purplish blue	7.9PB 1.1/4.7
+202	very pale purplish blue	7.0PB 8.2/4.1
+203	pale purplish blue	7.0PB 6.0/4.1
+204	grayish purplish blue	7.2PB 3.3/4.0
+205	vivid violet	1.0P 2.7/21
+206	brilliant violet	1.0P 5.9/11.1
+207	strong violet	1.0P 3.5/11.1
+208	deep violet	1.0P 1.4/10.3
+209	very light violet	1.0P 7.9/7
+210	light violet	1.0P 6.0/7.2
+211	moderate violet	1.0P 3.5/7.2
+212	dark violet	1.0P 1.3/5.0
+213	very pale violet	1.0P 8.2/4.1
+214	pale violet	1.0P 6.0/4.1
+215	grayish violet	1.0P 3.3/4.1
+216	vivid purple	6.0P 3.5/20
+217	brilliant purple	6.0P 6.7/11.1
+218	strong purple	6.0P 4.5/11.1
+219	deep purple	6.0P 2.8/10.2
+220	very deep purple	6.0P 1.2/10.2
+221	very light purple	6.0P 8.0/7.2
+222	light purple	6.0P 6.5/7.2
+223	moderate purple	6.0P 4.5/7.2
+224	dark purple	6.0P 2.7/5.1
+225	very dark purple	6.0P 1.1/4.9
+226	very pale purple	5.4P 8.4/3.3
+227	pale purple	6.8P 6.4/3.0
+228	grayish purple	7.8P 4.5/2.9
+229	dark grayish purple	10.0P 2.8/2.0
+230	blackish purple	10.0P 1.0/1.4
+231	purplish white	9.0P 9.1/1.0
+232	light purplish gray	9.0P 7.5/1.0
+233	purplish gray	10.0P 5.5/1.0
+234	dark purplish gray	10.0P 3.5/1.0
+235	purplish black	10.0P 1.0/0.7
+236	vivid reddish purple	1.0RP 4/19
+237	strong reddish purple	1.0RP 4.5/11.1
+238	deep reddish purple	1.0RP 2.8/10.3
+239	very deep reddish purple	1.0RP 1.3/10.3
+240	light reddish purple	1.0RP 6.0/7.2
+241	moderate reddish purple	1.0RP 4.5/7.2
+242	dark reddish purple	1.0RP 2.7/5.1
+243	very dark reddish purple	1.0RP 1.1/5.0
+244	pale reddish purple	1.0RP 6.0/4.1
+245	grayish reddish purple	1.0RP 4.5/4.1
+246	brilliant purplish pink	4.0RP 7.9/11
+247	strong purplish pink	4.0RP 7/14.5
+248	deep purplish pink	4.0RP 6.0/12.0
+249	light purplish pink	4.0RP 8.3/7.1
+250	moderate purplish pink	4.0RP 7.0/7.1
+251	dark purplish pink	6.0RP 6.0/7.2
+252	pale purplish pink	4.0RP 8.5/3.5
+253	grayish purplish pink	4.0RP 7.0/3.5
+254	vivid purplish red	7.0RP 4/17
+255	strong purplish red	7.0RP 4.5/11.9
+256	deep purplish red	7.0RP 2.8/11.0
+257	very deep purplish red	7.0RP 1.3/9.0
+258	moderate purplish red	7.0RP 4.5/9.0
+259	dark purplish red	7.0RP 2.7/6.3
+260	very dark purplish red	7.0RP 1.2/4.9
+261	light grayish purplish red	7.0RP 6.0/4.0
+262	grayish purplish red	7.0RP 4.5/5.2
+263	white	3.0Y 9.25/0.06
+264	light gray	3.0Y 7.5/0.06
+265	medium gray	3.0Y 5.5/0.06
+266	dark gray	N 3.5/
+267	black	N 1.25/
+

@@ -1,0 +1,618 @@
+---
+title: "munsellinterpol User Guide"
+author: "Glenn Davis and Jose Gama"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+    number_sections: false
+bibliography: bibliography.bib
+
+# csl: iso690-numeric-brackets-cs.csl
+csl: personal.csl
+# csl: institute-of-mathematical-statistics.csl
+# csl: transactions-on-mathematical-software.csl
+vignette: >
+  %\VignetteIndexEntry{munsellinterpol User Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options( width=100 )
+library(munsellinterpol)
+```
+
+
+**munsellinterpol** is an **R** package that transforms
+from Munsell HVC to CIE xyY, and back again.
+Our package was inspired by Paul Centore's
+**An Open-Source Inversion Algorithm for the Munsell Renotation** @Centore.
+
+The goals of this package are:
+
+<ol>
+<li>in the forward conversion HVC $\to$ xyY, if HVC is in the published tables
+(@Newhall1943 and @Judd1956) then the output xyY must match the tables</li>
+<li>accurate round-trips HVC $\to$ xyY $\to$ HVC,
+and xyY $\to$ HVC$\to$ xyY</li>
+<li>conversion for all colors within the MacAdam limits,
+including Munsell Values < 1 </li>
+<li>both conversions HVC $\leftrightarrow$ xyY are class $C^1$ (continuously differentiable), except at the neutrals where $C^0$ (continuous) is acceptable
+</ol>
+
+Goals 1, 2, and 3 have been met.
+This means that extensive tests were passed, with many color samples.
+There were initial problems with very dark samples where V $<$ 1,
+so it is possible there _could_ be some other dark samples
+that were missed, and where goal 3 fails.
+
+In attempting to meet goal 4, the forward map HVC $\to$ xyY uses
+Catmull-Rom spline interpolation in V (by default).
+But because of a change in Value spacing,
+the function HVC $\to$ xyY is *not* $C^1$ on the plane V=1.
+When V $\ge$ 1 the Value spacing is 1, but when V $\le$ 1 the Value spacing is 0.2.
+So goal 4 has *not* been met.
+For H and C bicubic interpolation is used, again with Catmull-Rom splines;
+see @wiki-spline and @wiki-bicubic.
+There are options to use simpler linear interpolation for V,
+and bilinear interpolation for H and C.
+These are useful for comparison with other algorithms, such as @Rheinboldt1958.
+Of course, to meet goal 2 the options for forward and inverse maps must be the same.
+
+Note that goal 1 does **not** include points from `all.dat`.
+This goal is actually met for V $\ge$ 1, but for V $<$ 1 we had to ignore the points
+from `all.dat` and re-extrapolate to make inversion work reliably.
+In general, in this package the xy for these non-real points is further from white
+than the corresponding points in `all.dat`.
+For the meaning of `all.dat` see **Appendix A**.
+
+The package dependencies are:
+
+<ul>
+<li>**geometry** @geometry - for building the convex hull of the object colors of Illuminant C</li>
+<li>**rootSolve** @rootSolve - for inverting the forward conversion HVC $\to$ xyY</li>
+</ul>
+The package **microbenchmark**  @microbenchmark  is suggested,
+for its high-precision timer.
+
+We assume that the reader is familiar with Munsell Hue, Value, and Chroma,
+which we abbreviate by HVC.
+A good introduction is @Munsell_color_system.
+All 3 are stored as floating-point numbers:
+H is in the interval (0,100],
+V is in [0,10], and
+C is non-negative with upper limit a complex function of H and V.
+These are cylindrical coordinates on the irregular Munsell object color solid.
+We assume that the reader is familiar with the Munsell
+character string notation `H V/C` for chromatic colors,
+and `N V/` for achromatics (neutrals).
+
+We assume that the reader is familiar with sRGB; a good reference is @sRGB.
+
+We assume that the reader is familiar with the CIE spaces
+xyY, XYZ, and Lab.
+Y is the _luminance factor_ and in this domain
+is considered to be a percentage in the interval [0,100].
+A perfectly black surface has Y=0,
+and a perfectly reflecting diffuser has Y=100.
+An excellent reference is @lindbloom.
+
+There are, and have been, many other software programs that do these conversions.
+The earliest one we know of is @Rheinboldt1960 (1960),
+which ran on an IBM 704.
+See @Centore for a discussion of many other software programs and algorithms.
+
+
+
+<br><br>
+
+# Basics
+The forward conversion HVC $\to$ xyY is as simple as:
+
+```{r echo=TRUE}
+MunsellToxyY( '4.2RP 5.5/8' )
+```
+The return value is a `data.frame`.
+The first column `SAMPLE_NAME` is the input Munsell notation.
+The second column `HVC` is its numerical version.
+And the 3rd column is the output xyY.
+If the input is a character vector of length N, then the `data.frame` has N rows.
+The input can also be a numeric matrix HVC with N rows.
+There are many options for advanced users, see the man page for details.
+
+And here is an example of the reverse conversion xyY  $\to$  HVC:
+```{r echo=TRUE}
+xyY = MunsellToxyY( '4.2RP 5.5/8' )$xyY
+xyYtoMunsell( xyY )
+```
+And so the round-trip has returned us to `4.2RP 5.5/8`.
+In general, the round-trip is accurate to about 2 decimal places;
+the worst case is the Hue at near neutrals.
+Note that the return value is also a `data.frame`,
+but now `SAMPLE_NAME` comes at the end.
+
+Other color spaces available are: sRGB, XYZ, Lab, Luv, and Colorlab.
+All the conversion functions accept multiple "samples".
+Some of the functions return a `data.frame` and some return a plain matrix.
+See the **Reference Guide** for details.
+
+
+<br><br>
+
+# Plotting
+
+The most obvious thing to plot is a simulation of a page from the Munsell Book of Color:
+```{r, echo=TRUE,  message=TRUE, results='hold', fig.width=7, fig.height=6,  fig.show='hold'}
+par( omi=c(0,0,0,0), mai=c(0.6,0.7,0.4,0.2) )
+plotPatchesH( "10GY", back='#f7f7f7' )
+```
+
+This is the forward conversion HVC $\to$ xyY $\to$ xyY $\to$ sRGB.
+There is no interpolation here, unless the Hue is not a multiple of 2.5, which is allowed.
+For each Value, the Chroma is extended up to the MacAdam limit,
+and this determines the limit of the Chroma axis.
+If the sRGB for a patch is outside the cube (before clamping),
+it is not drawn and the sRGB values are printed instead.
+This makes it easy to see *why* the patch is outside the sRGB gamut.
+The chromatic adaption method, the background color, and the main title can be controlled.
+
+Note that the plot is titled with sRGB, and this plot is best viewed on a display
+calibrated for sRGB.
+Adobe RGB space is also available.
+
+```{r, echo=TRUE,  message=TRUE, results='hold', fig.width=7, fig.height=6,  fig.show='hold'}
+par( omi=c(0,0,0,0), mai=c(0.6,0.7,0.4,0.2) )
+plotPatchesH( "10GY", space='AdobeRGB', back='#f7f7f7' )
+```
+Of course, this one is best viewed on a display calibrated for Adobe RGB.
+Note that the gamut is quite a bit larger in this figure.
+Users can add custom RGB spaces too.
+
+<br><br>
+<p>
+In the Munsell arena,
+another standard plot is the curves of constant Hue and Chroma.
+
+```{r, echo=TRUE,  message=TRUE, results='hold', fig.width=7, fig.height=6,  fig.show='hold'}
+par( omi=c(0,0,0,0), mai=c(0.6,0.7,0.6,0.2) )
+plotLociHC( value=8 )
+```
+
+The black-filled circles are from `real.dat` (see **Appendix A**),
+and the open circles are extrapolated from the "real" ones.
+The blue curve is the CIE inverted-U,
+and the red curve is the MacAdam limit for the given Value=8.
+<p>
+One can also plot in the a,b plane.
+```{r, echo=TRUE,  message=TRUE, results='hold', fig.width=7, fig.height=6,  fig.show='hold'}
+par( omi=c(0,0,0,0), mai=c(0.6,0.7,0.6,0.2) )
+plotLociHC( value=8, coords='ab' )
+```
+The interpolation takes place in x,y and is _then_ mapped to a,b.
+For similar plots, see the
+<a href="lociHC.pdf">Loci of Contant Hue and Chroma</a> vignette.
+
+
+
+
+<br><br>
+
+# ISCC-NBS Color Names
+
+The ISCC-NBS System is a partition of Munsell Color Solid into 267 color blocks,
+see @kelly1976.
+Each block has an _ISCC-NBS Name_;
+one of the goals of these names is that they should be
+"simple enough to be understood by the average person on the street".
+Each block is a disjoint union of _elementary blocks_ (of which there are 932)
+where an elementary block is defined
+by its minimum and maximum limits in Hue, Value, and Chroma.
+The _peripheral blocks_ (of which there are 120)
+have arbitrary large chroma (maximum Chroma is $\infty$).
+Each block has an associated _centroid color_, see @kelly1958,
+which is in the interior of the block (even though some blocks are non-convex).
+Given a query point HVC, the function `ColorBlockFromMunsell()` searches 
+for the one elementary block that contains that point.
+
+Since 2000, the Pantone Color Institute has declared a "Color of the Year",
+see @pantone.
+And they publish the sRGB coordinates of the that color.
+We thought it would be interesting to compare the Pantone
+colors with the corresponding ISCC-NBS Names and centroids.
+Read the data for all colors since 2010.
+
+```{r echo=TRUE}
+path = system.file( 'extdata/PantoneCoY.txt', package='munsellinterpol' )
+pantone = read.table( path, header=TRUE, sep='\t', strings=FALSE )
+pantone
+```
+Add the block names and centroids.
+```{r echo=TRUE}
+pantone$Year = NULL ;   pantone$Code = NULL
+RGB = as.matrix( pantone[ , c('R','G','B') ] )
+HVC = RGBtoMunsell( RGB, space='sRGB' )
+pantone$Munsell = MunsellNameFromHVC( HVC )
+block = ColorBlockFromMunsell( HVC )
+pantone[[ "ISCC-NBS Name" ]] = block$Name
+pantone[[ "ISCC-NBS Centroid" ]] = block$Centroid
+pantone
+```
+
+Note that `Emerald` is unfortunately outside the sRGB gamut.
+Now compare the original color, and the centroid approximation to it.
+```{r echo=TRUE}
+color.pant = rgb( RGB, max=255 )
+color.cent = rgb( MunsellToRGB( block$Centroid, space='sRGB' )$RGB, max=255 )
+tbl = data.frame( row.names=1:nrow(pantone) )
+tbl[[ "Pantone Name" ]]  = pantone$Name
+tbl[[ "Pantone Color" ]] = '' ;    tbl[[ "Centroid Color" ]] = ''
+tbl[[ "ISCC-NBS Name" ]] = block$Name
+library( flextable )
+myrt <- regulartable( tbl )
+myrt <- align( myrt, j=4, align='left', part='all' )
+myrt <- align( myrt, j=2:3, align='center', part='all' )
+myrt <- height( myrt, height=1 )
+myrt <- width( myrt, j=c(1,4), width=2 ) ; myrt <- width( myrt, j=2:3, width=2.5 )
+myrt <- fontsize( myrt, size=14, part='all' ) ; myrt <- fontsize( myrt, size=16, part='header' )
+for( i in 1:nrow(tbl) )
+{ myrt <- bg(myrt, i=i, j=2, bg=color.pant[i]) ; myrt <- bg(myrt, i=i, j=3, bg=color.cent[i]) }
+myrt
+```
+<br>
+This table is best viewed on a display calibrated for sRGB.
+The color match is poor - clearly the ISCC-NBS designation is coarser than the Pantone designation.
+In fact, in the 6 levels of color designation
+(from coarsest to finest) in  @kelly1976,
+ISCC-NBS is Level 3 and Pantone would most likely be Level 4.
+
+<br><br>
+
+# Possible Future Work
+
+Here are a few possible improvements and additions.
+
+<p>
+The conversions are already pretty fast.
+On my PC with 3GHz Intel Core Duo,
+the forward conversion HVC $\to$ xyY takes about 1 msec/sample,
+and the reverse xyY $\to$ HVC takes about 8 msec/sample.
+This assumes a large number of samples per function call.
+The next obvious speed-up is to move the interpolation code
+for the forward conversion from **R**  to compiled C.
+It would have the added benefit that the 2x2 Jacobian could also be computed
+during the inversion xyY $\to$ HVC, 
+which would reduce the number of function evaluations 
+per Newton-Raphson iteration from 3 to 1.
+
+<p>
+For V $<$ 1, it might be possible to restore the extrapolated points from `all.dat`.
+But it will probably take better 3D visualization to assist
+in viewing the xy irregularities in these very dark colors.
+
+
+
+<br><br>
+
+# References
+
+<div id="refs"></div>
+
+
+
+
+<br><br>
+
+\Appendix
+
+
+<br><br>
+
+## Appendix A - Munsell Renotation Details
+
+For history prior to 1943, please consult @Nickerson1976-I,
+@Nickerson1976-II, and  @Nickerson1976-III.
+ 
+The OSA Subcommitte on the Spacing of the Munsell Colors
+issued their Final Report in 1943 @Newhall1943.
+There were 2734 published coordinates (what might be called _aim points_),
+for Munsell Values from 1 to 9.
+The work was based on visual interpolation and smoothing on
+xy graphs of spectrophotometrically measured physical samples
+from the _Munsell Book of Color (1929)_. 
+There were 421 samples from @Kelly1943 and 561 samples from @Granville1943.
+There were a few obvious transcription errors in this data, which will be discussed below.
+After 1943, the Munsell Book of Color used these aim points,
+which are called the _renotations_.
+
+In 1956 Judd and Wyszecki extended the renotation
+to Values 0.2/, 0.4/, 0.6/, and 0.8/, in  @Judd1956.
+The Chromas are /1, /2, /3, /4, /6, and /8.
+However, Chroma /1 was obtained by averaging /2 with white,
+and /3 was obtained by averaging /2 with /4.
+If Chromas /1 and /3 are dropped there are 355 very dark samples that remain.
+There were now 2734 + 355 = 3089 renotations, with even Chroma, in 1956.
+
+In 1958, at the Forty-Third Annual Meeting of the Optical Society of America,
+a 15-minute talk  @Schleter1958 was given on extrapolation of these renotations
+for a computer program in development.
+Since the abstract of @Schleter1958 is so short, 
+we think it is appropriate to quote it in full:
+
+<blockquote>
+<p align="justify">
+<font face='serif'>
+<b>
+TA15.
+Extension of the Munsell Renotation System. 
+</b>
+<font style="font-feature-settings: 'smcp'">
+J . C. SCHLETER, DEANE B. JUDD, AND H. J. KEEGAN, 
+</font>
+<i>National Bureau of Standards, Washington, D. C.</i> -
+In order to convert tristimulus data to Munsell renotations by
+using the tri-dimensional, linear, 
+interpolation program developed at the NBS for the high-speed, digital IBM 704 computer, 
+it was necessary to extend the published data of the 
+Munsell re-notation system<sup>1,2</sup>
+by extrapolation so that, for each point in Munsell color space, 
+the enclosing six-sided volume would be defined by its eight corners. 
+The approximately 2000 corners to be defined by CIE chromaticity coordinates,
+<i>x</i>, <i>y</i>, 
+are at a given value level the intersections of the hue and chroma loci that cross the MacAdam limit<sup>3</sup> at that value level and at the next lower level. 
+Tentative definitions were found by graphical extrapolation on plots at each of the
+14 value levels similar to those published. 
+A second set of tentative definitions were found by plotting 
+<i>x</i> and <i>y</i> against Munsell value 
+for each of the 40 Munsell hues and extrapolating to value 10/. 
+The final definitions were found by adjustment of the two tentative sets to produce 
+smooth loci in both types of plots. 
+Plots at selected value levels will be shown illustrating the extended data. 
+(15 min.) <br>
+<sup>1</sup> Newhall, Nickerson, and Judd, J. Opt. Soc. Am. <bold>33</bold>, 385 (1943). <br>
+<sup>2</sup> D. B. Judd and G. Wyszecki, J. Opt. Soc. Am. <bold>46</bold>, 281 (1956). <br>
+<sup>3</sup> D. MacAdam, J. Opt. Soc. Am. <bold>25</bold>, 361 (1935). <br>
+</font>
+</p>
+</blockquote>
+The "2000 corners" is the number of points in the extension;
+we will call these the _Schleter points_.
+
+The next talk @Rheinboldt1958 was a preliminary report on the above-mentioned software program.
+The authors note that
+1) the extended grid from @Schleter1958  "consists of approximately 5000 points",
+2) the program stores these points on magnetic tape, and
+3) an xyY $\to$ HVC conversion takes "approximately 20 seconds per sample".
+
+In 1960 there was an updated report @Rheinboldt1960 on the program.
+Rheinboldt and Menard report that the 1956 grid of 3089 points
+was extended by 1907 points to yield 4996 points.
+So the exact number of Schleter points is 1907.
+We also learn that the memory of the NBS IBM 704
+"had been increased to 8000 words" for "the second version of the code".
+This made it possible to store the entire grid in memory.
+They do not report the improved conversion time per sample.
+
+Skip now to contemporary times.
+The  _Program of Color Science_  at the Rochester Institute Technology
+has posted 2 files: `real.dat` and `all.dat`, see @renotationRIT.
+The first file `real.dat` is described as
+"those colors listed the original 1943 renotation article" @Newhall1943.
+There are 2734 samples in the file, so this is an exact match !
+Paul Centore found that before June 2010 there were 5 samples missing,
+but this has now been corrected (in 2018).
+Note that `real.dat` does *not* include the very dark colors,
+even though they are inside the MacAdam limits.
+
+The second file `all.dat` is described this way:
+<blockquote>
+These are all the Munsell data, including the extrapolated colors. Note that extrapolated colors are in some cases unreal. That is, some lie outsize the Macadam [sic] limits.
+
+This file should be used for those performing multidimensional interpolation to/from Munsell data. You will need the unreal colors in order to completely encompass the real colors, which is required to do the interpolation when near the Macadam limits.
+</blockquote>
+
+There are 4995 samples in `all.dat`,
+which differs from the count in @Rheinboldt1960 by only 1.
+Perhaps the latter count includes Illuminant C ?
+These two counts are so close that we are confident
+that the extended grid in the NBS software from 1958 survived,
+and made its way to the _Program of Color Science_ at RIT,
+and then into this package.
+The above-quoted abstract is likely all we will ever know about the methods used
+to extrapolate the values in `all.dat`.
+Note that `all.dat` *does* include the very dark colors.
+
+Now return to the NBS computer program in @Rheinboldt1960.
+For the forward conversion HVC $\to$ xy they first determine the two
+adjacent planes of constant V that the given point is between.
+In both of these two HC planes they use bilinear interpolation to determine xy.
+They then linearly interpolate these 2 xy vectors. 
+So a single conversion requires a table lookup of 8 points in general.
+With this method, the plotted ovoids of constant chroma are 40-sided polygons,
+and not the smooth ovoids in the published plots by Dorothy Nickerson.
+For an example, which looks more like a spiderweb, see the
+<a href="lociHC.pdf">Loci of Contant Hue and Chroma</a> vignette.
+
+To get smooth ovoids,
+the default method in **munsellinterpol** uses bicubic interpolation in the HC plane.
+The forward conversion is then class $C^1$ in H and C (except at C=0).
+To get $C^1$ continuity in V as well, the default conversion uses cubic interpolation
+for 4 planes of constant value -  2 above the input value and 2 below.
+This requires a table lookup of 64 points in general,
+and it requires extending the renotations even more !
+In the terminology of _mathematical morphology_ the required binary image
+is the _dilation_ of the 4995 points with a 3x3x3 structuring element.
+The grid in **munsellinterpol** currently has 7606 points.
+
+The extrapolation was done, again from the grid of 4995 points,
+using the function `gam()` in the package **mgcv** 
+which is preinstalled with **R** itself.
+It is a thin-plate spline model.
+A separate model was computed for each of the Munsell values: 0.2,0.4,0.6,0,8,1,...10.
+Unfortunately, for V=1.5 (on almost any V near 1.5) the forward conversion HVC $\to$ xy
+was badly non-injective for small Chroma in the area of the hue `GY`.
+It is because the extrapolated xy values at V=0.8 seem to diverge a lot from V=1 and V=2
+(they went too far into halfplane x+y>1).
+Recall that a conversion at V=1.5 requires lookup at 4 planes V=0.8,1,2, and 3.
+Also note that the weight at V=0.8 is negative.
+Cubic interpolation has overshoot and undershoot - 
+and linear interpolation (where weights are non-negative) does not.
+
+So for dark colors V<1 we decided to ignore the extrapolations in @Schleter1958,
+and re-extrapolate, using a `mgcv::gam()` model, from all _real_ points with V $\le$ 1.
+This extrapolation was satisfactory.
+
+<br><br>
+
+## Appendix B - Munsell Renotation Discrepancies
+
+There have been at least 4 versions of the renotation tables.
+In order they are:
+
+<ul>
+<li>original tables in @Newhall1943</li>
+<li>tables in the "Color Bible" @Wyszecki1982</li>
+<li>tables in ASTM standard @ASTM-D1535-97</li>
+<li>digital file `all.dat` at @renotationRIT mentioned in the previous Appendix
+</ul>
+I have noticed 4 discrepancies, and there might be more.
+They appear to be either simple transcription errors,
+or corrections to make the data smoother.
+For samples **7.5BG 4/16** and **5BG 1/4** it looks like a simple
+transcription error in @Wyszecki1982,
+which was corrected in @ASTM-D1535-97 and @renotationRIT.
+For **10PB 8/4**  it looks like @ASTM-D1535-97 made a smoothing correction,
+which was carried over to @renotationRIT.
+For **2.5R 9/2** it looks like @renotationRIT made a smoothing correction.
+
+Finally, in the extrapolated data in @renotationRIT, we have made a small
+smoothing corection at **2.5PB 10/2** for this package.
+Before the correction, the forward mapping HVC $\to$ xyY was not injective
+near **N 10/**, which caused the root-finding iteration to cycle.
+This was discovered during testing phase;
+more ambitious "vetting" software,
+which specifically searches for non-injectivity, might uncover more of these.
+
+
+<br><br>
+
+## Appendix C - Inversion Details
+
+Given an xy target point,
+the method in @Rheinboldt1960 searches for the exact quadrilateral that contains xy.
+It then solves a pair of quadratic equations to determine H and C.
+For bicubic interpolation, a similar explicit solution is not really feasible.
+The method in @Centore starts with an initial approximation HC$_0$,
+and modifies H and C alternately to converge to an HC that maps to xy,
+within a certain tolerance.
+
+We decided to use a general root-solver from the package **rootSolve**
+that uses Newton-Raphson iteration.
+In our case, this iteration really does double-duty:
+the first iteration or two locate the quadrilateral that contains xy,
+and the remaining iterations polish the root.
+It typically takes about 4 or 5 total iterations.
+The theory of Newton's Method only covers functions of class $C^2$ (see @Newton)
+and our function is at best $C^1$.
+However, it is $C^\infty$ on the quadrilateral interiors,
+so if the root is in the interior of a quadrilateral,
+and the iteration gets close enought to the root,
+then it typically stays inside that quadrilateral and converges.
+Even when a root is on the boundary of quadrilateral,
+we have found that the _basin of attraction_ is still large enough to find it.
+The usual trouble is when the intial estimate is too far from the root,
+and then the iterations wanders outside the lookup table itself.
+Cycling is another possible problem - the iteration could jump around
+from quadrilateral to quadrilateral.
+But we have only seen this happen once, when the function was non-injective
+near white (mentioned at the end of the previous section).
+The quadrilaterals become small triangular slivers there,
+which causes more trouble near *all* neutrals.
+
+Instead of HC itself, we decided to use a rectangular system:
+$$A = C  \cos \left( \frac{\pi}{50} H \right)   ~~~~~~~~   B = C  \sin \left(  \frac{\pi}{50} H  \right)$$
+with the inverse:
+$$H=\left( \frac{50}{\pi} \right) \text{atan2}(B,A)  ~~~~~~~~  C = \text{sqrt}( A^2 + B^2 )$$
+
+
+$A$ and $B$ are analogous to $a$ and $b$ in $Lab$ space.
+The symbols $a''$ and $b''$ are used for the same coordinate system
+in @Simon1980 page 207.
+So now we are trying to invert $AB \to HC \to xy$.
+Each iteration requires an extra conversion $AB \to HC$,
+but this is very fast.
+
+For the initial estimate, the algorithm in @Centore recommends:
+$$A_0 = a/5.5   ~~~~~~~~~  B_0 = b/5.5$$
+We use a cubic polynomial in $a$ and $b$ for better accuracy.
+A separate polynomial is computed for each V-plane, using **R**'s built-in
+function for linear models with no intercept:
+```
+stats::lm( A ~ polym(a,b,degree=3,raw=TRUE) + 0, ... )
+```
+and similarly for $B$.
+We precompute the model, but only save the coefficients.
+For V < 1, a cubic polynomial in $a$ and $b$ was still not good enough,
+and it was found that a cubic in $\Delta x$ and $\Delta y$ worked better;
+where $\Delta x = x - x_C$ and $\Delta y = y - y_C$,
+and $x_C,y_C$ are the chromaticity of Illuminant C.
+Evaluation of the polynomial takes much longer than division by 5.5,
+but it is still negligible compared to the iterations to come.
+
+The root-solver is called like this:
+```
+rootSolve::multiroot( forwardfun, AB0, rtol=1.e-8, atol=1.e-6, ctol=0, xy_target=xy_target, ...)
+```
+The function `forwardfun()` performs the equivalent of `MunsellToxyY()`
+but does not call it explicitly.
+The argument `AB0` is the initial estimate.
+It usually takes 4 or 5 iterations to converge with the indicated tolerances,
+which are in the xy plane.
+
+
+
+
+
+
+
+<br><br>
+
+## Appendix D - Glossary
+
+<dl>
+<dt>luminance factor</dt>
+<dd>
+The _luminance factor_ of an object is the quotient of the luminance of
+the object (for a specific illuminant and in a specific viewing direction)
+divided by that of the perfect reflecting diffuser.
+In Munsell work this quotient is denoted by Y and is
+a percentage in the interval [0,100].
+For Lambertian surfaces, Y does not depend on the viewing direction.
+</dd>
+
+<dt>uniform lightness scale</dt>
+<dd>
+A _uniform lightness scale_ is a reparameterization of luminance factor,
+so that equal numerical steps in lightness produce equal perceptual steps.
+The Munsell Value is an example of such a scale;
+in early investigations it was found
+that the luminance factor of the background affects the perception.
+Another popular scale is CIE Lightness (1976).
+For more on these, see the
+<a href="lightness.pdf">Uniform Lightness Scales</a> vignette.
+</dd>
+</dl>
+
+
+
+
+<br><br>
+
+## Session Information
+
+<pre>
+```{r, echo=FALSE, results='asis'}
+sessionInfo()
+```
+</pre>
