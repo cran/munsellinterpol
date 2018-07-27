@@ -162,8 +162,10 @@ makeLookupList <- function( Munsell2xy, xyC=c(0.3101,0.3163), kfactor=c(0.7,0.5)
     
 extrapGAM  <-  function( Lookup4D, Munsell2xy, kfactor=c(0.9,0.5)  )
     {
-    if( ! requireNamespace( 'mgcv', quietly=TRUE ) )
-        return( NULL )
+    if( ! requireNamespace( 'mgcv', quietly=TRUE ) )        return( NULL )
+    
+    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return(NULL)
+        
     
     time_start  = gettime()
     
@@ -194,10 +196,11 @@ extrapGAM  <-  function( Lookup4D, Munsell2xy, kfactor=c(0.9,0.5)  )
     
     #   add ab coordinates
     
-    white.C  = xyY2XYZ( c( p.xyC['NBS',],100) )
+    white.C = spacesXYZ::XYZfromxyY( c( p.xyC['NBS',],100) )
     Y       = YfromV( data.dark$V )
-    XYZ     = xyY2XYZ( cbind( data.dark$x, data.dark$y, Y ) )
-    Lab     = xyz2lab( XYZ, white.C )
+    XYZ     = spacesXYZ::XYZfromxyY( cbind( data.dark$x, data.dark$y, Y ) )
+    Lab     = spacesXYZ::LabfromXYZ( XYZ, white.C )
+    
     data.dark$a = Lab[ ,2]
     data.dark$b = Lab[ ,3]
     

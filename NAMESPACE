@@ -3,34 +3,35 @@
 
 # functions written by Jose Gama and Glenn Davis
 export( # hypot,
-        lab2xyz,
-        labtoMunsell,
-        luv2xyz,
-        luvtoMunsell,
+        # lab2xyz,
+        LabtoMunsell,
+        # luv2xyz,
+        LuvtoMunsell,
         MunsellHVC,
         MunsellToLab,
         MunsellToLuv,
         MunsellTosRGB,
         MunsellToxyY,
         MunsellToXYZ,
-        srgb2xyz,
         sRGBtoMunsell,
-        xyY2XYZ,
+        # xyY2XYZ,
         xyYtoMunsell,
-        xyz2lab,
-        xyz2luv,
-        xyz2srgb,
-        XYZ2xyY,
+        # xyz2lab,
+        # xyz2luv,
+        # XYZ2xyY,
         XYZtoMunsell,
         IsWithinMacAdamLimits,
         MunsellSpecToColorlabFormat,
         ColorlabFormatToMunsellSpec
         )
-
+        
+# functions by Jose Gama, and used in package 'colorscience'
+export( # srgb2xyz,        
+        xyz2srgb )
 
 # functions added by Glenn Davis
-export( adaptxyY,
-        adaptXYZ,
+export( #adaptxyY,
+        #adaptXYZ,
         HVCfromMunsellName,
         HueStringFromNumber,
         MunsellNameFromHVC,
@@ -42,7 +43,8 @@ export( adaptxyY,
         ColorBlockFromMunsell,
 #       sectionOptimals,        
         RGBtoMunsell,
-        MunsellToRGB
+        MunsellToRGB,
+        NickersonColorDifference
         )
 
 # importFrom(akima, bilinear, bicubic)

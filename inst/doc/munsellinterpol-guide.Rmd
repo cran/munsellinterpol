@@ -77,6 +77,12 @@ The package dependencies are:
 The package **microbenchmark**  @microbenchmark  is suggested,
 for its high-precision timer.
 
+Similar packages:
+**munsell** @munsell also does HVC $\leftrightarrow$ sRGB conversion,
+but only for discrete HVCs from the Munsell Book;
+there is no interpolation.
+
+
 We assume that the reader is familiar with Munsell Hue, Value, and Chroma,
 which we abbreviate by HVC.
 A good introduction is @Munsell_color_system.
@@ -468,7 +474,7 @@ This extrapolation was satisfactory.
 ## Appendix B - Munsell Renotation Discrepancies
 
 There have been at least 4 versions of the renotation tables.
-In order they are:
+In chronological order they are:
 
 <ul>
 <li>original tables in @Newhall1943</li>
@@ -478,17 +484,19 @@ In order they are:
 </ul>
 I have noticed 4 discrepancies, and there might be more.
 They appear to be either simple transcription errors,
-or corrections to make the data smoother.
+or adjustments to make the data smoother.
+This package uses `all.dat`, except for **2.5PB 10/2** noted below.
+
 For samples **7.5BG 4/16** and **5BG 1/4** it looks like a simple
 transcription error in @Wyszecki1982,
 which was corrected in @ASTM-D1535-97 and @renotationRIT.
-For **10PB 8/4**  it looks like @ASTM-D1535-97 made a smoothing correction,
+For **10PB 8/4**  it looks like @ASTM-D1535-97 made a smoothing adjustment,
 which was carried over to @renotationRIT.
-For **2.5R 9/2** it looks like @renotationRIT made a smoothing correction.
+For **2.5R 9/2** it looks like @renotationRIT made a smoothing adjustment.
 
 Finally, in the extrapolated data in @renotationRIT, we have made a small
-smoothing corection at **2.5PB 10/2** for this package.
-Before the correction, the forward mapping HVC $\to$ xyY was not injective
+smoothing adjustment at **2.5PB 10/2** for this package.
+Before the adjustment, the forward mapping HVC $\to$ xyY was not injective
 near **N 10/**, which caused the root-finding iteration to cycle.
 This was discovered during testing phase;
 more ambitious "vetting" software,

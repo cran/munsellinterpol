@@ -14,7 +14,7 @@ sRGBtoMunsell(c(165, 108, 95))
 
 # other useful functions
 luvtoMunsell(c(89.21162, 8.694958, -14.89948))
-labtoMunsell(c(89.21162, 9.934549, -8.451661))
+LabtoMunsell(c(89.21162, 9.934549, -8.451661))
 xyYtoMunsell(c(0.3108972, 0.3065102, 74.61345))
 XYZtoMunsell(c(75.68137, 74.61345, 93.13411))
 

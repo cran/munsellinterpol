@@ -64,7 +64,7 @@ See \code{\link{MunsellToxyY}()} and the \bold{User Guide - Appendix C}.
 \source{
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{http://www.99main.com/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}\cr
+\url{http://centore.isletech.net/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}\cr
 \url{http://www.rit.edu/science/pocs/renotation}\cr
 \url{http://www.rit-mcsl.org/MunsellRenotation/all.dat}\cr
 \url{http://www.rit-mcsl.org/MunsellRenotation/real.dat}
@@ -108,7 +108,7 @@ April 1956.
 
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{http://www.99main.com/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
+\url{http://centore.isletech.net/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
 }
 
 
@@ -124,7 +124,7 @@ The Munsell and Kubelka-Munk Toolbox
 \examples{
 xyYtoMunsell(c(0.310897, 0.306510, 74.613450))
 ##       xyY.1     xyY.2     xyY.3     HVC.H     HVC.V     HVC.C    SAMPLE_NAME
-## 1  0.310897  0.306510 74.613450 87.543143  8.900000  2.233686 7.54P 8.9/2.23
+## 1  0.310897  0.306510 74.613450 87.541720  8.900000  2.247428 7.5P 8.9/2.2
 }
 
 \keyword{datasets}

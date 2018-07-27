@@ -111,11 +111,19 @@ testYfromV <- function()
     printf( "Testing YfromV(*,which='%s') on %d Values.", 'astm', length(Value)  )
     
     Y.astm      = YfromV( Value, which='astm' )
-        
-    ok = identical(  round(Y.astm,6), LuminanceFactor )
+    
+    bytes.LD = .Machine$sizeof.longdouble
+    
+    if( 0 < bytes.LD )
+        # the usual case
+        ok = identical( round(Y.astm,6), LuminanceFactor )
+    else
+        ok = isTRUE( all.equal( Y.astm, LuminanceFactor, tolerance = 5.e-5 ) )
+    
     if( ! ok )
         {
-        printf( "Test of astm quintic failed, on test of %d Values.", length(Value) )
+        printf( "Test of astm quintic failed, on test of %d Values.  bytes.LD=%d", 
+                        length(Value), bytes.LD )
         return(FALSE)
         }
 

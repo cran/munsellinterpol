@@ -16,7 +16,8 @@
 #   This group is programmatically created during .onAttach()
 #   p.VfromY            list of 3 splinefuns; not safe to store them in sysdata.rda.  It must be unlocked.
 #   p.microbenchmark    logical value, whether the package microbenchmark is loaded.  It must be unlocked.
-
+#   p.D65toC_CAT        CAT from Illuminant D65 to C.  Used in sRGB conversion.  It must be unlocked.
+#   p.CtoD65_CAT        CAT from Illuminant C to D65.  Used in sRGB conversion.  It must be unlocked.
 
 #   These are build options
 #   p.vinterpOverride   if TRUE, change from 'cubic' to 'linear' when Value < 2
@@ -24,6 +25,9 @@
 
 p.VfromY            = NULL
 p.microbenchmark    = FALSE
+p.D65toC_CAT        = NULL
+p.CtoD65_CAT        = NULL
+
 p.vinterpOverride   = FALSE
 
     
@@ -50,6 +54,8 @@ p.vinterpOverride   = FALSE
     packageStartupMessage( mess )
     }
     
+
+    
     unlockBinding( "p.LookupList", asNamespace('munsellinterpol') )         # asNamespace(pkgname) here generates a NOTE !           
     unlockBinding( "p.VfromY", asNamespace('munsellinterpol') )             # asNamespace(pkgname) here generates a NOTE !
     unlockBinding( "p.microbenchmark", asNamespace('munsellinterpol') )     # asNamespace(pkgname) here generates a NOTE ! 
@@ -62,7 +68,26 @@ p.vinterpOverride   = FALSE
     
     p.VfromY            <<- makeVfromYs()    #  this loads the list p.VfromY, and takes less than 0.25 seconds
     
-
+    if( requireNamespace( "spacesXYZ", quietly=TRUE ) )
+        {
+        unlockBinding( "p.D65toC_CAT", asNamespace('munsellinterpol') )
+        unlockBinding( "p.CtoD65_CAT", asNamespace('munsellinterpol') )
+    
+        white.D65   = c( 0.3127, 0.3290, 1 )    # xy are from the official sRGB standard
+        white.C     = c( p.xyC['NBS',], 100 )
+        
+        white.D65   = spacesXYZ::XYZfromxyY( white.D65 )
+        white.C     = spacesXYZ::XYZfromxyY( white.C )
+    
+        p.D65toC_CAT    <<- spacesXYZ::CAT( white.D65, white.C, method='Bradford' )
+        p.CtoD65_CAT    <<- spacesXYZ::CAT( white.C, white.D65, method='Bradford' )        
+        }
+    else
+        {
+        packageStartupMessage( "ERROR.  Cannot load package spacesXYZ."  )
+        }        
+    
+    
     }
 
     

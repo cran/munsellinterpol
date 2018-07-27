@@ -409,6 +409,8 @@ xyYtoMunsell  <-  function( xyY,
 #   this one use global variable p.InversionCoeffs
 approxABfromxyY <- function( xyY, xyY.white, V.vector )
     {
+    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return(NULL)
+    
     V   = VfromY( xyY[3] )
     iV  = which.min( abs(V - V.vector) )    
     
@@ -419,10 +421,10 @@ approxABfromxyY <- function( xyY, xyY.white, V.vector )
         {
         #   polynomial in a and b
         Yp          = YfromV( V.vector[iV] )    # use Y in the closest V plane, which is where the model was computed
-        XYZ         = xyY2XYZ( c(xyY[1],xyY[2],Yp) )
-        XYZ.white   = xyY2XYZ( xyY.white )
+        XYZ         = spacesXYZ::XYZfromxyY( c(xyY[1],xyY[2],Yp) )
+        XYZ.white   = spacesXYZ::XYZfromxyY( xyY.white )
             
-        Lab = xyz2lab( XYZ, XYZ.white )
+        Lab = spacesXYZ::LabfromXYZ( XYZ, XYZ.white )
         a   = Lab[2]
         b   = Lab[3]
         a2  = a*a

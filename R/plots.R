@@ -87,7 +87,8 @@ plotLociHC  <-  function( value=5, hue=seq(2.5,100,by=2.5), chroma='auto', coord
 #   value       a *single* value this time
 plotLociHC.xy  <-  function( value, hue, chroma, main, est, ... )    
     {
-    #   par( omi=rep(0.5,4) )
+    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return(NULL)
+    
 
     df  = expand.grid( H=hue, C=chroma )
 
@@ -116,13 +117,13 @@ plotLociHC.xy  <-  function( value, hue, chroma, main, est, ... )
     tmp = sectionOptimals( YfromV(value) )
     if( ! is.null(tmp) )
         {
-        xyY = XYZ2xyY( tmp$XYZ )
+        xyY = spacesXYZ::xyYfromXYZ( tmp$XYZ )
         polygon( xyY[ ,1], xyY[ ,2], border='red', lwd=0.5 )
         }
         
     #   draw the inverted U
     xyz = p.xyz1931[  , 2:4 ]
-    xyY = XYZ2xyY( as.matrix(xyz) )
+    xyY = spacesXYZ::xyYfromXYZ( as.matrix(xyz) )
     polygon( xyY[ ,1], xyY[ ,2], border='blue', lwd=0.5 )
     
 
@@ -220,9 +221,11 @@ plotLociHC.xy  <-  function( value, hue, chroma, main, est, ... )
 
 plotLociHC.ab  <-  function( value, hue, chroma, main, est, ...  )    
     {
+    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return(NULL)
+    
     # par( omi=rep(0.5,4) )
     
-    XYZ.C   = xyY2XYZ( c( p.xyC['NBS', ], 100 ) )   
+    XYZ.C   = spacesXYZ::XYZfromxyY( c( p.xyC['NBS', ], 100 ) )   
     
     df  = expand.grid( H=hue, C=chroma )
 
@@ -236,10 +239,10 @@ plotLociHC.ab  <-  function( value, hue, chroma, main, est, ...  )
     #   xy_white    = xyY[ nrow(xyY), 1:2 ]   
         
     #   convert to XYZ
-    XYZ     = xyY2XYZ( xyY )
+    XYZ     = spacesXYZ::XYZfromxyY( xyY )
     XYZ.C   = XYZ[ nrow(XYZ), ]    
     
-    Lab     = xyz2lab( XYZ, XYZ.C )
+    Lab     = spacesXYZ::LabfromXYZ( XYZ, XYZ.C )
     
     xlim    = range( Lab[ ,2], na.rm=TRUE )
     ylim    = range( Lab[ ,3], na.rm=TRUE )
@@ -255,11 +258,13 @@ plotLociHC.ab  <-  function( value, hue, chroma, main, est, ...  )
     tmp = sectionOptimals( YfromV(value) ) 
     if( ! is.null(tmp) )    
         {
-        Lab = xyz2lab( tmp$XYZ, XYZ.C )
+        Lab = spacesXYZ::LabfromXYZ( tmp$XYZ, XYZ.C )
         polygon( Lab[ ,2], Lab[ ,3], border='red', lwd=0.5 )
         }
         
     #   draw radials
+    # cat( "drawing radials...\n", file=stderr() )
+    
     chromavec  = seq( 1, max(chroma), by=0.25 )
     #   n   = length(chroma)
     
@@ -268,8 +273,8 @@ plotLociHC.ab  <-  function( value, hue, chroma, main, est, ...  )
         HVC = cbind( h, value, chromavec  )
         
         xyY = MunsellToxyY( HVC, warn=FALSE, ...  )$xyY
-        XYZ = xyY2XYZ( xyY )
-        Lab = xyz2lab( XYZ, XYZ.C )
+        XYZ = spacesXYZ::XYZfromxyY( xyY )
+        Lab = spacesXYZ::LabfromXYZ( XYZ, XYZ.C )
     
         lines( Lab[ ,2], Lab[ ,3], lwd=0.5 )   #, border='black' )
         
@@ -281,11 +286,14 @@ plotLociHC.ab  <-  function( value, hue, chroma, main, est, ...  )
         
         adj = 0.5 - 0.7 * sign(offset)
         text( ab[1], ab[2], HueStringFromNumber(h), adj=adj, cex=0.75, xpd=NA )   #, border='black' )        
+        
+        #  if( any(is.na(XYZ)) )   print( xyY )
         }
         
         
 
     #   draw ovoids
+    # cat( "drawing ovoids...\n", file=stderr() )
     huevec  = seq( 0, 100, by=2.5/8 )    
     #   n       = length(huevec)
     for( ch in chroma )
@@ -293,8 +301,8 @@ plotLociHC.ab  <-  function( value, hue, chroma, main, est, ...  )
         HVC = cbind( huevec, value, ch )
             
         xyY = MunsellToxyY( HVC, warn=FALSE, ... )$xyY
-        XYZ = xyY2XYZ( xyY )
-        Lab = xyz2lab( XYZ, XYZ.C )
+        XYZ = spacesXYZ::XYZfromxyY( xyY )
+        Lab = spacesXYZ::LabfromXYZ( XYZ, XYZ.C )
         
         lines( Lab[ ,2], Lab[ ,3], lwd=0.5  )   #, border='black' )
         }
@@ -333,8 +341,6 @@ plotLociHC.ab  <-  function( value, hue, chroma, main, est, ...  )
         
 plotLociHC.AB  <-  function( value, hue, chroma, main, est, ...    )    
     {
-    #   XYZ.C   = xyY2XYZ( c( p.xyC['NBS', ], 100 ) )   
-    
     chroma.max  = max(chroma)
     
     xlim    = c( -chroma.max, chroma.max )
@@ -405,7 +411,7 @@ plotLociHC.AB  <-  function( value, hue, chroma, main, est, ...    )
     }        
     
     
-plotPatchesH  <-  function( hue, space='sRGB', adaption='bradford', background='gray50',  main="Hue %s  (H=%g)      [%s   adaption=%s]", ...  )
+plotPatchesH  <-  function( hue, space='sRGB', adapt='Bradford', background='gray50',  main="Hue %s  (H=%g)      [%s   adapt=%s]", ...  )
     {
     if( is.character(hue) )
         {
@@ -429,9 +435,9 @@ plotPatchesH  <-  function( hue, space='sRGB', adaption='bradford', background='
     
     for( h in hue )
         {
-        main.single = sprintf( main, HueStringFromNumber(h), h, space, adaption )
+        main.single = sprintf( main, HueStringFromNumber(h), h, space, adapt )
         
-        out = plotPatchesH.single( h, space=space, adaption=adaption, background=background, main=main.single, ... )
+        out = plotPatchesH.single( h, space=space, adapt=adapt, background=background, main=main.single, ... )
         
         if( ! out ) break
         }
@@ -440,7 +446,7 @@ plotPatchesH  <-  function( hue, space='sRGB', adaption='bradford', background='
     }
     
 #   hue is a single number    
-plotPatchesH.single <- function( hue, space='sRGB', adaption='bradford', background='gray50', main='', ... )
+plotPatchesH.single <- function( hue, space='sRGB', adapt='Bradford', background='gray50', main='', ... )
     {
     #   find the closest hue page
     huevec  = sort( unique( munsellinterpol::Munsell2xy$H ) )   #; print( huevec )
@@ -456,7 +462,7 @@ plotPatchesH.single <- function( hue, space='sRGB', adaption='bradford', backgro
     
     HVC     = cbind( dfsub$H, dfsub$V, dfsub$C )
     
-    tmp     = MunsellToRGB( HVC, space=space, adaption=adaption, ... ) 
+    tmp     = MunsellToRGB( HVC, space=space, adapt=adapt, ... ) 
     xyY     = tmp$xyY          # this is adapted to illuminant C
     mask    = IsWithinMacAdamLimits( xyY, 'C' )     #;   print( sum(mask) )
 
@@ -501,7 +507,7 @@ plotPatchesH.single <- function( hue, space='sRGB', adaption='bradford', backgro
     
     #   draw neutrals
     HVC = cbind( 0, 0:10, 0 )
-    dfneutral   = MunsellToRGB( HVC, space=space, adaption=adaption, ... )
+    dfneutral   = MunsellToRGB( HVC, space=space, adapt=adapt, ... )
     dfneutral$HVC   = HVC
     dfneutral$color = grDevices::rgb( round(dfneutral$RGB), maxColorValue=255 )   #    print( dfneutral )
     

@@ -33,6 +33,8 @@ saveDatasets  <- function( pathout="../data/munsellinterpol.rda" )
 #   do not have to be documented, and therefore exposed    
 savePrivateDatasets  <- function( .path="sysdata.rda" )
     {
+
+    
     savevec = character(0)
         
     #   load( "../data/munsellinterpol.rda" )
@@ -43,14 +45,23 @@ savePrivateDatasets  <- function( .path="sysdata.rda" )
     colnames(p.xyC) = c('x','y')
     savevec = c( savevec, "p.xyC" )
         
+    if( FALSE )
+    {
+    #   these two 3x3 matrices are now built in to spacesXYZ
+    if( ! requireNamespace('spacesXYZ') )   return(FALSE)
+    
     primary     = matrix( c(0.64,0.33,  0.3,0.6, 0.15,0.06 ), 3, 2, byrow=T )   # from sRGB standard
     primary     = cbind( primary, 1 - rowSums(primary) )
-    whiteXYZ    = as.numeric( xyY2XYZ( c(0.3127,0.3290,1) ) )       # from sRGB standard
+    whiteXYZ    = as.numeric( spacesXYZ::XYZfromxyY( c(0.3127,0.3290,1) ) )       # from sRGB standard
     p.sRGB2XYZ  = projectiveMatrix( t(primary), whiteXYZ )        #; print( p.sRGB2XYZ )
     savevec = c( savevec, "p.sRGB2XYZ" )
         
     p.XYZ2sRGB  = solve(p.sRGB2XYZ)                             #;  print( p.XYZ2sRGB )
     savevec = c( savevec, "p.XYZ2sRGB" )
+    }
+    
+    
+    
     
     p.OptimalHull       = list()
     path    = "../inst/extdata/OptimalColorsForIlluminantC.txt"

@@ -1,15 +1,15 @@
-\name{luvtoMunsell}
-\alias{luvtoMunsell}
+\name{LuvtoMunsell}
+\alias{LuvtoMunsell}
 \title{Convert CIE Luv coordinates into a Munsell specification}
-\description{\code{luvtoMunsell} Converts CIE Luv coordinates into a Munsell 
+\description{\code{LuvtoMunsell} Converts CIE Luv coordinates into a Munsell 
 specification, by interpolating over the extrapolated Munsell renotation data
 }
 
-\usage{luvtoMunsell( Luv, white=c(95.047,100,108.883), adaption='bradford', ... ) }
+\usage{LuvtoMunsell( Luv, white=c(95.047,100,108.883), adapt='Bradford', ... ) }
 \arguments{
   \item{Luv}{CIE Luv coordinates An Nx3 matrix, or a vector that can be converted to such a matrix. Each row of the matrix has Luv.}
   \item{white}{XYZ for the reference white.  The default is Illuminant=D65, 2 observer}
-  \item{adaption}{method for chromatic adaption, see \bold{Details}}
+  \item{adapt}{method for chromatic adaptation, see \bold{Details}}
   \item{...}{other parameters passed to \code{\link{XYZtoMunsell}()} }  
 }
 
@@ -21,9 +21,9 @@ The rownames are set to those of Luv.
 \details{
 The conversion is done in 3 steps.
 \itemize{
-\item Luv \rarrow XYZ using \code{\link{luv2xyz}()} with the given \code{white}.
+\item Luv \rarrow XYZ using \code{\link[spacesXYZ:toXYZ]{XYZfromLuv}()} with the given \code{white}.
 \item XYZ is then adapted from the given \code{white} to Illuminant C using
-the given \code{adaption} method, see \link{adaption}.
+the given chromatic adaptation method, see \code{\link[spacesXYZ:adaptation]{CAT}()}.
 \item XYZ \rarrow HVC using \code{\link{XYZtoMunsell}()}
 }
 }
@@ -32,12 +32,19 @@ the given \code{adaption} method, see \link{adaption}.
 \references{
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{http://www.99main.com/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
+\url{http://centore.isletech.net/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
 }
+
+\seealso{
+\code{\link{XYZtoMunsell}()},
+\code{\link[spacesXYZ:toXYZ]{XYZfromLuv}()},
+\code{\link[spacesXYZ:adaptation]{CAT}()}
+}
+
 
 \author{Jose Gama and Glenn Davis}
 \examples{
-luvtoMunsell( c( 74.613450, -5.3108, 10.6 ) )
+LuvtoMunsell( c( 74.613450, -5.3108, 10.6 ) )
 }
 \keyword{datasets}
 

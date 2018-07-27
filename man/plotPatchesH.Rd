@@ -6,8 +6,8 @@
 The colors are best viewed on a display calibrated for
 the RGB space given as the second argument.}
 
-\usage{plotPatchesH( hue, space='sRGB', adaption='bradford', background='gray50',
-                        main="Hue \%s  (H=\%g)      [\%s   adaption=\%s]", ... ) }
+\usage{plotPatchesH( hue, space='sRGB', adapt='Bradford', background='gray50',
+                        main="Hue \%s  (H=\%g)      [\%s   adapt=\%s]", ... ) }
 
 \arguments{
 
@@ -25,8 +25,8 @@ which is then converted to a numeric vector using
 Spaces \code{'sRGB'} and \code{'AdobeRGB'} are pre-installed,
 and others can be installed with \code{\link{installRGB}()}.}
 
-\item{adaption}{method used to adapt xyY for Illuminant C
-to xyY for Illuminant D65.  It is passed to \code{\link{MunsellToRGB}()}.
+\item{adapt}{method used to adapt xyY for Illuminant C to xyY for Illuminant D65.
+It is passed to \code{\link{MunsellToRGB}()}.
 }
 
 \item{background}{background color for the plot.
@@ -37,7 +37,7 @@ It is passed to \code{par()} as argument \code{bg}.
 The optional placeholder \code{'\%s'} is replaced by the Hue Name,
 \code{'\%g'} is replaced by the Hue Number,
 the next \code{'\%s'} is replaced by \code{space}, and
-the last \code{'\%s'} is replaced by \code{adaption}.
+the last \code{'\%s'} is replaced by \code{adapt}.
 }
 
 \item{...}{other arguments passed to the function \code{MunsellToRGB()}.

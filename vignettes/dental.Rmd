@@ -1,0 +1,179 @@
+---
+title: "Dental Shade Guides"
+author: "Glenn Davis"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+    number_sections: false
+bibliography: bibliography.bib
+
+# csl: iso690-numeric-brackets-cs.csl
+csl: personal.csl
+# csl: institute-of-mathematical-statistics.csl
+# csl: transactions-on-mathematical-software.csl
+vignette: >
+  %\VignetteIndexEntry{Dental Shade Guides}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options( width=100 )
+```
+
+A *Dental Shade Guide* is a set of simulated teeth used to select prosthetic teeth by color.
+The simulated teeth are made of plastic or porcelain.
+Commercial shade guides have existed for almost a century.
+In 1933, Clark @CLARK1933 discussed the manufacture and use of porcelain shade guides based on the
+cylindrical color dimensions of _hue_, _brilliance_, and _saturation_,
+which correspond to Munsell's _Hue_, _Value_, and _Chroma_.
+
+In @OBRIEN1989, the 24 teeth in a master Bioform shade guide were measured with a spectrophotometer.
+The spectral measurements were converted to xyY assuming Illuminant C,
+and then to both CIE Lab and Munsell HVC.
+The goal of this vignette is to plot the 24 colors as square patches,
+and then check the calculations from the article.
+
+The spectrophotometer was an ACTA CIII from Beckman Instruments.
+Relative reflectance data were recorded from 410 to 700nm at 10-nm intervals.
+The conversion from such data to xyY and Lab is standard,
+but conversion to Munsell HVC is not explained in the paper.
+However, in a similar article @OBRIEN1990 by the same authors they state that:
+
+> The chromaticity coordinates were converted to Munsell notation by means of graphs ...
+> and the method described by ASTM standard D 1535-80.
+
+so we assume that the same method was used here.
+Note that the graphical method only applies to Munsell Hue and Chroma;
+for Munsell Value lookup tables are available in @ASTM-D1535-97.
+Below we check the published conversions against numerical conversions using **munsellinterpol**.
+
+Load the required R packages.
+
+```{r echo=TRUE, message=FALSE}
+library(munsellinterpol)
+library(spacesRGB)  # for converting to RGB and plotting the patches
+library(spacesXYZ)  # for CIE XYZ to Lab conversion 
+```
+Featured functions from **munsellinterpol** are
+`XYZtoMunsell()`,
+`MunsellNameFromHVC()`,
+`NickersonColorDifference()`, and
+`ColorBlockFromMunsell()`.
+
+
+
+## Reading and Plotting the Data
+
+Read the published data table.
+
+```{r echo=TRUE}
+path = system.file( 'extdata/dental.txt', package='munsellinterpol' )
+dental = read.table( path, header=TRUE, sep='\t', stringsAsFactors=FALSE )
+dental
+```
+Extract xyY, adapt from Illuminant C to D65, convert XYZ to sRGB, and display as a 6x4 grid of patches.
+
+```{r echo=TRUE,  fig.width=7.2, fig.height=5.2,  fig.show='hold'}
+xyY = as.matrix( dental[ c('x','y','Y') ] )
+XYZ = XYZfromxyY( xyY ) / 100
+# adapt from Illuminant C to the whitepoint of sRGB, which is D65
+theCAT = CAT( 'C', getRGB('sRGB')$whiteXYZ )   # make the Chromatic Adaptation Transform
+XYZ = adaptXYZ( theCAT, XYZ )
+# create data.frame obj for plotting
+obj = expand.grid( LEFT=1:6, TOP=1:4 )
+obj$WIDTH = 0.9
+obj$HEIGHT = 0.9
+obj$RGB = RGBfromXYZ( XYZ, space='sRGB' )$RGB     # convert to sRGB
+rownames(obj) = rownames(dental)
+# plot as square patches
+par( omi=c(0,0,0,0), mai=c(0.1,0.1,0.1,0.1) )
+plotPatchesRGB( obj, which='signal', labels="bottomleft", adj=c(-0.2,-0.5), cex=0.7 )
+```
+This figure is best viewed on a display calibrated for sRGB.
+
+
+
+## Checking the Conversions
+
+We now recompute Lab and Munsell values, and check against the published values.
+
+```{r echo=TRUE}
+Lab  = as.matrix( dental[ c('L','a','b') ] )
+XYZ = XYZfromxyY( xyY )
+Lab2 = LabfromXYZ( XYZ/100, 'C' )     # recompute Lab
+HVC  = HVCfromMunsellName( dental$Munsell )
+HVC2 = XYZtoMunsell( XYZ )            # recompute Munsell HVC
+comp = data.frame( row.names=rownames(dental) )
+comp$Y  = dental$Y
+comp$L  = Lab[ ,1]
+comp$L2 = round(Lab2[ ,1],4)
+comp$Ldiff = round( comp$L - comp$L2, 4 )
+comp$DeltaE = round( DeltaE( Lab, Lab2 ), 4 )   # DeltaE is the pairwise color difference
+comp$Munsell = dental$Munsell
+comp$Munsell2 = MunsellNameFromHVC( HVC2, format='f', digits=2 )
+comp$NickersonCD = round( NickersonColorDifference( HVC, HVC2 ), 4 )
+comp
+```
+
+The Lab agreement is good, but the published Lightness values are consistently too large
+and the reason for this is unknown.
+The exception is B-83 whose published Lightness=71.52 is too small and with the largest DeltaE by far;
+it appears to be a transcription error.
+<br>
+The Munsell agreement is not bad, but the pubished Munsell Value is too small.
+This could be due to using magnesium oxide instead of the perfect reflecting diffuser.
+We can test this by recomputing the value component of `HVC2`.
+The newly recomputed Munsell notation is denoted `Munsell3`.
+
+```{r echo=TRUE}
+HVC3 = HVC2
+HVC3[ ,2] = VfromY( dental$Y, which='MgO' )
+comp$Munsell2 = NULL
+comp$NickersonCD = NULL
+comp$Munsell3 = MunsellNameFromHVC( HVC3, format='f', digits=2 )
+comp$NickersonCD = round( NickersonColorDifference( HVC, HVC3 ), 4 )
+comp
+```
+The Munsell Value agreement is now much better.
+The worst Nickerson difference is for B-65 and this is largely because
+the published Munsell Value is 7.30 instead of 7.40.
+Note that the Y values for B-65 and B-54 are almost identical
+and that the Munsell Value for B-54 is correct.
+So again I think that the problem with B-65 is transcription error.
+For Munsell Hue and Chroma the agreement is good.
+It must have been tedious to use the graphical method for all 24 samples.
+<br>
+
+
+## ISCC-NBS Color Names
+
+I thought it would be interesting to display the ISCC-NBS names
+for each of the 24 dental shades.
+```{r echo=TRUE}
+obj = data.frame( row.names=rownames(dental) )
+obj$Munsell2 = MunsellNameFromHVC( HVC2, format='f', digits=2 )
+block = ColorBlockFromMunsell( HVC2 )
+obj[[ "ISCC-NBS Name" ]] = block$Name
+obj
+```
+All the dental shades are in the same block, except for 2.
+It would be interesting to turn this into a 3D scatterplot,
+with the color block boundaries displayed with transparency.
+
+
+## References
+
+<div id="refs"></div>
+
+
+
+## Session Information
+
+<pre>
+```{r, echo=FALSE, results='asis'}
+sessionInfo()
+```
+</pre>

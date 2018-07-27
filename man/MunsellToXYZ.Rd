@@ -1,6 +1,8 @@
 \name{MunsellToXYZ}
 \alias{MunsellToXYZ}
+
 \title{Convert a Munsell specification to CIE XYZ coordinates}
+
 \description{\code{MunsellToXYZ} Converts a 
 Munsell specification to XYZ coordinates, by interpolating over the 
 extrapolated Munsell renotation data
@@ -21,17 +23,19 @@ The rownames are copied from the input HVC matrix.
 Exception: If the input matrix rownames are \code{NULL},
 then the output rownames are the Munsell notation.
 Note that these XYZ values are for viewing under Illuminant C, with Y=100.
+There is no chromatic adaptation.
 }
 
 \details{
-This function calls  \code{\link{MunsellToxyY}()} 
-and \code{\link{xyY2XYZ}()}.
+This function calls  
+\code{\link{MunsellToxyY}()} and
+\code{\link[spacesXYZ:toXYZ]{XYZfromxyY}()}.
 }
 
 \references{
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{http://www.99main.com/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
+\url{http://centore.isletech.net/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
 }
 
 \author{Jose Gama and Glenn Davis}
@@ -41,7 +45,7 @@ MunsellToXYZ('7.6P 8.9/2.2')
 
 \seealso{
 \code{\link{MunsellToxyY}()},
-\code{\link{xyY2XYZ}()}
+\code{\link[spacesXYZ:toXYZ]{XYZfromxyY}()} 
 }
 
 

@@ -3,8 +3,11 @@
 
 IsWithinMacAdamLimits <- function( xyY, Illuminant='C' )
     {
-    if( ! requireNamespace( 'geometry', quietly=TRUE ) )
-        return( NULL )
+    if( ! requireNamespace( 'geometry', quietly=TRUE ) )    return( NULL )
+    
+    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return( NULL )
+        
+        
         
     xyY = prepareNx3( xyY )    
     if( is.null(xyY) )  return(NULL)
@@ -20,7 +23,7 @@ IsWithinMacAdamLimits <- function( xyY, Illuminant='C' )
     
     hull    = p.OptimalHull[[ Illuminant ]]
 
-    out = is.finite( geometry::tsearchn( hull$XYZ, hull$tessellation, xyY2XYZ(xyY) )$idx )
+    out = is.finite( geometry::tsearchn( hull$XYZ, hull$tessellation, spacesXYZ::XYZfromxyY(xyY) )$idx )
     
     return( out )
     }
@@ -34,10 +37,11 @@ IsWithinMacAdamLimits <- function( xyY, Illuminant='C' )
 #
 makeOptimalHull <- function( xyY )
     {
-    if( ! requireNamespace( 'geometry', quietly=TRUE ) )
-        return( NULL )    
+    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return( NULL )
     
-    XYZ = xyY2XYZ( xyY )
+    if( ! requireNamespace( 'geometry', quietly=TRUE ) )    return( NULL )    
+    
+    XYZ = spacesXYZ::XYZfromxyY( xyY )
     
     #   option QJ is to joggle the input and avoid degenerate simplices
     #   without this option there are 2 degenerate ones for Illuminant C, and these generate a warning message for every query

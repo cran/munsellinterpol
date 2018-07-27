@@ -3,61 +3,69 @@
 
 ################      Munsell  <-->  RGB    #######################
 
-RGBtoMunsell <- function( RGB, space='sRGB', maxValue=255, adaption='bradford', ... )
+RGBtoMunsell <- function( RGB, space='sRGB', maxSignal=255, adapt='Bradford', ... )
     {
-    requireNamespace( 'spacesRGB', quietly=TRUE )
+    if( ! requireNamespace( 'spacesRGB', quietly=TRUE ) )   return(NULL)
     
-    theSpace = spacesRGB::getRGB(space)
+    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return(NULL)
+    
+    theSpace = spacesRGB::getRGB(space,full=FALSE)
     if( is.null(theSpace) ) return(NULL)
     
     # Convert RGB input into CIE XYZ and xyY coordinates
-    XYZ <- spacesRGB::XYZfromRGB( RGB, space=space, maxValue=maxValue )$XYZ  # for white, Y=100
+    XYZ = spacesRGB::XYZfromRGB( RGB, space=space, which='scene', maxSignal=maxSignal )$XYZ  # for white, Y=100
     if( is.null(XYZ) )  return(NULL)
         
-    XYZ = 100 * XYZ
+    #   XYZ = 100 * XYZ
     
-    xyY <- XYZ2xyY(XYZ)
+    xyY = spacesXYZ::xyYfromXYZ(XYZ)
 
     # adapt xyY from the RGB space white to C
-    white   = c( theSpace$primaries[4, ], 100 ) 
-    white.C = c( p.xyC['NBS',], 100 )
+    white       = theSpace$whiteXYZ
+    white.C     = spacesXYZ::XYZfromxyY( c( p.xyC['NBS',], 100 ) )
 
-    xyY.adapted = adaptxyY( xyY, white, white.C, method=adaption ) #; print( xyY.adapted )
+    theCAT      = spacesXYZ::CAT( white, white.C, method=adapt )
+    
+    xyY.adapted = spacesXYZ::adaptxyY( theCAT, xyY )   #; print( xyY.adapted )
 
     # Convert adapted xyY coordinates to Munsell coordinates
     tmp = xyYtoMunsell( xyY.adapted, ... )
     HVC = tmp$HVC
     rownames(HVC) = tmp$SAMPLE_NAME
+    
     HVC
     }
 
-MunsellToRGB <- function( MunsellSpec, space='sRGB', maxValue=255, adaption='bradford', ... )
+MunsellToRGB <- function( MunsellSpec, space='sRGB', maxSignal=255, adapt='Bradford', ... )
     {
-    requireNamespace( 'spacesRGB', quietly=TRUE )
+    if( ! requireNamespace( 'spacesRGB', quietly=TRUE ) )   return(NULL)
     
-    theSpace = spacesRGB::getRGB(space)
+    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return(NULL)
+    
+    theSpace = spacesRGB::getRGB(space,full=FALSE)
     if( is.null(theSpace) ) return(NULL)
         
     # Convert from Munsell notation to CIE coordiantes
-    tmp <- MunsellToxyY( MunsellSpec, ... )
+    tmp = MunsellToxyY( MunsellSpec, ... )
     if( is.null(tmp) )  return(NULL)
 
     out = tmp
     out$HVC = NULL  # erase this column
 
-    xyY <- tmp$xyY
+    xyY = tmp$xyY
 
     # adapt xyY from C to the RGB space white
+    white.C =   spacesXYZ::XYZfromxyY( c( p.xyC['NBS',], 100 ) )    
+    white   =   theSpace$whiteXYZ
 
-    white.C = c( p.xyC['NBS',], 100 )    
-    white   = c( theSpace$primaries[4, ], 100 )   
+    theCAT      = spacesXYZ::CAT( white.C, white, method=adapt )
+    
+    xyY.adapted = spacesXYZ::adaptxyY( theCAT, xyY )
 
-    xyY.adapted = adaptxyY( xyY, white.C, white, method=adaption )
-
-    XYZ.adapted <- xyY2XYZ( xyY.adapted )
+    XYZ.adapted = spacesXYZ::XYZfromxyY( xyY.adapted )
 
     # Convert CIE XYZ coordinates to RGB coordinates
-    out = cbind( out, spacesRGB::RGBfromXYZ( XYZ.adapted/100, space=space, maxValue=maxValue ) )
+    out = cbind( out, spacesRGB::RGBfromXYZ( XYZ.adapted, space=space, which='scene', maxSignal=maxSignal ) )
 
     rnames  = tmp$SAMPLE_NAME
     if( anyDuplicated(rnames) ) rnames = 1:nrow(out)

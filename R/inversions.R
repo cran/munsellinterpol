@@ -2,6 +2,8 @@
 
 makeDataForPrediction <- function( Munsell2xy, value, p.LookupList )
     {
+    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return(NULL)
+    
     dfsub  = Munsell2xy[ Munsell2xy$V == value , ]    # &  Munsell2xy$real
     
     if( nrow(dfsub) == 0 )  return(NULL)
@@ -55,11 +57,11 @@ makeDataForPrediction <- function( Munsell2xy, value, p.LookupList )
     dfsub$Y = YfromV(dfsub$V) 
         
     #   add a,b
-    XYZ.C   = xyY2XYZ( c( xyC, 100 ) )   
+    XYZ.C   = spacesXYZ::XYZfromxyY( c( xyC, 100 ) ) 
 
     xyY = cbind( dfsub$x, dfsub$y, dfsub$Y )
-    XYZ = xyY2XYZ( xyY )
-    Lab = xyz2lab( XYZ, XYZ.C )    
+    XYZ = spacesXYZ::XYZfromxyY( xyY )
+    Lab = spacesXYZ::LabfromXYZ( XYZ, XYZ.C )    
     
     #   dfsub$L    = Lab[ ,1]
     dfsub$a    = Lab[ ,2]
@@ -80,7 +82,8 @@ makeDataForPrediction <- function( Munsell2xy, value, p.LookupList )
 #       "coeffs"            2x9 matrix of coefficients
 addPredictions <- function( data, warn=TRUE )
     {
-    #   dfreal  = dfsub[ dfsub$real, ]  
+    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return(NULL)
+    
 
     #   get value from first row
     value   = data$V[1]
@@ -137,12 +140,12 @@ addPredictions <- function( data, warn=TRUE )
         log.string( WARN, "%d of x.pred are NA", sum(is.na(out$x.pred)) )
     
     #   add predicted ab
-    xyC = p.xyC['NBS', ]    
-    XYZ.C   = xyY2XYZ( c( xyC, 100 ) )
+    xyC     = p.xyC['NBS', ]    
+    XYZ.C   = spacesXYZ::XYZfromxyY( c( xyC, 100 ) )
 
     xyY = cbind( out$x.pred, out$y.pred, data$Y )
-    XYZ = xyY2XYZ( xyY )
-    Lab = xyz2lab( XYZ, XYZ.C )    
+    XYZ = spacesXYZ::XYZfromxyY( xyY )
+    Lab = spacesXYZ::LabfromXYZ( XYZ, XYZ.C )    
 
     out$a.pred = Lab[ ,2]
     out$b.pred = Lab[ ,3]

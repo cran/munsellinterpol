@@ -35,6 +35,9 @@ log.string <- function( level, msg, ... )
     else
         namefun = "[??]"
 
+    if( ! grepl( "^munsellinterpol", namefun ) )
+        namefun = paste0( "munsellinterpol::", namefun, collapse='' )        
+        
     mess    = paste0( namefun, "(). ", names(level), ".  ", msg, collapse='' )
 
     if( level <= FATAL )

@@ -1,6 +1,7 @@
 
 library( munsellinterpol )
 library( microbenchmark )
+library( spacesXYZ )
 
 printf <- function( msg, ... )
     {    
@@ -27,11 +28,11 @@ makeABab <- function( Munsell2xy, value )
     dfsub$A    = tmp$A
     dfsub$B    = tmp$B
     
-    XYZ.C   = xyY2XYZ( c( 0.3101,0.3163, 100 ) )   
+    XYZ.C   = spacesXYZ::XYZfromxyY( c( 0.3101,0.3163, 100 ) )   
     
     xyY = cbind( dfsub$x, dfsub$y, YfromV(value) )
-    XYZ = xyY2XYZ( xyY )
-    Lab = xyz2lab( XYZ, XYZ.C )    
+    XYZ = spacesXYZ::XYZfromxyY( xyY )
+    Lab = spacesXYZ::LabfromXYZ( XYZ, XYZ.C )    
     
     dfsub$a    = Lab[ ,2]
     dfsub$b    = Lab[ ,3]

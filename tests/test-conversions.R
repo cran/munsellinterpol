@@ -21,228 +21,7 @@ gettime <- function()
     }
     
     
-testXYZ <- function()
-    {
-    printf( "---------------------  testXYZ()  -----------------------" )
-    require( spacesRGB )
-        
-    # make random XYZs    
-    set.seed(0)    
-    count   = 1000
-    
-    XYZ = matrix( abs(rnorm(3*count)), ncol=3 )
-    rownames(XYZ)   = sprintf( "%04d", 1:count )
-    
-    #---  xyY ---##
-    time_start      = gettime()    
-    xyY             = XYZ2xyY( XYZ )
-    XYZ.back        = xyY2XYZ( xyY )
-    time_elapsed    = gettime() - time_start
-    
-    delta   = rowSums( abs(XYZ - XYZ.back) ) 
-    printf( "XYZ -> xyY -> XYZ    max(delta)=%g   %d samples at %g sec/sample",
-                            max(delta), count, time_elapsed/count )
-    
-    failures = sum( 5.e-15 < delta )
-    
-    if( 0 < failures )
-        {
-        idx = which.max(delta)        
-        printf( "There were %d  XYZ -> xyY -> XYZ failures.  Max error = %g",
-                    failures, delta[idx] )
 
-        df  = data.frame( row.names=1 )
-        df$XYZ      = XYZ[idx, ,drop=FALSE]
-        df$xyY      = xyY[idx, ,drop=FALSE]
-        df$XYZ.back = XYZ.back[idx, ,drop=FALSE]        
-        print( df )
-        
-        return(FALSE)
-        }
-        
-    #   test pure black
-    black   = c(0,0,0)
-    if( ! identical( black, as.numeric(xyY2XYZ( XYZ2xyY(black) ) ) ) )
-        {
-        printf(  "XYZ -> xyY -> XYZ.back .  pure black not preserved." )
-        return(FALSE)
-        }
-        
-    #   test rownames
-    if( ! identical( rownames(XYZ), rownames(XYZ.back) ) )
-        {
-        printf(  "XYZ -> xyY -> XYZ.back .  rownames not preserved." )
-        return(FALSE)
-        }
-
-        
-        
-    #---  Lab ---##
-    time_start      = gettime()        
-    Lab         = xyz2lab( XYZ )
-    XYZ.back    = lab2xyz( Lab )
-    time_elapsed    = gettime() - time_start
-    
-    delta   = rowSums( abs(XYZ - XYZ.back) )        
-    
-    printf( "XYZ -> Lab -> XYZ    max(delta)=%g   %d samples at %g sec/sample", 
-                    max(delta), count, time_elapsed/count )
-        
-    failures = sum( 1.e-14 < delta )
-    
-    if( 0 < failures )
-        {
-        idx = which.max(delta)        
-        printf(  "There were %d  XYZ -> Lab -> XYZ failures.  Max error = %g",
-                    failures, delta[idx] )
-
-        df  = data.frame( row.names=1 )
-        df$XYZ      = XYZ[idx, ,drop=FALSE]
-        df$Lab      = Lab[idx, ,drop=FALSE]
-        df$XYZ.back = XYZ.back[idx, ,drop=FALSE]        
-        print( df )
-        
-        return(FALSE)
-        }
-        
-    #   test pure black
-    black   = c(0,0,0)
-    if( ! identical( black, as.numeric(lab2xyz( xyz2lab(black) ) ) ) )
-        {
-        printf(  "XYZ -> Lab -> XYZ.back .  pure black not preserved." )
-        return(FALSE)
-        }
-                        
-    #   test rownames
-    if( ! identical( rownames(XYZ), rownames(XYZ.back) ) )
-        {
-        printf(  "XYZ -> Lab -> XYZ.back .  rownames not preserved." )
-        return(FALSE)
-        }
-
-        
-    #---  Luv ---##
-    time_start      = gettime()           
-    Luv             = xyz2luv( XYZ )
-    XYZ.back        = luv2xyz( Luv )
-    time_elapsed    = gettime() - time_start
-    
-    delta   = rowSums( abs(XYZ - XYZ.back) )      
-    
-    printf( "XYZ -> Luv -> XYZ    max(delta)=%g   %d samples at %g sec/sample", 
-                        max(delta), count, time_elapsed/count )
-            
-    failures = sum( 1.e-13 < delta )
-    
-    if( 0 < failures )
-        {
-        idx = which.max(delta)        
-        printf(  "There were %d  XYZ -> Luv -> XYZ failures.  Max error = %g",
-                    failures, delta[idx] )
-
-        df  = data.frame( row.names=1 )
-        df$XYZ      = XYZ[idx, ,drop=FALSE]
-        df$Luv      = Luv[idx, ,drop=FALSE]
-        df$XYZ.back = XYZ.back[idx, ,drop=FALSE]        
-        print( df )
-        
-        return(FALSE)
-        }
-        
-    #   test pure black
-    black   = c(0,0,0)
-    if( ! identical( black, as.numeric(luv2xyz( xyz2luv(black) ) ) ) )
-        {
-        printf( "XYZ -> Luv -> XYZ.back .  pure black not preserved." )
-        return(FALSE)
-        }
-        
-    #   test rownames
-    if( ! identical( rownames(XYZ), rownames(XYZ.back) ) )
-        {
-        printf(  "XYZ -> Luv -> XYZ.back .  rownames not preserved." )
-        return(FALSE)
-        }
-        
-
-        
-        
-    #---  sRGB ---##
-    RGB         = matrix( runif(3*count,max=255), ncol=3 )
-    rownames(RGB)   = sprintf( "%04d", 1:count )
-    
-    time_start      = gettime()               
-    XYZ             = srgb2xyz( RGB )    
-    RGB.back        = xyz2srgb( XYZ )$sRGB      #; print( 'RGB OK' )
-    time_elapsed    = gettime() - time_start
-    
-    delta   = rowSums( abs(RGB - RGB.back) )  
-    
-    printf( "sRGB -> XYZ -> sRGB    max(delta)=%g   %d samples at %g sec/sample", 
-                        max(delta), count, time_elapsed/count )
-     
-    tol = 5.e-12   
-    failures = sum( tol < delta )   
-    if( 0 < failures )
-        {
-        idx = which.max(delta)        
-        printf(  "There were %d  sRGB -> XYZ -> sRGB failures.  Max error = %g",
-                    failures, delta[idx] )
-
-        df  = data.frame( row.names=1 )
-        df$sRGB         = RGB[idx, ,drop=FALSE]
-        df$XYZ          = XYZ[idx, ,drop=FALSE]
-        df$sRGB.back    = RGB.back[idx, ,drop=FALSE]        
-        print( df )
-        
-        return(FALSE)
-        }
-        
-    #   test pure black
-    black   = c(0,0,0)
-    if( ! identical( black, as.numeric(xyz2srgb( srgb2xyz(black) )$sRGB ) ) )
-        {
-        printf(  "sRGB -> XYZ -> sRGB.back .  pure black not preserved." )
-        return(FALSE)
-        }        
-    #   test rownames
-    if( ! identical( rownames(RGB), rownames(RGB.back) ) )
-        {
-        printf( "RGB -> xyY -> RGB.back .  rownames not preserved." )
-        return(FALSE)
-        }
-
-        
-    #---  AdobeRGB ---##
-    time_start      = gettime()        
-    XYZ         = spacesRGB::XYZfromRGB( RGB, space='AdobeRGB', max=255 )$XYZ
-    RGB.back    = spacesRGB::RGBfromXYZ( XYZ, space='AdobeRGB', max=255 )$RGB      #; print( 'RGB OK' )
-    time_elapsed    = gettime() - time_start
-    
-    delta   = rowSums( abs(RGB - RGB.back) )  
-    
-    printf( "AdobeRGB -> XYZ -> AdobeRGB    max(delta)=%g   %d samples at %g sec/sample", 
-                        max(delta), count, time_elapsed/count )
-     
-    tol = 5.e-10  
-    failures = sum( tol < delta )   
-    if( 0 < failures )
-        {
-        idx = which.max(delta)        
-        printf(  "There were %d  AdobeRGB -> XYZ -> AdobeRGB failures.  Max error = %g > %g",
-                    failures, delta[idx], tol )
-
-        df  = data.frame( row.names=1 )
-        df$RGB          = RGB[idx, ,drop=FALSE]
-        df$XYZ          = XYZ[idx, ,drop=FALSE]
-        df$sRGB.back    = RGB.back[idx, ,drop=FALSE]        
-        print( df )
-        
-        return(FALSE)
-        }        
-        
-    return( TRUE )
-    }
      
      
      
@@ -261,7 +40,7 @@ testMunsell <- function()
                 
     time_start  = gettime()    
     HVC         = sRGBtoMunsell( RGB )          #; print( str(HVC) )
-    RGB.back    = MunsellTosRGB( HVC )$sRGB     #; print( str(RGB.back) )
+    RGB.back    = MunsellTosRGB( HVC )$RGB     #; print( str(RGB.back) )
     time_elapsed    = gettime() - time_start    
     
     mask    = is.na( RGB.back[ ,1] )
@@ -281,7 +60,7 @@ testMunsell <- function()
     if( 0 < failures )
         {
         idx = which.max(delta)        
-        printf( "There were %d  RGB -> HVC -> RGB tolerance failures (out of %d).  Max error = %g > %g.",
+        printf( "There were %d  sRGB -> HVC -> sRGB tolerance failures (out of %d).  Max error = %g > %g.",
                     failures, count, delta[idx], tol )
 
         df  = data.frame( row.names=1 )
@@ -293,15 +72,15 @@ testMunsell <- function()
         return(FALSE)
         }
             
-    printf( "passed.  %d round trips in %g sec,  %g/sample", count, time_elapsed, time_elapsed/count )
+    printf( "sRGB passed.  %d round trips in %g sec,  %g/sample", count, time_elapsed, time_elapsed/count )
                         
         
     #   test pure black
     black       = c(0,0,0)
-    black.back  = as.numeric( MunsellTosRGB( sRGBtoMunsell(black) )$sRGB )
+    black.back  = as.numeric( MunsellTosRGB( sRGBtoMunsell(black) )$RGB )
     if( ! identical( black, black.back ) )
         {
-        printf( "RGB -> HVC -> RGB .  pure black not preserved." )
+        printf( "sRGB -> HVC -> sRGB .  pure black not preserved." )
         return(FALSE)
         }     
 
@@ -311,7 +90,7 @@ testMunsell <- function()
     printf( "testing AdobeRGB -> HVC -> AdobeRGB with %d samples...", count )
                 
     time_start      = gettime()    
-    HVC             = RGBtoMunsell( RGB, space='AdobeRGB' )          #; print( str(HVC) )
+    HVC             = RGBtoMunsell( RGB, space='AdobeRGB' )         #; print( str(HVC) )
     RGB.back        = MunsellToRGB( HVC, space='AdobeRGB' )$RGB     #; print( str(RGB.back) )
     time_elapsed    = gettime() - time_start    
     
@@ -342,17 +121,16 @@ testMunsell <- function()
         return(FALSE)
         }
             
-    printf( "passed.  %d round trips in %g sec,  %g/sample", count, time_elapsed, time_elapsed/count )
+    printf( "AdobeRGB passed.  %d round trips in %g sec,  %g/sample", count, time_elapsed, time_elapsed/count )
                   
         
 
 
     #---   Lab   ----#
     printf( "testing Lab -> HVC -> Lab with %d samples...", count )
-
-    time_start      = gettime()        
     Lab             = MunsellToLab( HVC )    
-    Lab.back        = MunsellToLab( labtoMunsell( Lab ) )
+    time_start      = gettime()            
+    Lab.back        = MunsellToLab( LabtoMunsell( Lab ) )
     time_elapsed    = gettime() - time_start      
     
     if( any( is.na(Lab.back) ) )
@@ -365,7 +143,7 @@ testMunsell <- function()
     
     printf( "Lab  max(delta)=%g   (out of %d)",  max(delta,na.rm=TRUE), sum(is.finite(delta)) )
            
-    tol = 1.e-2
+    tol = 5.e-3
     failures = sum( tol < delta, na.rm=TRUE )       
     if( 0 < failures )
         {
@@ -382,7 +160,45 @@ testMunsell <- function()
         return(FALSE)
         }        
 
-    printf( "passed.  %d round trips in %g sec,  %g/sample", count, time_elapsed, time_elapsed/count )                        
+    printf( "Lab passed.  %d round trips in %g sec,  %g/sample", count, time_elapsed, time_elapsed/count )                        
+            
+            
+    #---   Luv   ----#
+    printf( "testing Luv -> HVC -> Luv with %d samples...", count )
+    Luv             = MunsellToLuv( HVC )    
+    time_start      = gettime()            
+    Luv.back        = MunsellToLuv( LuvtoMunsell( Luv ) )
+    time_elapsed    = gettime() - time_start      
+    
+    if( any( is.na(Luv.back) ) )
+        {
+        printf( "There were Luv -> HVC -> Luv failures (out of %d).", count )        
+        return(FALSE)
+        }
+    
+    delta   = rowSums( abs(Luv - Luv.back) )
+    
+    printf( "Luv  max(delta)=%g   (out of %d)",  max(delta,na.rm=TRUE), sum(is.finite(delta)) )
+           
+    tol = 5.e-3
+    failures = sum( tol < delta, na.rm=TRUE )       
+    if( 0 < failures )
+        {
+        idx = which.max(delta)        
+        printf(  "There were %d  Luv -> HVC -> Luv failures (out of %d).  Max error = %g",
+                    failures, sum(is.finite(delta)), delta[idx] )
+
+        df  = data.frame( row.names=1 )
+        df$Luv      = Luv[idx, ,drop=FALSE]
+        df$HVC      = HVC[idx, ,drop=FALSE]
+        df$Luv.back = Luv.back[idx, ,drop=FALSE]        
+        print( df )
+        
+        return(FALSE)
+        }        
+
+    printf( "Luv passed.  %d round trips in %g sec,  %g/sample", count, time_elapsed, time_elapsed/count )                        
+
             
     return( TRUE )        
     }
@@ -450,7 +266,6 @@ testColorlab <- function()
         
 x = gettime()   # load microbenchmark
  
-if( ! testXYZ() )       stop( "testXYZ() failed !", call.=FALSE )
 
 if( ! testColorlab() )  stop( "testColorlab() failed !", call.=FALSE )
 
