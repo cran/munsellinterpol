@@ -1,5 +1,13 @@
 # NEWS for **munsellinterpol** package
 
+
+### Changes for version 2.2-1  [2019-01-27]
+
+* added fix to track a change in package 'spacesRGB'
+* added Color of the Year for 2019 to User Guide
+* moved most startup code from .onAttach() to .onLoad()
+
+
 ### Changes for version 2.1-3  [2018-07-22]
 
 * added the Nickerson Color Difference formula

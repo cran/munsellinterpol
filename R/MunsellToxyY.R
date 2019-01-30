@@ -80,6 +80,8 @@ MunsellToxyY  <-  function( MunsellSpec,
     same    =  xyC[1]==p.LookupList[[1]]$x[1,1]  &&  xyC[2]==p.LookupList[[1]]$y[1,1]
     if( is.na(same)  ||  ! same )
         {
+        base::unlockBinding( "p.LookupList", asNamespace('munsellinterpol') )
+    
         # fill all the lookup tables with x and y for illuminant C  
         log.string( TRACE, "filling p.LookupList with xy=%g,%g for illuminant C.", xyC[1], xyC[2] )
         for( k in 1:length(p.LookupList) )

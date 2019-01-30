@@ -12,7 +12,7 @@
 
 <meta name="author" content="Glenn Davis" />
 
-<meta name="date" content="2018-07-21" />
+<meta name="date" content="2019-01-27" />
 
 <title>Dental Shade Guides</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Dental Shade Guides</h1>
 <h4 class="author"><em>Glenn Davis</em></h4>
-<h4 class="date"><em>2018-07-21</em></h4>
+<h4 class="date"><em>2019-01-27</em></h4>
 
 
 <div id="TOC">
@@ -93,7 +93,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Load the required R packages.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(munsellinterpol)
 <span class="kw">library</span>(spacesRGB)  <span class="co"># for converting to RGB and plotting the patches</span>
-<span class="kw">library</span>(spacesXYZ)  <span class="co"># for CIE XYZ to Lab conversion </span></code></pre></div>
+<span class="kw">library</span>(spacesXYZ)  <span class="co"># for xyY&lt;-&gt;XYZ and Chromatic Adaptation Transform</span></code></pre></div>
 <p>Featured functions from <strong>munsellinterpol</strong> are <code>XYZtoMunsell()</code>, <code>MunsellNameFromHVC()</code>, <code>NickersonColorDifference()</code>, and <code>ColorBlockFromMunsell()</code>.</p>
 <div id="reading-and-plotting-the-data" class="section level2">
 <h2>Reading and Plotting the Data</h2>
@@ -130,7 +130,8 @@ dental</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">xyY =<span class="st"> </span><span class="kw">as.matrix</span>( dental[ <span class="kw">c</span>(<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="st">'Y'</span>) ] )
 XYZ =<span class="st"> </span><span class="kw">XYZfromxyY</span>( xyY ) <span class="op">/</span><span class="st"> </span><span class="dv">100</span>
 <span class="co"># adapt from Illuminant C to the whitepoint of sRGB, which is D65</span>
-theCAT =<span class="st"> </span><span class="kw">CAT</span>( <span class="st">'C'</span>, <span class="kw">getRGB</span>(<span class="st">'sRGB'</span>)<span class="op">$</span>whiteXYZ )   <span class="co"># make the Chromatic Adaptation Transform</span>
+<span class="co"># make the Chromatic Adaptation Transform</span>
+theCAT =<span class="st"> </span>spacesXYZ<span class="op">::</span><span class="kw">CAT</span>( <span class="st">'C'</span>, <span class="kw">getWhiteXYZ</span>(<span class="st">'sRGB'</span>,<span class="dt">which=</span><span class="st">'display'</span>) )
 XYZ =<span class="st"> </span><span class="kw">adaptXYZ</span>( theCAT, XYZ )
 <span class="co"># create data.frame obj for plotting</span>
 obj =<span class="st"> </span><span class="kw">expand.grid</span>( <span class="dt">LEFT=</span><span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dt">TOP=</span><span class="dv">1</span><span class="op">:</span><span class="dv">4</span> )
@@ -276,7 +277,7 @@ obj</code></pre></div>
 <div id="session-information" class="section level2">
 <h2>Session Information</h2>
 <pre>
-R version 3.5.1 (2018-07-02)
+R version 3.5.2 (2018-12-20)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 Running under: Windows 7 x64 (build 7601) Service Pack 1
 
@@ -291,14 +292,14 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] spacesXYZ_1.0-1       spacesRGB_1.1-1       munsellinterpol_2.1-3 rootSolve_1.7        
+[1] spacesXYZ_1.0-4       spacesRGB_1.2-1       munsellinterpol_2.2-1 rootSolve_1.7        
 [5] geometry_0.3-6        magic_1.5-8           abind_1.4-5          
 
 loaded via a namespace (and not attached):
  [1] Rcpp_0.12.16         digest_0.6.15        rprojroot_1.3-2      backports_1.1.2     
  [5] magrittr_1.5         evaluate_0.10.1      stringi_1.1.7        rmarkdown_1.9       
- [9] tools_3.5.1          stringr_1.3.1        yaml_2.1.19          compiler_3.5.1      
-[13] microbenchmark_1.4-4 htmltools_0.3.6      knitr_1.20          
+ [9] tools_3.5.2          stringr_1.3.1        yaml_2.1.19          compiler_3.5.2      
+[13] microbenchmark_1.4-6 htmltools_0.3.6      knitr_1.20          
 </pre>
 </div>
 

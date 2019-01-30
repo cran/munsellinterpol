@@ -13,7 +13,7 @@
 #   p.ACDs              illuminants A, C, D50, D55, D65, D75, at 5nm step. It stays locked.
 #   p.System_ISCCNBS    the elementary blocks for the ISCC-NBS naming system. It stays locked.
 #
-#   This group is programmatically created during .onAttach()
+#   This group is programmatically created during .onLoad()
 #   p.VfromY            list of 3 splinefuns; not safe to store them in sysdata.rda.  It must be unlocked.
 #   p.microbenchmark    logical value, whether the package microbenchmark is loaded.  It must be unlocked.
 #   p.D65toC_CAT        CAT from Illuminant D65 to C.  Used in sRGB conversion.  It must be unlocked.
@@ -33,8 +33,26 @@ p.vinterpOverride   = FALSE
     
 .onLoad <- function( libname, pkgname )
     {    
-    #   unlockBinding() fails here in .onLoad(), so use .onAttach() instead
+    p.microbenchmark    <<- requireNamespace( 'microbenchmark', quietly=TRUE )  #;  cat( "p.microbenchmark=", p.microbenchmark, '\n' )
+    
+    p.VfromY            <<- makeVfromYs()    #  this loads the list p.VfromY, and takes less than 0.25 seconds
 
+    if( requireNamespace( "spacesXYZ", quietly=TRUE ) )
+        {
+        #unlockBinding( "p.D65toC_CAT", asNamespace('munsellinterpol') )
+        #unlockBinding( "p.CtoD65_CAT", asNamespace('munsellinterpol') )
+    
+        white.D65   = c( 0.3127, 0.3290, 1 )    # xy are from the official sRGB standard
+        white.C     = c( p.xyC['NBS',], 100 )
+        
+        white.D65   = spacesXYZ::XYZfromxyY( white.D65 )
+        white.C     = spacesXYZ::XYZfromxyY( white.C )
+    
+        p.D65toC_CAT    <<- spacesXYZ::CAT( white.D65, white.C, method='Bradford' )
+        p.CtoD65_CAT    <<- spacesXYZ::CAT( white.C, white.D65, method='Bradford' )        
+        }
+
+    
     }
     
     
@@ -54,39 +72,25 @@ p.vinterpOverride   = FALSE
     packageStartupMessage( mess )
     }
     
-
+    if( ! requireNamespace( "spacesXYZ", quietly=TRUE ) )
+        {
+        packageStartupMessage( "ERROR.  Cannot load package spacesXYZ."  )
+        }        
     
-    unlockBinding( "p.LookupList", asNamespace('munsellinterpol') )         # asNamespace(pkgname) here generates a NOTE !           
-    unlockBinding( "p.VfromY", asNamespace('munsellinterpol') )             # asNamespace(pkgname) here generates a NOTE !
-    unlockBinding( "p.microbenchmark", asNamespace('munsellinterpol') )     # asNamespace(pkgname) here generates a NOTE ! 
+    # unlockBinding( "p.LookupList", asNamespace('munsellinterpol') )         # asNamespace(pkgname) here generates a NOTE !           
+    # unlockBinding( "p.VfromY", asNamespace('munsellinterpol') )             # asNamespace(pkgname) here generates a NOTE !
+    # unlockBinding( "p.microbenchmark", asNamespace('munsellinterpol') )     # asNamespace(pkgname) here generates a NOTE ! 
+
     #   unlockBinding( "p.ListRGB", asNamespace('munsellinterpol') )            # asNamespace(pkgname) here generates a NOTE !     
     #   unlockBinding( "p.InversionCoeffs", asNamespace('munsellinterpol') )    # asNamespace(pkgname) here generates a NOTE !        
     #   packageStartupMessage( "4 variables unlocked." )    
         
 
-    p.microbenchmark    <<- requireNamespace( 'microbenchmark', quietly=TRUE )  #;  cat( "p.microbenchmark=", p.microbenchmark, '\n' )
+    # p.microbenchmark    <<- requireNamespace( 'microbenchmark', quietly=TRUE )  #;  cat( "p.microbenchmark=", p.microbenchmark, '\n' )
     
-    p.VfromY            <<- makeVfromYs()    #  this loads the list p.VfromY, and takes less than 0.25 seconds
+    # p.VfromY            <<- makeVfromYs()    #  this loads the list p.VfromY, and takes less than 0.25 seconds
     
-    if( requireNamespace( "spacesXYZ", quietly=TRUE ) )
-        {
-        unlockBinding( "p.D65toC_CAT", asNamespace('munsellinterpol') )
-        unlockBinding( "p.CtoD65_CAT", asNamespace('munsellinterpol') )
-    
-        white.D65   = c( 0.3127, 0.3290, 1 )    # xy are from the official sRGB standard
-        white.C     = c( p.xyC['NBS',], 100 )
-        
-        white.D65   = spacesXYZ::XYZfromxyY( white.D65 )
-        white.C     = spacesXYZ::XYZfromxyY( white.C )
-    
-        p.D65toC_CAT    <<- spacesXYZ::CAT( white.D65, white.C, method='Bradford' )
-        p.CtoD65_CAT    <<- spacesXYZ::CAT( white.C, white.D65, method='Bradford' )        
-        }
-    else
-        {
-        packageStartupMessage( "ERROR.  Cannot load package spacesXYZ."  )
-        }        
-    
+
     
     }
 

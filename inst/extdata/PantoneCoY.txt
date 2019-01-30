@@ -17,3 +17,4 @@ Year	Name	Code	R	G	B
 2016	Serenity	15-3913	146	168	209
 2017	Greenery	15-0343	136	176	75
 2018	Ultra Violet	18-3838	95	75	139
+2019	Living Coral	16-1546	255	111	97

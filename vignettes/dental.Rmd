@@ -55,7 +55,7 @@ Load the required R packages.
 ```{r echo=TRUE, message=FALSE}
 library(munsellinterpol)
 library(spacesRGB)  # for converting to RGB and plotting the patches
-library(spacesXYZ)  # for CIE XYZ to Lab conversion 
+library(spacesXYZ)  # for xyY<->XYZ and Chromatic Adaptation Transform
 ```
 Featured functions from **munsellinterpol** are
 `XYZtoMunsell()`,
@@ -80,7 +80,8 @@ Extract xyY, adapt from Illuminant C to D65, convert XYZ to sRGB, and display as
 xyY = as.matrix( dental[ c('x','y','Y') ] )
 XYZ = XYZfromxyY( xyY ) / 100
 # adapt from Illuminant C to the whitepoint of sRGB, which is D65
-theCAT = CAT( 'C', getRGB('sRGB')$whiteXYZ )   # make the Chromatic Adaptation Transform
+# make the Chromatic Adaptation Transform
+theCAT = spacesXYZ::CAT( 'C', getWhiteXYZ('sRGB',which='display') )
 XYZ = adaptXYZ( theCAT, XYZ )
 # create data.frame obj for plotting
 obj = expand.grid( LEFT=1:6, TOP=1:4 )

@@ -143,7 +143,7 @@ In the function \code{MunsellToxyY()}
 the default interpolation method for Hue and Chroma is bicubic.
 This interpolation method computes a weighted average of points on a 4x4 grid.
 The alternative is bilinear, which only requires a 2x2 grid.
-The difference in "flops" is a factor of 16
+The difference in "flops" is roughly a factor of 4
 (the difference in time only about 2 or 3) - but is that really worth it ?
 Here is the original plot, except using bilinear interpolation
 <<lee14, echo=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 8/, with bilinear interpolation' >>=
