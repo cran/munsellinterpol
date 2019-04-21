@@ -3,7 +3,7 @@
 
 IsWithinMacAdamLimits <- function( xyY, Illuminant='C' )
     {
-    if( ! requireNamespace( 'geometry', quietly=TRUE ) )    return( NULL )
+    #   if( ! requireNamespace( 'geometry', quietly=TRUE ) )    return( NULL )
     
     if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return( NULL )
         
@@ -23,12 +23,16 @@ IsWithinMacAdamLimits <- function( xyY, Illuminant='C' )
     
     hull    = p.OptimalHull[[ Illuminant ]]
 
-    out = is.finite( geometry::tsearchn( hull$XYZ, hull$tessellation, spacesXYZ::XYZfromxyY(xyY) )$idx )
+    #   out = is.finite( geometry::tsearchn( hull$XYZ, hull$tessellation, spacesXYZ::XYZfromxyY(xyY) )$idx )
+    
+    out = inside( hull, spacesXYZ::XYZfromxyY(xyY) )
     
     return( out )
     }
     
 
+if( FALSE )
+{    
 #   xyY     Nx3 matrix of points on the optimal boundary
 #
 #   returns a list with 2 components
@@ -51,6 +55,9 @@ makeOptimalHull <- function( xyY )
     
     return( out )
     }
+}
+
+
     
     
 #   Y       for the Y-plane defining the section.  in the interval (0,100)

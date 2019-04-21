@@ -1,6 +1,6 @@
 
 
-#   These datasets are exportdd and can be inspected by the user.
+#   These datasets are exported and can be inspected by the user.
 #   Each one here must be documented.
 #   They are all put in the same .RDA file
 saveDatasets  <- function( pathout="../data/munsellinterpol.rda" )
@@ -33,8 +33,6 @@ saveDatasets  <- function( pathout="../data/munsellinterpol.rda" )
 #   do not have to be documented, and therefore exposed    
 savePrivateDatasets  <- function( .path="sysdata.rda" )
     {
-
-    
     savevec = character(0)
         
     #   load( "../data/munsellinterpol.rda" )
@@ -60,27 +58,24 @@ savePrivateDatasets  <- function( .path="sysdata.rda" )
     savevec = c( savevec, "p.XYZ2sRGB" )
     }
     
-    
-    
-    
-    p.OptimalHull       = list()
-    path    = "../inst/extdata/OptimalColorsForIlluminantC.txt"
-    optC    = read.table( path, header=T  )
-    if( nrow(optC) != 994 )
-        log.string( "Bad number of rows %d != 994 in '%s'.", nrow(optC), path )
-    p.OptimalHull$C     = makeOptimalHull( as.matrix(optC) )
-    mess    = sprintf( "object.size(p.OptimalHull$C) = %d\n", object.size(p.OptimalHull$C) )
-    cat( mess )
-    optD65  = read.table( "../inst/extdata/OptimalColoursForIlluminantD65.txt", header=T, skip=32 )
-    p.OptimalHull$D65   = makeOptimalHull( as.matrix(optD65) )
-    savevec = c( savevec, "p.OptimalHull" )    
-    
     #   Illuminants A, C, D50 D55 D65 D75
     p.ACDs  = read.table( "../inst/extdata/ACDs.5nm.txt", header=TRUE  )    
     savevec = c( savevec, "p.ACDs" )   
     
     p.xyz1931   = read.table( "../inst/extdata/xyz1931.5nm.txt", header=TRUE  )    
     savevec = c( savevec, "p.xyz1931" )   
+
+    p.OptimalHull       = list()
+    
+    for( iname in c("C","D65") )
+        {
+        ispec   = p.ACDs[[ iname ]]
+        W   = ispec * as.matrix( p.xyz1931[ ,2:4] )
+        W   = 100 * W / colSums(W)[2]
+        p.OptimalHull[[ iname ]]  = zonohedron( W )
+        }
+    savevec = c( savevec, "p.OptimalHull" )    
+    
 
     
     pathin  = "../inst/extdata/System_ISCC-NBS.txt"
@@ -105,6 +100,24 @@ savePrivateDatasets  <- function( .path="sysdata.rda" )
     cat( savevec, '\n', file=stderr() )
         
     return( invisible(TRUE) )
+    }    
+    
+pingDatasets  <- function( .path="sysdata.rda", .verbose=FALSE )    
+    {
+    theName     = load(.path,verbose=.verbose)
+    print( theName )
+    
+    if( 0 < length(theName)  &&  .verbose )
+        {
+        for( k in 1:length(theName ) )
+            {
+            obj = get( theName[k] )
+            cat( '\n', theName[k], '\n' )
+            print( str(obj) )
+            }
+        }
+        
+    return( invisible(T) )
     }    
     
         

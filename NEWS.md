@@ -1,5 +1,13 @@
 # NEWS for **munsellinterpol** package
 
+### Changes for version 2.3-1  [2019-04-16]
+
+* for the function `IsWithinMacAdamLimits()`, switched to a zonohedral representation of the color solids
+* moved `rootSolve` from dependency to import
+* removed function `xyz2srgb()`
+* removed dependency `geometry`
+* removed folder `demo`
+
 
 ### Changes for version 2.2-1  [2019-01-27]
 

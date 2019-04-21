@@ -464,7 +464,7 @@ plotPatchesH.single <- function( hue, space='sRGB', adapt='Bradford', background
     
     tmp     = MunsellToRGB( HVC, space=space, adapt=adapt, ... ) 
     xyY     = tmp$xyY          # this is adapted to illuminant C
-    mask    = IsWithinMacAdamLimits( xyY, 'C' )     #;   print( sum(mask) )
+    mask    = IsWithinMacAdamLimits( xyY, 'C' )$within     #;   print( sum(mask) )
 
     #   throw away the ones outside the limits 
     dfsub       = tmp[ mask, , drop=FALSE ]    

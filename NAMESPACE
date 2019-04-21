@@ -26,8 +26,8 @@ export( # hypot,
         )
         
 # functions by Jose Gama, and used in package 'colorscience'
-export( # srgb2xyz,        
-        xyz2srgb )
+#export( # srgb2xyz,        
+#        xyz2srgb )
 
 # functions added by Glenn Davis
 export( #adaptxyY,
@@ -47,10 +47,11 @@ export( #adaptxyY,
         NickersonColorDifference
         )
 
-# importFrom(akima, bilinear, bicubic)
+
 importFrom(rootSolve,multiroot)
-importFrom(geometry, delaunayn, tsearchn)
+#   importFrom(arrangements,combinations)
+#   importFrom(geometry, delaunayn, tsearchn)
 importFrom(stats, approx, spline, splinefun, predict, residuals, formula, lm, polym, coef )
 importFrom(graphics, abline, grid, lines, polygon, par, plot,
                 plot.new, plot.window, points, rect, segments, text, title)
-importFrom(utils, data, read.table, str, flush.console, object.size )
+importFrom(utils, data, read.table, str, flush.console, object.size, combn )

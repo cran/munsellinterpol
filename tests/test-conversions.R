@@ -54,7 +54,7 @@ testMunsell <- function()
     
     printf( "sRGB  max(delta)=%g   (out of %d)",  max(delta,na.rm=TRUE), sum(is.finite(delta)) )
         
-    tol     = 2.e-2
+    tol     = 3.e-2     # was 2.e-2 before v 2.3-1
     failures = sum( tol < delta ) #; print( failures )
     
     if( 0 < failures )
@@ -121,7 +121,8 @@ testMunsell <- function()
         return(FALSE)
         }
             
-    printf( "AdobeRGB passed.  %d round trips in %g sec,  %g/sample", count, time_elapsed, time_elapsed/count )
+    printf( "AdobeRGB passed.   %d round trips in %g sec,  %g/sample",
+                count, time_elapsed, time_elapsed/count )
                   
         
 
