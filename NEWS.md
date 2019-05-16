@@ -1,5 +1,11 @@
 # NEWS for **munsellinterpol** package
 
+
+### Changes for version 2.4-1  [2019-05-16]
+
+* restored missing .R files in folder /inst/doc
+
+
 ### Changes for version 2.3-1  [2019-04-16]
 
 * for the function `IsWithinMacAdamLimits()`, switched to a zonohedral representation of the color solids
