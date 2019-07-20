@@ -1,5 +1,9 @@
 # NEWS for **munsellinterpol** package
 
+### Changes for version 2.5-1  [2019-07-20]
+
+* in testing, allow limit of 5 failures in `testOptimals()`, which started to happen on **fedora** platform (in addition to **solaris**)
+
 
 ### Changes for version 2.4-1  [2019-05-16]
 
