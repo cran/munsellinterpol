@@ -1,5 +1,11 @@
 # NEWS for **munsellinterpol** package
 
+### Changes for version 2.6-1  [2020-02-02]
+
+* fixed error in a test regarding identical() vs all.equal()  (related to noLD)
+* suppressed warning from `stats::regularize.values` by adding argument `ties=min` to `stats::splinefun()`
+
+
 ### Changes for version 2.5-1  [2019-07-20]
 
 * in testing, allow limit of 5 failures in `testOptimals()`, which started to happen on **fedora** platform (in addition to **solaris**)

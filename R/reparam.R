@@ -83,9 +83,9 @@ makeReparamFunctionList <- function( .lambda, .illum, .xyz, .mode='equalize', .p
         omega   = c( 0, cumsum(omega) ) # n+1 of these.
         omega   = omega / omega[n+1]    # n+1 values from 0 to 1.  Not regular.  #;     print( omega )
         
-        out$omega.from.lambda   = splinefun( lambda.break, omega, method='monoH.FC' )      # hyman  monoH.FC  natural
-        
-        out$lambda.from.omega   = splinefun( omega, lambda.break, method='monoH.FC' )      # hyman  monoH.FC  natural
+        #   for v 2.6-* added ties=min to suppress warning from regularize.values()
+        out$omega.from.lambda   = splinefun( lambda.break, omega, method='monoH.FC', ties=min )      # hyman  monoH.FC  natural
+        out$lambda.from.omega   = splinefun( omega, lambda.break, method='monoH.FC', ties=min )      # hyman  monoH.FC  natural
         }
     else if( .mode == 'linear' )
         {
@@ -118,8 +118,9 @@ makeReparamFunctionList <- function( .lambda, .illum, .xyz, .mode='equalize', .p
         {
         integral    = s * c( 0, cumsum( coredata[ , j ] ) )   #   ; print( range(integral) )
         
-        out$integral.from.omega[[j]] <- splinefun( omega, integral, method='monoH.FC' )   # hyman  monoH.FC  natural
-        out$omega.from.integral[[j]] <- splinefun( integral, omega, method='monoH.FC' )   # hyman  monoH.FC  natural
+        #   for v 2.6-* added ties=min to suppress warning from regularize.values()        
+        out$integral.from.omega[[j]] <- splinefun( omega, integral, method='monoH.FC', ties=min )   # hyman  monoH.FC  natural
+        out$omega.from.integral[[j]] <- splinefun( integral, omega, method='monoH.FC', ties=min )   # hyman  monoH.FC  natural
         
         #   omega.center    = out$omega.from.lambda( lambda.center )
         #   out$responsivity.from.omega[[j]]    = splinefun( omega.center, coredata[ ,j] )  # a tiny bit of extrapolation

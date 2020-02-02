@@ -112,17 +112,23 @@ testYfromV <- function()
     
     Y.astm      = YfromV( Value, which='astm' )
     
+    delta   = max( abs(Y.astm - LuminanceFactor) )
+    printf( "For ASTM quintic,  max( abs(Y.astm - LuminanceFactor) ) = %g\n", delta )
+    
     bytes.LD = .Machine$sizeof.longdouble
     
+    bytes.LD = 0    # force test using all.equal(), and not identical() which is too strict.  v 2.6-1  2020-02-01
+    
     if( 0 < bytes.LD )
-        # the usual case
+        # strict test  (formerly the usual case)
         ok = identical( round(Y.astm,6), LuminanceFactor )
     else
-        ok = isTRUE( all.equal( Y.astm, LuminanceFactor, tolerance = 5.e-5 ) )
+        #   less strict test
+        ok = isTRUE( all.equal( Y.astm, LuminanceFactor, tolerance = 1.e-5 ) )      # next time try 1.e-6
     
     if( ! ok )
         {
-        printf( "Test of astm quintic failed, on test of %d Values.  bytes.LD=%d", 
+        printf( "Test of ASTM quintic failed, on test of %d Values.  bytes.LD=%d", 
                         length(Value), bytes.LD )
         return(FALSE)
         }
