@@ -48,7 +48,7 @@ the rownames of the returned matrix are set to that vector.
 \references{
 Color Processing Toolbox.      
 Colorlab 1.0.
-\url{http://www.uv.es/vista/vistavalencia/software/colorlab.html}
+\url{https://www.uv.es/vista/vistavalencia/software/colorlab.html}
 
 Cleland, T. M.
 \bold{A Practical description of the Munsell Color System with Suggestions for its Use}.

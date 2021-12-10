@@ -52,7 +52,7 @@ and \code{maxSignal}
 \references{
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{http://centore.isletech.net/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
+\url{https://www.munsellcolourscienceforpainters.com/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
 }
 
 \author{Jose Gama and Glenn Davis}

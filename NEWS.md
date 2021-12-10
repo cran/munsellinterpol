@@ -1,8 +1,15 @@
 # NEWS for **munsellinterpol** package
 
+### Version 2.7-1  [2021-12-09]
+
+* fixed `bibliography.bib` to be compatible with `pandoc` v. 2.16.2
+* fixed some stale URLs in `bibliography.bib` and man pages
+* removed superfluous argument in a call to `sprintf()`
+
+
 ### Changes for version 2.6-1  [2020-02-02]
 
-* fixed error in a test regarding identical() vs all.equal()  (related to noLD)
+* fixed error in a test regarding `identical()` vs `all.equal()`  (related to noLD)
 * suppressed warning from `stats::regularize.values` by adding argument `ties=min` to `stats::splinefun()`
 
 

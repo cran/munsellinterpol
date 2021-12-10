@@ -55,7 +55,7 @@ testPoly <- function()
     ok  = identical( as.numeric(coef(mod.terms)) , as.numeric(coef(mod.poly)) )
     if( ! ok )
         {
-        printf( "direct and polynomial coefficients are not idenical." )
+        printf( "direct and polynomial coefficients are not identical." )
         return(FALSE)
         }
     
@@ -107,7 +107,7 @@ testPoly <- function()
     
 {
 if( testPoly() )    
-    printf( "testPoly() succeeded !", call.=FALSE )
+    printf( "testPoly() succeeded !"  )
 else
     stop( "testPoly() failed !", call.=FALSE )
 }

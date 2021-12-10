@@ -124,7 +124,7 @@ testYfromV <- function()
         ok = identical( round(Y.astm,6), LuminanceFactor )
     else
         #   less strict test
-        ok = isTRUE( all.equal( Y.astm, LuminanceFactor, tolerance = 1.e-5 ) )      # next time try 1.e-6
+        ok = isTRUE( all.equal( Y.astm, LuminanceFactor, tolerance = 1.e-5 ) )      # next time try 1.e-6, or maybe even 6.e-7
     
     if( ! ok )
         {

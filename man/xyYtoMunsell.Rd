@@ -64,10 +64,10 @@ See \code{\link{MunsellToxyY}()} and the \bold{User Guide - Appendix C}.
 \source{
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{http://centore.isletech.net/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}\cr
-\url{http://www.rit.edu/science/pocs/renotation}\cr
-\url{http://www.rit-mcsl.org/MunsellRenotation/all.dat}\cr
-\url{http://www.rit-mcsl.org/MunsellRenotation/real.dat}
+\url{https://www.munsellcolourscienceforpainters.com/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}\cr
+\url{https://www.rit.edu/science/munsell-color-lab}\cr
+\url{https://www.rit-mcsl.org/MunsellRenotation/all.dat}\cr
+\url{https://www.rit-mcsl.org/MunsellRenotation/real.dat}
 }
 
 \section{Warning}{
@@ -108,7 +108,7 @@ April 1956.
 
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{http://centore.isletech.net/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
+\url{https://www.munsellcolourscienceforpainters.com/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
 }
 
 

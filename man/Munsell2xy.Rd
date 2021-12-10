@@ -67,7 +67,7 @@ Glenn Davis
 Rochester Institute of Technology.
 Program of Color Science.
 Munsell Renotation Data.
-\url{http://www.rit.edu/science/pocs/renotation}
+\url{https://www.rit.edu/science/munsell-color-lab}
 }
 
 \references{

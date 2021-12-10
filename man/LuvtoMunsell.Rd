@@ -32,7 +32,7 @@ the given chromatic adaptation method, see \code{\link[spacesXYZ:adaptation]{CAT
 \references{
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{http://centore.isletech.net/~centore/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
+\url{https://www.munsellcolourscienceforpainters.com/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
 }
 
 \seealso{

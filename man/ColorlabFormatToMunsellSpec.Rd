@@ -41,7 +41,7 @@ Colorlab Munsell format uses 4 numbers.
 \references{
 Color Processing Toolbox.      
 Colorlab 1.0.
-\url{http://www.uv.es/vista/vistavalencia/software/colorlab.html}
+\url{https://www.uv.es/vista/vistavalencia/software/colorlab.html}
 }
 \author{
 Jose Gama and Glenn Davis

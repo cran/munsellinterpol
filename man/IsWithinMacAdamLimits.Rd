@@ -103,7 +103,7 @@ November 1935.
 
 Wikipedia.
 \bold{Support Function}.
-\url{http://en.wikipedia.org/wiki/Support_function}
+\url{https://en.wikipedia.org/wiki/Support_function}
 }
 
 
