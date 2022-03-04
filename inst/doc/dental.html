@@ -12,10 +12,23 @@
 
 <meta name="author" content="Glenn Davis" />
 
-<meta name="date" content="2021-12-09" />
+<meta name="date" content="2022-03-03" />
 
 <title>Dental Shade Guides</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -36,41 +49,69 @@
   }
 </style>
 <style type="text/css" data-origin="pandoc">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 
 </style>
 <script>
@@ -97,8 +138,210 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
-<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -112,7 +355,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Dental Shade Guides</h1>
 <h4 class="author">Glenn Davis</h4>
-<h4 class="date">2021-12-09</h4>
+<h4 class="date">2022-03-03</h4>
 
 
 <div id="TOC">
@@ -125,24 +368,24 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul>
 </div>
 
-<p>A <em>Dental Shade Guide</em> is a set of simulated teeth used to select prosthetic teeth by color. The simulated teeth are made of plastic or porcelain. Commercial shade guides have existed for almost a century. In 1933, Clark <span class="citation">[1]</span> discussed the manufacture and use of porcelain shade guides based on the cylindrical color dimensions of <em>hue</em>, <em>brilliance</em>, and <em>saturation</em>, which correspond to Munsell's <em>Hue</em>, <em>Value</em>, and <em>Chroma</em>.</p>
+<p>A <em>Dental Shade Guide</em> is a set of simulated teeth used to select prosthetic teeth by color. The simulated teeth are made of plastic or porcelain. Commercial shade guides have existed for almost a century. In 1933, Clark <span class="citation">[1]</span> discussed the manufacture and use of porcelain shade guides based on the cylindrical color dimensions of <em>hue</em>, <em>brilliance</em>, and <em>saturation</em>, which correspond to Munsell’s <em>Hue</em>, <em>Value</em>, and <em>Chroma</em>.</p>
 <p>In <span class="citation">[3]</span>, the 24 teeth in a master Bioform shade guide were measured with a spectrophotometer. The spectral measurements were converted to xyY assuming Illuminant C, and then to both CIE Lab and Munsell HVC. The goal of this vignette is to plot the 24 colors as square patches, and then check the calculations from the article.</p>
 <p>The spectrophotometer was an ACTA CIII from Beckman Instruments. Relative reflectance data were recorded from 410 to 700nm at 10-nm intervals. The conversion from such data to xyY and Lab is standard, but conversion to Munsell HVC is not explained in the paper. However, in a similar article <span class="citation">[4]</span> by the same authors they state that:</p>
 <blockquote>
-<p>The chromaticity coordinates were converted to Munsell notation by means of graphs ... and the method described by ASTM standard D 1535-80.</p>
+<p>The chromaticity coordinates were converted to Munsell notation by means of graphs … and the method described by ASTM standard D 1535-80.</p>
 </blockquote>
 <p>so we assume that the same method was used here. Note that the graphical method only applies to Munsell Hue and Chroma; for Munsell Value lookup tables are available in <span class="citation">[2]</span>. Below we check the published conversions against numerical conversions using <strong>munsellinterpol</strong>.</p>
 <p>Load the required R packages.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(munsellinterpol)
-<span class="kw">library</span>(spacesRGB)  <span class="co"># for converting to RGB and plotting the patches</span>
-<span class="kw">library</span>(spacesXYZ)  <span class="co"># for xyY&lt;-&gt;XYZ and Chromatic Adaptation Transform</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(munsellinterpol)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spacesRGB)  <span class="co"># for converting to RGB and plotting the patches</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spacesXYZ)  <span class="co"># for xyY&lt;-&gt;XYZ and Chromatic Adaptation Transform</span></span></code></pre></div>
 <p>Featured functions from <strong>munsellinterpol</strong> are <code>XYZtoMunsell()</code>, <code>MunsellNameFromHVC()</code>, <code>NickersonColorDifference()</code>, and <code>ColorBlockFromMunsell()</code>.</p>
 <div id="reading-and-plotting-the-data" class="section level2">
 <h2>Reading and Plotting the Data</h2>
 <p>Read the published data table.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">path =<span class="st"> </span><span class="kw">system.file</span>( <span class="st">'extdata/dental.txt'</span>, <span class="dt">package=</span><span class="st">'munsellinterpol'</span> )
-dental =<span class="st"> </span><span class="kw">read.table</span>( path, <span class="dt">header=</span><span class="ot">TRUE</span>, <span class="dt">sep=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>, <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span> )
-dental</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>path <span class="ot">=</span> <span class="fu">system.file</span>( <span class="st">&#39;extdata/dental.txt&#39;</span>, <span class="at">package=</span><span class="st">&#39;munsellinterpol&#39;</span> )</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dental <span class="ot">=</span> <span class="fu">read.table</span>( path, <span class="at">header=</span><span class="cn">TRUE</span>, <span class="at">sep=</span><span class="st">&#39;</span><span class="sc">\t</span><span class="st">&#39;</span>, <span class="at">stringsAsFactors=</span><span class="cn">FALSE</span> )</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>dental</span></code></pre></div>
 <pre><code>##          Y      x      y     L     a     b       Munsell
 ## B-96 37.05 0.3610 0.3641 67.34  1.31 19.93 1.9Y 6.55/2.9
 ## B-84 37.98 0.3663 0.3653 68.01  2.74 21.21 0.9Y 6.65/3.2
@@ -169,41 +412,41 @@ dental</code></pre></div>
 ## B-51 55.24 0.3432 0.3525 79.21 -0.99 16.31 3.2Y 7.80/2.2
 ## B-59 55.72 0.3407 0.3502 79.49 -1.10 15.26 3.5Y 7.80/2.0</code></pre>
 <p>Extract xyY, adapt from Illuminant C to D65, convert XYZ to sRGB, and display as a 6x4 grid of patches.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">xyY =<span class="st"> </span><span class="kw">as.matrix</span>( dental[ <span class="kw">c</span>(<span class="st">'x'</span>,<span class="st">'y'</span>,<span class="st">'Y'</span>) ] )
-XYZ =<span class="st"> </span><span class="kw">XYZfromxyY</span>( xyY ) <span class="op">/</span><span class="st"> </span><span class="dv">100</span>
-<span class="co"># adapt from Illuminant C to the whitepoint of sRGB, which is D65</span>
-<span class="co"># make the Chromatic Adaptation Transform</span>
-theCAT =<span class="st"> </span>spacesXYZ<span class="op">::</span><span class="kw">CAT</span>( <span class="st">'C'</span>, <span class="kw">getWhiteXYZ</span>(<span class="st">'sRGB'</span>,<span class="dt">which=</span><span class="st">'display'</span>) )
-XYZ =<span class="st"> </span><span class="kw">adaptXYZ</span>( theCAT, XYZ )
-<span class="co"># create data.frame obj for plotting</span>
-obj =<span class="st"> </span><span class="kw">expand.grid</span>( <span class="dt">LEFT=</span><span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dt">TOP=</span><span class="dv">1</span><span class="op">:</span><span class="dv">4</span> )
-obj<span class="op">$</span>WIDTH =<span class="st"> </span><span class="fl">0.9</span>
-obj<span class="op">$</span>HEIGHT =<span class="st"> </span><span class="fl">0.9</span>
-obj<span class="op">$</span>RGB =<span class="st"> </span><span class="kw">RGBfromXYZ</span>( XYZ, <span class="dt">space=</span><span class="st">'sRGB'</span> )<span class="op">$</span>RGB     <span class="co"># convert to sRGB</span>
-<span class="kw">rownames</span>(obj) =<span class="st"> </span><span class="kw">rownames</span>(dental)
-<span class="co"># plot as square patches</span>
-<span class="kw">par</span>( <span class="dt">omi=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="dt">mai=</span><span class="kw">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>) )
-<span class="kw">plotPatchesRGB</span>( obj, <span class="dt">which=</span><span class="st">'signal'</span>, <span class="dt">labels=</span><span class="st">&quot;bottomleft&quot;</span>, <span class="dt">adj=</span><span class="kw">c</span>(<span class="op">-</span><span class="fl">0.2</span>,<span class="op">-</span><span class="fl">0.5</span>), <span class="dt">cex=</span><span class="fl">0.7</span> )</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>xyY <span class="ot">=</span> <span class="fu">as.matrix</span>( dental[ <span class="fu">c</span>(<span class="st">&#39;x&#39;</span>,<span class="st">&#39;y&#39;</span>,<span class="st">&#39;Y&#39;</span>) ] )</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>XYZ <span class="ot">=</span> <span class="fu">XYZfromxyY</span>( xyY ) <span class="sc">/</span> <span class="dv">100</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># adapt from Illuminant C to the whitepoint of sRGB, which is D65</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># make the Chromatic Adaptation Transform</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>theCAT <span class="ot">=</span> spacesXYZ<span class="sc">::</span><span class="fu">CAT</span>( <span class="st">&#39;C&#39;</span>, <span class="fu">getWhiteXYZ</span>(<span class="st">&#39;sRGB&#39;</span>,<span class="at">which=</span><span class="st">&#39;display&#39;</span>) )</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>XYZ <span class="ot">=</span> <span class="fu">adaptXYZ</span>( theCAT, XYZ )</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># create data.frame obj for plotting</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>obj <span class="ot">=</span> <span class="fu">expand.grid</span>( <span class="at">LEFT=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">TOP=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">4</span> )</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>obj<span class="sc">$</span>WIDTH <span class="ot">=</span> <span class="fl">0.9</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>obj<span class="sc">$</span>HEIGHT <span class="ot">=</span> <span class="fl">0.9</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>obj<span class="sc">$</span>RGB <span class="ot">=</span> <span class="fu">RGBfromXYZ</span>( XYZ, <span class="at">space=</span><span class="st">&#39;sRGB&#39;</span> )<span class="sc">$</span>RGB     <span class="co"># convert to sRGB</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(obj) <span class="ot">=</span> <span class="fu">rownames</span>(dental)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># plot as square patches</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>( <span class="at">omi=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">mai=</span><span class="fu">c</span>(<span class="fl">0.1</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>,<span class="fl">0.1</span>) )</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plotPatchesRGB</span>( obj, <span class="at">which=</span><span class="st">&#39;signal&#39;</span>, <span class="at">labels=</span><span class="st">&quot;bottomleft&quot;</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>,<span class="sc">-</span><span class="fl">0.5</span>), <span class="at">cex=</span><span class="fl">0.7</span> )</span></code></pre></div>
 <p><img src="data:image/png;base64,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oNcvPC/C7yb8L7jFPoOJK3KCHY4GTnnnSs7kuTZHA6ccas+bPPcTERkye8kOj11KELt9BvErchx/GezZKRuu5lhOiHn5PB1gy2afwfMrVjr+CuKzcZuubrOcEDP9YtzvROI2Xd0WM0dEZNjL8/d6+ONxm30Gk7I2dLnxpq27/JblhJiUcxN/7+LZuTWbfQbxq3c4/gpi0PR1l5bHvWhz1GbE/5VVuzx5KUHs9hlMXrOty9VL2li/cnxSN0fxP/JEdna2C94m9A9PuOBdeqmGv/ynk6ORfly6blXfdnbpRCTa799cM5PeqOL23zk5Gj7ob102k16n9ta/Oz8hIuC3rplJb1TT9M9OjkYF/r3LZtLrVDX+q2veyD1+axEAALgHygAAACgXrSYAAIBegWcGAABAUQYAAEBRBgAAQFEGAABAUQYAAEBRBgAAQFEGAABAUQYAAEBRBgAAQFEGAABAueivMI8N/AfXvFFvVNn4L06OTgj8G5fNpNc53/gfzk+IGcGfvOvWxW+c/cm750byZ5S79cXVn5yfEBfMJ163yi47+8SLC+UPx3errOFn17wRzwwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAICiDAAAgKIMAACAogwAAID6Tc+8bXvlkkUlN6xfTV6zfVmQ4ymmM/vmfnhPRCR2/hfpQ0SkYf+KVeXdnu8p2msWLCptsn6VsGb9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" /><!-- --> This figure is best viewed on a display calibrated for sRGB.</p>
 </div>
 <div id="checking-the-conversions" class="section level2">
 <h2>Checking the Conversions</h2>
 <p>We now recompute Lab and Munsell values, and check against the published values.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Lab  =<span class="st"> </span><span class="kw">as.matrix</span>( dental[ <span class="kw">c</span>(<span class="st">'L'</span>,<span class="st">'a'</span>,<span class="st">'b'</span>) ] )
-XYZ =<span class="st"> </span><span class="kw">XYZfromxyY</span>( xyY )
-Lab2 =<span class="st"> </span><span class="kw">LabfromXYZ</span>( XYZ<span class="op">/</span><span class="dv">100</span>, <span class="st">'C'</span> )     <span class="co"># recompute Lab</span>
-HVC  =<span class="st"> </span><span class="kw">HVCfromMunsellName</span>( dental<span class="op">$</span>Munsell )
-HVC2 =<span class="st"> </span><span class="kw">XYZtoMunsell</span>( XYZ )            <span class="co"># recompute Munsell HVC</span>
-comp =<span class="st"> </span><span class="kw">data.frame</span>( <span class="dt">row.names=</span><span class="kw">rownames</span>(dental) )
-comp<span class="op">$</span>Y  =<span class="st"> </span>dental<span class="op">$</span>Y
-comp<span class="op">$</span>L  =<span class="st"> </span>Lab[ ,<span class="dv">1</span>]
-comp<span class="op">$</span>L2 =<span class="st"> </span><span class="kw">round</span>(Lab2[ ,<span class="dv">1</span>],<span class="dv">4</span>)
-comp<span class="op">$</span>Ldiff =<span class="st"> </span><span class="kw">round</span>( comp<span class="op">$</span>L <span class="op">-</span><span class="st"> </span>comp<span class="op">$</span>L2, <span class="dv">4</span> )
-comp<span class="op">$</span>DeltaE =<span class="st"> </span><span class="kw">round</span>( <span class="kw">DeltaE</span>( Lab, Lab2 ), <span class="dv">4</span> )   <span class="co"># DeltaE is the pairwise color difference</span>
-comp<span class="op">$</span>Munsell =<span class="st"> </span>dental<span class="op">$</span>Munsell
-comp<span class="op">$</span>Munsell2 =<span class="st"> </span><span class="kw">MunsellNameFromHVC</span>( HVC2, <span class="dt">format=</span><span class="st">'f'</span>, <span class="dt">digits=</span><span class="dv">2</span> )
-comp<span class="op">$</span>NickersonCD =<span class="st"> </span><span class="kw">round</span>( <span class="kw">NickersonColorDifference</span>( HVC, HVC2 ), <span class="dv">4</span> )
-comp</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Lab  <span class="ot">=</span> <span class="fu">as.matrix</span>( dental[ <span class="fu">c</span>(<span class="st">&#39;L&#39;</span>,<span class="st">&#39;a&#39;</span>,<span class="st">&#39;b&#39;</span>) ] )</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>XYZ <span class="ot">=</span> <span class="fu">XYZfromxyY</span>( xyY )</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>Lab2 <span class="ot">=</span> <span class="fu">LabfromXYZ</span>( XYZ<span class="sc">/</span><span class="dv">100</span>, <span class="st">&#39;C&#39;</span> )     <span class="co"># recompute Lab</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>HVC  <span class="ot">=</span> <span class="fu">HVCfromMunsellName</span>( dental<span class="sc">$</span>Munsell )</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>HVC2 <span class="ot">=</span> <span class="fu">XYZtoMunsell</span>( XYZ )            <span class="co"># recompute Munsell HVC</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>comp <span class="ot">=</span> <span class="fu">data.frame</span>( <span class="at">row.names=</span><span class="fu">rownames</span>(dental) )</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>comp<span class="sc">$</span>Y  <span class="ot">=</span> dental<span class="sc">$</span>Y</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>comp<span class="sc">$</span>L  <span class="ot">=</span> Lab[ ,<span class="dv">1</span>]</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>comp<span class="sc">$</span>L2 <span class="ot">=</span> <span class="fu">round</span>(Lab2[ ,<span class="dv">1</span>],<span class="dv">4</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>comp<span class="sc">$</span>Ldiff <span class="ot">=</span> <span class="fu">round</span>( comp<span class="sc">$</span>L <span class="sc">-</span> comp<span class="sc">$</span>L2, <span class="dv">4</span> )</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>comp<span class="sc">$</span>DeltaE <span class="ot">=</span> <span class="fu">round</span>( <span class="fu">DeltaE</span>( Lab, Lab2 ), <span class="dv">4</span> )   <span class="co"># DeltaE is the pairwise color difference</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>comp<span class="sc">$</span>Munsell <span class="ot">=</span> dental<span class="sc">$</span>Munsell</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>comp<span class="sc">$</span>Munsell2 <span class="ot">=</span> <span class="fu">MunsellNameFromHVC</span>( HVC2, <span class="at">format=</span><span class="st">&#39;f&#39;</span>, <span class="at">digits=</span><span class="dv">2</span> )</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>comp<span class="sc">$</span>NickersonCD <span class="ot">=</span> <span class="fu">round</span>( <span class="fu">NickersonColorDifference</span>( HVC, HVC2 ), <span class="dv">4</span> )</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>comp</span></code></pre></div>
 <pre><code>##          Y     L      L2   Ldiff DeltaE       Munsell        Munsell2 NickersonCD
 ## B-96 37.05 67.34 67.3145  0.0255 0.0307 1.9Y 6.55/2.9 1.76Y 6.64/2.91      0.6942
 ## B-84 37.98 68.01 68.0059  0.0041 0.0603 0.9Y 6.65/3.2 0.78Y 6.71/3.21      0.5203
@@ -230,13 +473,13 @@ comp</code></pre></div>
 ## B-51 55.24 79.21 79.1793  0.0307 0.0388 3.2Y 7.80/2.2 3.24Y 7.86/2.18      0.4649
 ## B-59 55.72 79.49 79.4542  0.0358 0.0410 3.5Y 7.80/2.0 3.40Y 7.89/2.01      0.6493</code></pre>
 <p>The Lab agreement is good, but the published Lightness values are consistently too large and the reason for this is unknown. The exception is B-83 whose published Lightness=71.52 is too small and with the largest DeltaE by far; it appears to be a transcription error. <br> The Munsell agreement is not bad, but the pubished Munsell Value is too small. This could be due to using magnesium oxide instead of the perfect reflecting diffuser. We can test this by recomputing the value component of <code>HVC2</code>. The newly recomputed Munsell notation is denoted <code>Munsell3</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">HVC3 =<span class="st"> </span>HVC2
-HVC3[ ,<span class="dv">2</span>] =<span class="st"> </span><span class="kw">VfromY</span>( dental<span class="op">$</span>Y, <span class="dt">which=</span><span class="st">'MgO'</span> )
-comp<span class="op">$</span>Munsell2 =<span class="st"> </span><span class="ot">NULL</span>
-comp<span class="op">$</span>NickersonCD =<span class="st"> </span><span class="ot">NULL</span>
-comp<span class="op">$</span>Munsell3 =<span class="st"> </span><span class="kw">MunsellNameFromHVC</span>( HVC3, <span class="dt">format=</span><span class="st">'f'</span>, <span class="dt">digits=</span><span class="dv">2</span> )
-comp<span class="op">$</span>NickersonCD =<span class="st"> </span><span class="kw">round</span>( <span class="kw">NickersonColorDifference</span>( HVC, HVC3 ), <span class="dv">4</span> )
-comp</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>HVC3 <span class="ot">=</span> HVC2</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>HVC3[ ,<span class="dv">2</span>] <span class="ot">=</span> <span class="fu">VfromY</span>( dental<span class="sc">$</span>Y, <span class="at">which=</span><span class="st">&#39;MgO&#39;</span> )</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>comp<span class="sc">$</span>Munsell2 <span class="ot">=</span> <span class="cn">NULL</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>comp<span class="sc">$</span>NickersonCD <span class="ot">=</span> <span class="cn">NULL</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>comp<span class="sc">$</span>Munsell3 <span class="ot">=</span> <span class="fu">MunsellNameFromHVC</span>( HVC3, <span class="at">format=</span><span class="st">&#39;f&#39;</span>, <span class="at">digits=</span><span class="dv">2</span> )</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>comp<span class="sc">$</span>NickersonCD <span class="ot">=</span> <span class="fu">round</span>( <span class="fu">NickersonColorDifference</span>( HVC, HVC3 ), <span class="dv">4</span> )</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>comp</span></code></pre></div>
 <pre><code>##          Y     L      L2   Ldiff DeltaE       Munsell        Munsell3 NickersonCD
 ## B-96 37.05 67.34 67.3145  0.0255 0.0307 1.9Y 6.55/2.9 1.76Y 6.56/2.91      0.2648
 ## B-84 37.98 68.01 68.0059  0.0041 0.0603 0.9Y 6.65/3.2 0.78Y 6.63/3.21      0.2693
@@ -267,11 +510,11 @@ comp</code></pre></div>
 <div id="iscc-nbs-color-names" class="section level2">
 <h2>ISCC-NBS Color Names</h2>
 <p>I thought it would be interesting to display the ISCC-NBS names for each of the 24 dental shades.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obj =<span class="st"> </span><span class="kw">data.frame</span>( <span class="dt">row.names=</span><span class="kw">rownames</span>(dental) )
-obj<span class="op">$</span>Munsell2 =<span class="st"> </span><span class="kw">MunsellNameFromHVC</span>( HVC2, <span class="dt">format=</span><span class="st">'f'</span>, <span class="dt">digits=</span><span class="dv">2</span> )
-block =<span class="st"> </span><span class="kw">ColorBlockFromMunsell</span>( HVC2 )
-obj[[ <span class="st">&quot;ISCC-NBS Name&quot;</span> ]] =<span class="st"> </span>block<span class="op">$</span>Name
-obj</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>obj <span class="ot">=</span> <span class="fu">data.frame</span>( <span class="at">row.names=</span><span class="fu">rownames</span>(dental) )</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>obj<span class="sc">$</span>Munsell2 <span class="ot">=</span> <span class="fu">MunsellNameFromHVC</span>( HVC2, <span class="at">format=</span><span class="st">&#39;f&#39;</span>, <span class="at">digits=</span><span class="dv">2</span> )</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>block <span class="ot">=</span> <span class="fu">ColorBlockFromMunsell</span>( HVC2 )</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>obj[[ <span class="st">&quot;ISCC-NBS Name&quot;</span> ]] <span class="ot">=</span> block<span class="sc">$</span>Name</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>obj</span></code></pre></div>
 <pre><code>##             Munsell2         ISCC-NBS Name
 ## B-96 1.76Y 6.64/2.91        grayish yellow
 ## B-84 0.78Y 6.71/3.21 light yellowish brown
@@ -301,18 +544,18 @@ obj</code></pre></div>
 </div>
 <div id="references" class="section level2">
 <h2>References</h2>
-<div id="refs">
-<div id="ref-CLARK1933">
-<p>[1] CLARK, E. Bruce. Tooth color selection. <em>The Journal of the American Dental Association (1922)</em> [online]. 1933, <strong>20</strong>(6), 1065–1073. ISSN 1048-6364. Available at: doi:<a href="https://doi.org/10.14219/jada.archive.1933.0149">10.14219/jada.archive.1933.0149</a></p>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-CLARK1933" class="csl-entry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">CLARK, E. Bruce. Tooth color selection. <em>The Journal of the American Dental Association (1922)</em> [online]. 1933, <strong>20</strong>(6), 1065–1073. ISSN 1048-6364. Available at: doi:<a href="https://doi.org/10.14219/jada.archive.1933.0149">10.14219/jada.archive.1933.0149</a></div>
 </div>
-<div id="ref-ASTM-D1535-97">
-<p>[2] D1535-97, ASTM. <em>Standard Practice for Specifying Color by the Munsell System</em> [online]. Standard. West Conshohocken, PA: American Society for Testing; Materials. 1997. Available at: <a href="https://www.astm.org/d1535-97.html" class="uri">https://www.astm.org/d1535-97.html</a></p>
+<div id="ref-ASTM-D1535-97" class="csl-entry">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">D1535-97, ASTM. <em><span class="nocase">Standard Practice for Specifying Color by the Munsell System</span></em> [online]. Standard. West Conshohocken, PA: American Society for Testing; Materials. 1997. Available at: <a href="https://www.astm.org/d1535-97.html">https://www.astm.org/d1535-97.html</a></div>
 </div>
-<div id="ref-OBRIEN1989">
-<p>[3] O’BRIEN, W.J., GROH, C.L. and BOENKE, K.M. A one-dimensional color order system for dental shade guides. <em>Dental Materials</em> [online]. 1989, <strong>5</strong>(6), 371–374. ISSN 0109-5641. Available at: doi:<a href="https://doi.org/10.1016/0109-5641(89)90102-4">10.1016/0109-5641(89)90102-4</a></p>
+<div id="ref-OBRIEN1989" class="csl-entry">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">O’BRIEN, W. J., GROH, C. L. and BOENKE, K. M. A one-dimensional color order system for dental shade guides. <em>Dental Materials</em> [online]. 1989, <strong>5</strong>(6), 371–374. ISSN 0109-5641. Available at: doi:<a href="https://doi.org/10.1016/0109-5641(89)90102-4">10.1016/0109-5641(89)90102-4</a></div>
 </div>
-<div id="ref-OBRIEN1990">
-<p>[4] O’BRIEN, W.J., GROH, C.L. and BOENKE, K.M. A new, small-color-difference equation for dental shades. <em>Journal of Dental Research</em> [online]. 1990, <strong>69</strong>(11), 1762–1764. Available at: doi:<a href="https://doi.org/10.1177/00220345900690111001">10.1177/00220345900690111001</a></p>
+<div id="ref-OBRIEN1990" class="csl-entry">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">O’BRIEN, W. J., GROH, C. L. and BOENKE, K. M. A new, small-color-difference equation for dental shades. <em>Journal of Dental Research</em>. 1990, <strong>69</strong>(11), 1762–1764. </div>
 </div>
 </div>
 </div>
@@ -321,7 +564,7 @@ obj</code></pre></div>
 <pre>
 R version 4.1.2 (2021-11-01)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 7 x64 (build 7601) Service Pack 1
+Running under: Windows 10 x64 (build 19044)
 
 Matrix products: default
 
@@ -334,13 +577,14 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] spacesXYZ_1.1-1       spacesRGB_1.3-0       munsellinterpol_2.7-1
+[1] spacesXYZ_1.1-1       spacesRGB_1.4-0       munsellinterpol_2.8-2
 
 loaded via a namespace (and not attached):
- [1] digest_0.6.25        magrittr_1.5         evaluate_0.14        rootSolve_1.8.2.1   
- [5] rlang_0.4.8          stringi_1.5.3        rmarkdown_2.11       tools_4.1.2         
- [9] stringr_1.4.0        xfun_0.28            yaml_2.2.1           compiler_4.1.2      
-[13] microbenchmark_1.4.9 htmltools_0.5.0      knitr_1.30          
+ [1] digest_0.6.28        magrittr_2.0.1       evaluate_0.14        rootSolve_1.8.2.3   
+ [5] highr_0.9            rlang_0.4.12         stringi_1.7.5        rmarkdown_2.11      
+ [9] tools_4.1.2          stringr_1.4.0        xfun_0.28            yaml_2.2.1          
+[13] fastmap_1.1.0        compiler_4.1.2       microbenchmark_1.4.9 htmltools_0.5.2     
+[17] knitr_1.37          
 </pre>
 </div>
 

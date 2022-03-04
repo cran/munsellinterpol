@@ -330,7 +330,7 @@ xyYtoMunsell  <-  function( xyY,
         res = try( rootSolve::multiroot( forwardfun, ABstart, rtol=1.e-8, atol=1.e-6, ctol=0, verbose=FALSE,
                                             value=value, vlevel=vlevel, xy_target=xy_target ),  silent=F )
 
-        if( class(res) == "try-error" )        
+        if( inherits(res,"try-error" ) )   # class(res) == "try-error" )        
            {
            #    failed to find the root
            # print(res)

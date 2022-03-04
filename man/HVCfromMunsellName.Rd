@@ -60,9 +60,12 @@ to construct,
 but I have been unable to determine the first explicit mention of such a scale.
 The earliest I have have found is from \emph{Nimeroff (1968)},
 Figures 20 and 21 on page 27.
-\if{html}{\out{<center>}}
+
+\if{html}{\out{<div style="text-align: center">}}
+
 \if{html}{\figure{hue-circle.jpg}{options: alt="Hue Circle"}}
-\if{html}{\out{</center>}}
+
+\if{html}{\out{</div>}}
 
 There is a reference to \emph{ASTM D 1535} in the \bold{References} of \emph{Nimeroff},
 but it is not dated, and the 2 figures are not attributed to it.

@@ -1,5 +1,11 @@
 # NEWS for **munsellinterpol** package
 
+### Version 2.8-2  [2022-03-03]
+
+* in one of the `.Rd` files, replaced `<center>` tag by the HTML5 equivalent
+* removed some (possibly) invalid URLs
+
+
 ### Version 2.7-1  [2021-12-09]
 
 * fixed `bibliography.bib` to be compatible with `pandoc` v. 2.16.2
