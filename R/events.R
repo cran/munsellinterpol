@@ -30,40 +30,41 @@ p.CtoD65_CAT        = NULL
 
 p.vinterpOverride   = FALSE
 
-    
+
 .onLoad <- function( libname, pkgname )
-    {    
+    {
     p.microbenchmark    <<- requireNamespace( 'microbenchmark', quietly=TRUE )  #;  cat( "p.microbenchmark=", p.microbenchmark, '\n' )
-    
+
     p.VfromY            <<- makeVfromYs()    #  this loads the list p.VfromY, and takes less than 0.25 seconds
 
     if( requireNamespace( "spacesXYZ", quietly=TRUE ) )
         {
         #unlockBinding( "p.D65toC_CAT", asNamespace('munsellinterpol') )
         #unlockBinding( "p.CtoD65_CAT", asNamespace('munsellinterpol') )
-    
+
         white.D65   = c( 0.3127, 0.3290, 1 )    # xy are from the official sRGB standard
         white.C     = c( p.xyC['NBS',], 100 )
-        
+
         white.D65   = spacesXYZ::XYZfromxyY( white.D65 )
         white.C     = spacesXYZ::XYZfromxyY( white.C )
-    
+
         p.D65toC_CAT    <<- spacesXYZ::CAT( white.D65, white.C, method='Bradford' )
-        p.CtoD65_CAT    <<- spacesXYZ::CAT( white.C, white.D65, method='Bradford' )        
+        p.CtoD65_CAT    <<- spacesXYZ::CAT( white.C, white.D65, method='Bradford' )
         }
 
-    
+    #assign( "LabToMunsell", function(...) { LabtoMunsell(...) }, pos='package:munsellinterpol' )   fails !
+    #namespaceExport( 'munsellinterpol', "LabToMunsell" )
     }
-    
-    
+
+
 .onAttach <- function( libname, pkgname )
     {
     #print( libname )
     #print( pkgname )
-    
+
     if( FALSE )
     {
-    info    = library( help='munsellinterpol' )        #eval(pkgname) 
+    info    = library( help='munsellinterpol' )        #eval(pkgname)
     info    = format( info )
     mask    = grepl( "^(Version|Author|Built)", info )     #Title
     info    = gsub( "[ ]+", ' ', info[mask] )
@@ -71,28 +72,45 @@ p.vinterpOverride   = FALSE
     mess    = paste( c( mess, info ), collapse='.  ' )   #; cat(mess)
     packageStartupMessage( mess )
     }
-    
-    if( ! requireNamespace( "spacesXYZ", quietly=TRUE ) )
-        {
-        packageStartupMessage( "ERROR.  Cannot load package spacesXYZ."  )
-        }        
-    
-    # unlockBinding( "p.LookupList", asNamespace('munsellinterpol') )         # asNamespace(pkgname) here generates a NOTE !           
-    # unlockBinding( "p.VfromY", asNamespace('munsellinterpol') )             # asNamespace(pkgname) here generates a NOTE !
-    # unlockBinding( "p.microbenchmark", asNamespace('munsellinterpol') )     # asNamespace(pkgname) here generates a NOTE ! 
 
-    #   unlockBinding( "p.ListRGB", asNamespace('munsellinterpol') )            # asNamespace(pkgname) here generates a NOTE !     
-    #   unlockBinding( "p.InversionCoeffs", asNamespace('munsellinterpol') )    # asNamespace(pkgname) here generates a NOTE !        
-    #   packageStartupMessage( "4 variables unlocked." )    
-        
+    for( p in c( "spacesXYZ", "spacesRGB" ) )
+        {
+        if( ! requireNamespace( p, quietly=TRUE ) )
+            {
+            mess    = sprintf( "ERROR.  Cannot load package %s.  Many functions will not work !", p )
+            packageStartupMessage( mess )
+            }
+        }
+
+
+    # unlockBinding( "p.LookupList", asNamespace('munsellinterpol') )         # asNamespace(pkgname) here generates a NOTE !
+    # unlockBinding( "p.VfromY", asNamespace('munsellinterpol') )             # asNamespace(pkgname) here generates a NOTE !
+    # unlockBinding( "p.microbenchmark", asNamespace('munsellinterpol') )     # asNamespace(pkgname) here generates a NOTE !
+
+    #   unlockBinding( "p.ListRGB", asNamespace('munsellinterpol') )            # asNamespace(pkgname) here generates a NOTE !
+    #   unlockBinding( "p.InversionCoeffs", asNamespace('munsellinterpol') )    # asNamespace(pkgname) here generates a NOTE !
+    #   packageStartupMessage( "4 variables unlocked." )
+
 
     # p.microbenchmark    <<- requireNamespace( 'microbenchmark', quietly=TRUE )  #;  cat( "p.microbenchmark=", p.microbenchmark, '\n' )
-    
-    # p.VfromY            <<- makeVfromYs()    #  this loads the list p.VfromY, and takes less than 0.25 seconds
-    
 
+    # p.VfromY            <<- makeVfromYs()    #  this loads the list p.VfromY, and takes less than 0.25 seconds
+
+    #packageStartupMessage( ".onAttach().  about to export some functions" )
+    #for( i in 1:sys.nframe() )
+    #    packageStartupMessage( paste( i-1, environmentName( sys.frame(i-1) ), sep=' ' ) )
+
+    #assign( "LabtoMunsell", LabToMunsell, pos='package:munsellinterpol' )
+    #assign( "LuvtoMunsell", LuvToMunsell, pos='package:munsellinterpol' )
+    
+    #assign( "LabtoMunsell", function(...) { LabToMunsell(...) }, pos='package:munsellinterpol' )
+    #assign( "LuvtoMunsell", function(...) { LuvToMunsell(...) }, pos='package:munsellinterpol' )
+    
+    
+    
+    #   surprisingly, *exporting* these 2 functions is not necessary
+    #namespaceExport( 'package:munsellinterpol', "LabToMunsell" )
     
     }
 
-    
-    
+

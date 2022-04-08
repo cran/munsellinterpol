@@ -23,15 +23,19 @@ MunsellToxyY  <-  function( MunsellSpec,
 
     if( is.character(MunsellSpec) )
         {
-        HVC = HVCfromMunsellName(MunsellSpec)
+        HVC         = HVCfromMunsellName(MunsellSpec)
+        SAMPLE_NAME = MunsellSpec
         }
     else  
         {
         HVC = prepareNx3( MunsellSpec )
         if( is.null(HVC) )  return(NULL)
 
-        rownames(HVC)   = MunsellNameFromHVC( HVC, digits=3 )
-        colnames(HVC)   = c( "H", "V", "C" )            
+        SAMPLE_NAME = MunsellNameFromHVC( HVC, digits=3 )
+        #rownames(HVC)   = MunsellNameFromHVC( HVC, digits=3 )
+        
+        if( is.null(colnames(HVC)) )
+            colnames(HVC)   = c( "H", "V", "C" )            
         }
 
     #   process xyC
@@ -189,9 +193,11 @@ MunsellToxyY  <-  function( MunsellSpec,
 
     out = data.frame( row.names=1:n, stringsAsFactors=FALSE )
     
-    out$SAMPLE_NAME = rownames(HVC)
+    out$SAMPLE_NAME = SAMPLE_NAME
     out$HVC         = HVC
-    rownames(xyY)   = out$SAMPLE_NAME
+    
+    rownames(xyY)   = rownames(HVC)
+    if( is.null(rownames(xyY) ) )   rownames(xyY)   = SAMPLE_NAME
     out$xyY         = xyY
     
     if( FALSE  &&   100 <= n )

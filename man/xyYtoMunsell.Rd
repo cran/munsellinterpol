@@ -1,10 +1,10 @@
 \name{xyYtoMunsell}
 \alias{xyYtoMunsell}
 
-\title{Convert xyY coordinates into a Munsell specification}
+\title{Convert xyY coordinates to Munsell HVC}
 
-\description{\code{xyYtoMunsell} Converts xyY coordinates into a Munsell 
-specification, by interpolating over the extrapolated Munsell renotation data
+\description{\code{xyYtoMunsell} Convert xyY coordinates to Munsell HVC,
+by interpolating over the extrapolated Munsell renotation data
 }
 
 \usage{xyYtoMunsell( xyY, xyC='NBS', hcinterp='bicubic', vinterp='cubic',
@@ -32,7 +32,7 @@ Option \code{'MGO'} is not allowed because then Y>100 when V=10.
 \item{warn}{if an xyY cannot be mapped
 (usually because the root finder has wandered afar),
 its H and V are set to \code{NA} in the returned \code{data.frame}.
-Just before returning, if any rows have \code{NA}, and this argument is \code{TRUE},
+Just before returning, if any rows in HVC have an \code{NA}, and \code{warn == TRUE},
 then a warning is logged.
 }
 
@@ -44,17 +44,18 @@ are appended to the returned \code{data.frame}, see \bold{Value}.
 \value{
 a \code{data.frame} with N rows and these columns:
 \item{xyY}{The input xyY}
-\item{HVC}{the computed HVC. H is automatically wrapped to (0,100].  In case of failure, H and C are \code{NA}.}
-\item{SAMPLE_NAME}{a character vector - the Munsell notation for HVC}
+\item{HVC}{the computed HVC. H is automatically wrapped to (0,100].  In case of failure, H and C are set to \code{NA}.
+The rownames of HVC are set to those of xyY, unless they are \code{NULL} when they are set to \code{SAMPLE_NAME}.}
+\item{SAMPLE_NAME}{the Munsell notation for HVC, a character vector}
 If \code{perf} is \code{TRUE} then there are these additional columns:
 \item{time.elapsed}{elapsed time in seconds. If available, the function \code{microbenchmark::get_nanotime()} is used.}
 \item{iterations}{the number of iterations of \code{rootSolve::multiroot()}}
 \item{evalations}{the number of forward (HVC  \rarrow  xyY) function evaluations}
 \item{estim.precis}{the estimated precision from \code{rootSolve::multiroot()}.
-This is in the HC plane for the Munsell Value easily computed from Y.}
+This is in the HC plane for the Munsell Value computed from Y.}
 
-If the rownames of xyY are not \code{NULL} and have no duplicates,
-they are copied to the returned data frame.
+%If the rownames of xyY are not \code{NULL} and have no duplicates,
+%they are copied to the returned data frame.
 }
 
 \details{
@@ -116,15 +117,15 @@ The Munsell and Kubelka-Munk Toolbox
 
 \seealso{
 \code{\link{MunsellToxyY}()},
-\code{\link[rootSolve]{multiroot}()},
-\code{\link[microbenchmark]{get_nanotime}()}
+\code{\link[rootSolve:rootSolve]{rootSolve::multiroot}()},
+\code{\link[microbenchmark:microbenchmark]{microbenchmark::get_nanotime}()}
 }
 
 
 \examples{
 xyYtoMunsell(c(0.310897, 0.306510, 74.613450))
 ##       xyY.1     xyY.2     xyY.3     HVC.H     HVC.V     HVC.C    SAMPLE_NAME
-## 1  0.310897  0.306510 74.613450 87.541720  8.900000  2.247428 7.5P 8.9/2.2
+## 1  0.310897  0.306510 74.613450 87.541720  8.900000  2.247428   7.5P 8.9/2.2
 }
 
 \keyword{datasets}

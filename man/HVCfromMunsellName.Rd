@@ -4,9 +4,9 @@
 \alias{HueNumberFromString}
 
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Convert Munsell Notation to numerical HVC}
+\title{Convert Munsell Notation to numerical Munsell HVC}
 
-\description{Convert Munsell Notation to numerical HVC}
+\description{Convert Munsell Notation to numerical Munsell HVC}
 
 \usage{
 HVCfromMunsellName( MunsellName )
@@ -67,6 +67,8 @@ Figures 20 and 21 on page 27.
 
 \if{html}{\out{</div>}}
 
+\if{latex}{\figure{hue-circle.jpg}}
+
 There is a reference to \emph{ASTM D 1535} in the \bold{References} of \emph{Nimeroff},
 but it is not dated, and the 2 figures are not attributed to it.
 There was an \emph{ASTM D 1535} in 1968 but I have not been able to locate it;
@@ -75,7 +77,7 @@ or even earlier in \emph{ASTM D 1525-58T (1958)}.
 \cr
 Interestingly, in the \emph{Atlas of the Munsell Color System (1915)} there were only
 5 principal hues, and each arc was assigned a 10-point scale.
-If the entire hue circle were assigned a scale, it would have been a 50-point scale.
+If the entire hue circle of 1915 were assigned a scale, it would have been a 50-point scale.
 
 
 }

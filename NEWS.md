@@ -1,5 +1,18 @@
 # NEWS for **munsellinterpol** package
 
+
+### Version 3.0-0  [2022-04-08]
+
+* for conversion functions not involving `XYZ`, ensure that an exact neutral converts to an exact neutral
+* for conversion functions involving `Lab` and `Luv`, allow reference white to be assigned by name
+* consistent handling of `rownames` in conversion function return values
+* for functions `LabtoMunsell` and `LuvtoMunsell` changed `t` to `T` (old spelling is still supported for a limited time)
+* to functions `RGBtoMunsell()` and `MunsellToRGB()`, added argument `which` 
+* in the User Guide, added 3 new Pantone Colors of the Year
+* in links to other packages from man pages, added package names
+* added hue circle figure to the PDF manual
+
+
 ### Version 2.8-2  [2022-03-03]
 
 * in one of the `.Rd` files, replaced `<center>` tag by the HTML5 equivalent
@@ -21,7 +34,7 @@
 
 ### Changes for version 2.5-1  [2019-07-20]
 
-* in testing, allow limit of 5 failures in `testOptimals()`, which started to happen on **fedora** platform (in addition to **solaris**)
+* in testing, allow limit of 5 failures in `testOptimals()`, which started happening on **fedora** platform (in addition to **solaris**)
 
 
 ### Changes for version 2.4-1  [2019-05-16]
@@ -32,7 +45,7 @@
 ### Changes for version 2.3-1  [2019-04-16]
 
 * for the function `IsWithinMacAdamLimits()`, switched to a zonohedral representation of the color solids
-* moved `rootSolve` from dependency to import
+* moved package `rootSolve` from dependency to import
 * removed function `xyz2srgb()`
 * removed dependency `geometry`
 * removed folder `demo`
@@ -40,7 +53,7 @@
 
 ### Changes for version 2.2-1  [2019-01-27]
 
-* added fix to track a change in package 'spacesRGB'
+* added fix to track a change in package `spacesRGB`
 * added Color of the Year for 2019 to User Guide
 * moved most startup code from .onAttach() to .onLoad()
 

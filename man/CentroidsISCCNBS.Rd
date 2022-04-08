@@ -6,7 +6,7 @@
 % \usage{CentroidsISCCNBS}
 
 \description{\code{CentroidsISCCNBS} is a table with the centroids
-of the revised ISCC-NBS Color-Name Blocks.}
+of the revised ISCC-NBS Color-Name Blocks, taken from \emph{Kelly (1958)}}
 
 \format{
 This \code{data.frame} has 267 rows and these columns:
@@ -20,6 +20,7 @@ This \code{data.frame} has 267 rows and these columns:
 \details{
 The earliest paper I am aware of is by \emph{Nickerson, et. al.} in 1941.
 After the big Munsell renotation in 1943, the name blocks were revised in 1955.
+\cr
 When the central colors were recomputed in
 \emph{Kelly (1958)}, they were called the "Central Colors",
 though the text makes it clear that most are truly centroids,

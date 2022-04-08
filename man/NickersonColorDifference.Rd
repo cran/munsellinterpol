@@ -3,7 +3,7 @@
 
 \title{Calculate the Nickerson Color Difference between two Colors}
 
-\description{Calculate the Nickerson Color Difference between two colors, given in Munsell coordinates;
+\description{Calculate the Nickerson Color Difference between two colors, given in Munsell HVC;
 see \cite{Nickerson}.
 }
 
@@ -66,17 +66,11 @@ Vol 6. pp. 505-514.
 
 \author{Jose Gama and Glenn Davis}
 
-\seealso{
-\code{\link{LabtoMunsell}()},
-\code{\link{MunsellToXYZ}()},
-\code{\link[spacesXYZ:fromXYZ]{LabfromXYZ}()},
-\code{\link[spacesXYZ:adapt]{adaptXYZ}()},
-\code{\link[spacesXYZ:adaptation]{CAT}()}
-}
 
 
 \examples{
 NickersonColorDifference( '7.6P 8.9/2.2', '8P 8.2/3'  )
+##  [1] 6.952
 }
 \keyword{datasets}
 

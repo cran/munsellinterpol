@@ -4,36 +4,53 @@
 ################      Munsell  <-->  XYZ    #######################
 
 #   Convert a Munsell specification into XYZ coordinates, by interpolating over the extrapolated Munsell renotation data.
-#   returns XYZ that is adapted to C
+#   returns XYZ that is adapted to C, and with Y=100 for ref. white V=10
 MunsellToXYZ <- function( MunsellSpec, ... )
     {
-    if( ! requireNamespace('spacesXYZ') )   return(NULL)
-    
+    p   = 'spacesXYZ'
+    if( ! requireNamespace( p, quietly=TRUE ) )
+        {
+        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        return(NULL)
+        }
+
     tmp <- MunsellToxyY( MunsellSpec, ... )
     if( is.null(tmp) )  return(NULL)
-    
-    XYZ <- spacesXYZ::XYZfromxyY( tmp$xyY )
-    rownames(XYZ)   = tmp$SAMPLE_NAME
-    XYZ
+
+    XYZ <- spacesXYZ::XYZfromxyY( tmp$xyY ) # copies rownames from xyY to XYZ
+
+    #   rownames(XYZ)   = tmp$SAMPLE_NAME
+
+    return( XYZ )
     }
-    
+
 #   convert XYZ to an HVC matrix
-#   XYZ     must be already adapted to C
+#   XYZ     must be already adapted to C, and with Y=100 for ref. white V=10
 XYZtoMunsell <- function( XYZ, ... )
     {
-    if( ! requireNamespace('spacesXYZ') )   return(NULL)
-    
+    p   = 'spacesXYZ'
+    if( ! requireNamespace( p, quietly=TRUE ) )
+        {
+        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        return(NULL)
+        }
+
     xyY = spacesXYZ::xyYfromXYZ(XYZ)
     if( is.null(xyY) )  return(NULL)
-    
+
     tmp = xyYtoMunsell( xyY, ... )
     HVC = tmp$HVC
-    
-    rnames  = rownames(XYZ)
-    if( is.null(rnames) )   rnames = tmp$SAMPLE_NAME
+
+    rnames  = rownames(XYZ)     # if XYZ is not a matrix, then rnames is NULL
+
+    if( is.null(rnames) )
+        #   tmp$SAMPLE_NAME may have duplicates,
+        #   but since HVC is a matrix that is OK
+        rnames = tmp$SAMPLE_NAME
+
     rownames(HVC)   = rnames
-    
-    HVC
+
+    return( HVC )
     }
 
 
@@ -41,47 +58,103 @@ XYZtoMunsell <- function( XYZ, ... )
 
 ################      Munsell  <-->  Lab    #######################
 #   Convert a Munsell specification into CIE Lab coordinates, by interpolating over the extrapolated Munsell renotation data.
-MunsellToLab <- function( MunsellSpec, white=c(95.047,100,108.883), adapt='Bradford', ... )
+MunsellToLab <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
     {
-    if( ! requireNamespace('spacesXYZ') )   return(NULL)
-    
-    XYZ = MunsellToXYZ( MunsellSpec, ... )
+    p   = 'spacesXYZ'
+    if( ! requireNamespace( p, quietly=TRUE ) )
+        {
+        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        return(NULL)
+        }
+
+    if( is.character(MunsellSpec) )
+        HVC = HVCfromMunsellName(MunsellSpec)
+    else
+        HVC = prepareNx3( MunsellSpec )
+
+    if( is.null(HVC) )  return(NULL)
+
+    XYZ = MunsellToXYZ( HVC, ... )
     if( is.null(XYZ) )  return(NULL)
+
+    white   = process_white(white)
+    if( any(is.na(white)) )
+        {
+        log.string( ERROR, "argument white is invalid"  )
+        return(NULL)
+        }
 
     #   adapt this XYZ from C to given white
     white.C     = spacesXYZ::XYZfromxyY( c( p.xyC['NBS',],100) )
 
     theCAT      = spacesXYZ::CAT( white.C, white, method=adapt )
-        
-    XYZ.adapted = spacesXYZ::adaptXYZ( theCAT, XYZ )
 
-    Lab         = spacesXYZ::LabfromXYZ( XYZ.adapted, white )
+    XYZ.adapted = spacesXYZ::adaptXYZ( theCAT, XYZ )            # copies rownames from XYZ to XYZ.adapted
 
-    rownames(Lab)   = rownames(XYZ)
-    
-    Lab
+    Lab         = spacesXYZ::LabfromXYZ( XYZ.adapted, white )   # copies rownames from XYZ.adapted to Lab
+
+    #   do an additional test for neutrals
+    #   to correct possible roundoff error
+    neutral = HVC[ ,3]==0
+    neutral[ is.na(neutral) ]   = FALSE
+
+    if( any(neutral) )  Lab[neutral,2:3]  = 0     # when C==0, set both a=0 and b=0
+
+    #   rownames(Lab)   = rownames(XYZ)
+
+    return( Lab )
     }
 
-LabtoMunsell <- function( Lab, white=c(95.047,100,108.883), adapt='Bradford', ... )
+LabToMunsell <- function( Lab, white='D65', adapt='Bradford', ... )
     {
-    if( ! requireNamespace('spacesXYZ') )   return(NULL)
+    p   = 'spacesXYZ'
+    if( ! requireNamespace( p, quietly=TRUE ) )
+        {
+        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        return(NULL)
+        }
 
-    # make CAT from given white to illuminant C    
-    white.C = spacesXYZ::XYZfromxyY( c( p.xyC['NBS',],100) )   
-    
+    Lab = prepareNx3( Lab )
+    if( is.null(Lab) )  return(NULL)
+
+    white   = process_white(white)
+    if( any(is.na(white)) )
+        {
+        log.string( ERROR, "argument white is invalid"  )
+        return(NULL)
+        }
+
+    # make CAT from given white to illuminant C
+    white.C = spacesXYZ::XYZfromxyY( c( p.xyC['NBS',],100) )
+
     theCAT  = spacesXYZ::CAT( white, white.C, method=adapt )
     if( is.null(theCAT) )   return(NULL)
-    
+
     XYZ = spacesXYZ::XYZfromLab( Lab, white )
 
     XYZ.adapted = spacesXYZ::adaptXYZ( theCAT, XYZ )
-    
+
     if( is.null(XYZ.adapted) )  return(NULL)
 
     HVC = XYZtoMunsell( XYZ.adapted, ... )
-    #HVC = tmp$HVC
-    #rownames(HVC)   = tmp$SAMPLE_NAME
-    return(HVC)
+
+    #   do an additional test for neutrals
+    #   to correct possible roundoff error
+    neutral = Lab[ ,2]==0   &    Lab[ ,3]==0
+
+    neutral[ is.na(neutral) ]   = FALSE
+
+    if( any(neutral) )
+        {
+        # when both a==0 and b==0, then set H=0 and C=0
+        HVC[neutral,c(1,3)]  = 0
+
+        if( is.null(rownames(Lab)) )
+            #   Lab has no rownames, which means that rownames(HVC) is MunsellName
+            rownames(HVC)[neutral]  = MunsellNameFromHVC( HVC[neutral, ] )
+        }
+
+    return( HVC )
     }
 
 
@@ -90,47 +163,113 @@ LabtoMunsell <- function( Lab, white=c(95.047,100,108.883), adapt='Bradford', ..
 ################      Munsell  <-->  Luv    #######################
 #Convert a Munsell specification into CIE Luv coordinates, by interpolating over the extrapolated Munsell renotation data.
 
-MunsellToLuv <- function( MunsellSpec, white=c(95.047,100,108.883), adapt='Bradford', ... )
+MunsellToLuv <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
     {
-    if( ! requireNamespace('spacesXYZ') )   return(NULL)
-    
-    tmp = MunsellToxyY( MunsellSpec, ... )
-    if( is.null(tmp) )  return(NULL)
+    p   = 'spacesXYZ'
+    if( ! requireNamespace( p, quietly=TRUE ) )
+        {
+        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        return(NULL)
+        }
 
-    XYZ = spacesXYZ::XYZfromxyY( tmp$xyY )
+    if( is.character(MunsellSpec) )
+        HVC = HVCfromMunsellName(MunsellSpec)
+    else
+        HVC = prepareNx3( MunsellSpec )
 
-    # make CAT from illuminant C  to   given white 
-    white.C = spacesXYZ::XYZfromxyY( c( p.xyC['NBS',],100) )   
-    
+    if( is.null(HVC) )  return(NULL)
+
+    white   = process_white(white)
+    if( any(is.na(white)) )
+        {
+        log.string( ERROR, "argument white is invalid"  )
+        return(NULL)
+        }
+
+    XYZ = MunsellToXYZ( HVC, ... )
+    if( is.null(XYZ) )  return(NULL)
+
+    # XYZ = spacesXYZ::XYZfromxyY( tmp$xyY )
+
+    # make CAT from illuminant C  to   given white
+    white.C = spacesXYZ::XYZfromxyY( c( p.xyC['NBS',],100) )
+
     theCAT  = spacesXYZ::CAT( white.C, white, method=adapt )
     if( is.null(theCAT) )   return(NULL)
-        
-    # adapt XYZ from C to given white
-    XYZ.adapted = spacesXYZ::adaptXYZ( theCAT, XYZ )
 
-    Luv = spacesXYZ::LuvfromXYZ( XYZ.adapted, white )
-    rownames(Luv)   = tmp$SAMPLE_NAME
-    
-    return(Luv)
+    # adapt XYZ from C to given white
+    XYZ.adapted = spacesXYZ::adaptXYZ( theCAT, XYZ )    # copies rownames from XYZ to XYZ.adapted
+
+    Luv = spacesXYZ::LuvfromXYZ( XYZ.adapted, white )   # copies rownames from XYZ.adapted to Luv
+
+    #   do an additional test for neutrals
+    #   to correct possible roundoff error
+    neutral = HVC[ ,3]==0
+    neutral[ is.na(neutral) ]   = FALSE
+
+    if( any(neutral) )  Luv[neutral,2:3]  = 0     # when C==0, set both u=0 and v=0
+
+    #   rownames(Luv)   = rownames(XYZ)  already done    #tmp$SAMPLE_NAME
+
+    return( Luv )
     }
 
-LuvtoMunsell <- function( Luv, white=c(95.047,100,108.883), adapt='Bradford', ... )
+LuvToMunsell <- function( Luv, white='D65', adapt='Bradford', ... )
     {
-    if( ! requireNamespace('spacesXYZ') )   return(NULL)
-        
+    p   = 'spacesXYZ'
+    if( ! requireNamespace( p, quietly=TRUE ) )
+        {
+        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        return(NULL)
+        }
+
+    Luv = prepareNx3( Luv )
+    if( is.null(Luv) )  return(NULL)
+
+    white   = process_white(white)
+    if( any(is.na(white)) )
+        {
+        log.string( ERROR, "argument white is invalid"  )
+        return(NULL)
+        }
+
     XYZ = spacesXYZ::XYZfromLuv( Luv, white )
-    
-    # make CAT from given white to illuminant C    
-    white.C = spacesXYZ::XYZfromxyY( c( p.xyC['NBS',],100) )   
-    
+
+    # make CAT from given white to illuminant C
+    white.C = spacesXYZ::XYZfromxyY( c( p.xyC['NBS',],100) )
+
     theCAT  = spacesXYZ::CAT( white, white.C, method=adapt )
-    if( is.null(theCAT) )   return(NULL)    
+    if( is.null(theCAT) )   return(NULL)
 
     XYZ.adapted = spacesXYZ::adaptXYZ( theCAT, XYZ  )
 
-    HVC <- XYZtoMunsell( XYZ.adapted, ... )
-    HVC
+    HVC = XYZtoMunsell( XYZ.adapted, ... )
+
+    #   do an additional test for neutrals
+    #   to correct possible roundoff error
+    neutral = Luv[ ,2]==0   &    Luv[ ,3]==0
+
+    neutral[ is.na(neutral) ]   = FALSE
+
+    if( any(neutral) )
+        {
+        # when both u==0 and v==0, then set H=0 and C=0
+        HVC[neutral,c(1,3)]  = 0
+
+        if( is.null(rownames(Luv)) )
+            #   Luv has no rownames, which means that rownames(HVC) is MunsellName
+            rownames(HVC)[neutral]  = MunsellNameFromHVC( HVC[neutral, ] )
+        }
+
+    return( HVC )
     }
+
+
+#   this works, and avoids the call to assign() in .onAttach
+#   however, this method requires an export entry in file NAMESPACE
+LabtoMunsell    <- LabToMunsell
+LuvtoMunsell    <- LuvToMunsell
+
 
 
 
@@ -140,55 +279,123 @@ LuvtoMunsell <- function( Luv, white=c(95.047,100,108.883), adapt='Bradford', ..
 
 sRGBtoMunsell <- function( sRGB, maxSignal=255, ... )
     {
-    if( ! requireNamespace('spacesXYZ') )   return(NULL)
+    for( p in c('spacesRGB','spacesXYZ') )
+        {
+        if( ! requireNamespace( p, quietly=TRUE ) )
+            {
+            log.string( ERROR, "required package '%s' could not be loaded.", p )
+            return(NULL)
+            }
+        }
 
-    if( ! requireNamespace('spacesRGB') )   return(NULL)
+    sRGB = prepareNx3( sRGB )
+    if( is.null(sRGB) )  return(NULL)
 
-    XYZ = spacesRGB::XYZfromRGB( sRGB, space='sRGB', which='scene', maxSignal=maxSignal )$XYZ 
+    XYZ = spacesRGB::XYZfromRGB( sRGB, space='sRGB', which='scene', maxSignal=maxSignal )$XYZ
     if( is.null(XYZ) )  return(NULL)
 
-    # adapt XYZ from D65 to C, using precomputed p.D65toC_CAT    
+    # adapt XYZ from D65 to C, using precomputed p.D65toC_CAT
     XYZ.adapted = spacesXYZ::adaptXYZ( p.D65toC_CAT, XYZ ) #; print( xyY.adapted )
 
     # Convert adapted XYZ coordinates to Munsell coordinates
     HVC = XYZtoMunsell( XYZ.adapted, ... )
     if( is.null(HVC) )  return(NULL)
 
-    # rownames(HVC) = tmp$SAMPLE_NAME
-    
-    HVC
+    #   do an additional test for neutrals
+    #   to correct possible roundoff error
+    neutral = sRGB[ ,1]==sRGB[ ,2]    &    sRGB[ ,2]==sRGB[ ,3]
+
+    neutral[ is.na(neutral) ]   = FALSE
+
+    if( any(neutral) )
+        {
+        # when both R==G==B, then set H=0 and C=0
+        HVC[neutral,c(1,3)]     = 0
+
+        if( is.null(rownames(sRGB)) )
+            #   sRGB has no rownames, which means that rownames(HVC) is MunsellName
+            rownames(HVC)[neutral]  = MunsellNameFromHVC( HVC[neutral, ] )
+        }
+
+    return( HVC )
     }
 
 
 MunsellTosRGB <- function( MunsellSpec, maxSignal=255, ... )
     {
-    if( ! requireNamespace('spacesXYZ') )   return(NULL)
+    for( p in c('spacesRGB','spacesXYZ') )
+        {
+        if( ! requireNamespace( p, quietly=TRUE ) )
+            {
+            log.string( ERROR, "required package '%s' could not be loaded.", p )
+            return(NULL)
+            }
+        }
 
-    if( ! requireNamespace('spacesRGB') )   return(NULL)
-    
-    # Convert from Munsell notation to CIE coordiantes
+    # Convert from Munsell notation to CIE coordinates
     tmp = MunsellToxyY( MunsellSpec, ... )
     if( is.null(tmp) )  return(NULL)
 
     out = tmp
+
+    #   look for chroma==0 exactly
+    neutral = out$HVC[ ,3] == 0
+    neutral[ is.na(neutral) ]   = FALSE
+
     out$HVC = NULL  # erase this column
 
-    xyY = tmp$xyY
+    XYZ = spacesXYZ::XYZfromxyY( out$xyY )
 
-    # adapt xyY from C to D65, using precomputed p.CtoD65_CAT 
-    xyY.adapted = spacesXYZ::adaptxyY( p.CtoD65_CAT, xyY )
-    
-    XYZ.adapted = spacesXYZ::XYZfromxyY( xyY.adapted )
+    # adapt XYZ from C to D65, using precomputed p.CtoD65_CAT
+    XYZ.adapted = spacesXYZ::adaptXYZ( p.CtoD65_CAT, XYZ )
+
+    #   XYZ.adapted = spacesXYZ::XYZfromxyY( xyY.adapted )
 
     # Convert CIE XYZ coordinates to sRGB coordinates
-    out = cbind( out, spacesRGB::RGBfromXYZ( XYZ.adapted, space='sRGB', which='scene', maxSignal=maxSignal ) )
+    out = cbind( out, spacesRGB::RGBfromXYZ( XYZ.adapted, space='sRGB', maxSignal=maxSignal ) )
 
-    rnames  = tmp$SAMPLE_NAME
-    if( anyDuplicated(rnames) ) rnames = 1:nrow(out)
+    #rnames  = tmp$SAMPLE_NAME
+    #if( anyDuplicated(rnames) ) rnames = 1:nrow(out)
+    #rownames(out) = rnames
 
-    rownames(out) = rnames
-    out
+    if( any(neutral) )
+        {
+        RGB.mean = rowMeans( out$RGB[neutral, , drop=FALSE] )
+
+        #   the vector on the right side is replicated over all columns on the left
+        out$RGB[neutral, ]  =  RGB.mean  # cbind( RGB.mean, RGB.mean, RGB.mean )
+        }
+
+    return( out )
     }
+
+process_white <- function( white )
+    {
+    if( is.character(white) )
+        {
+        if( length(white) != 1 )    return(NA)
+
+        return( 100 * spacesXYZ::standardXYZ(white) )
+        }
+
+    if( is.numeric(white) )
+        {
+        if( length(white) == 3 )
+            # interpret as XYZ
+            return(white)
+
+        if( length(white) == 2 )
+            #   interpret as xy
+            return( spacesXYZ::XYZfromxyY( c(white,100) ) )
+        }
+
+    return(NA)
+    }
+
+
+
+
+#############              deadwood below                         ###############
 
 
 #   xyz2srgb is here only because package 'colorscience' depends on it
@@ -197,7 +404,7 @@ if ((length(XYZ) %% 3) != 0)  stop('XYZ matrix must be n x 3')
 if (is.null(dim(XYZ))) if (length(XYZ)>2) XYZ<-matrix(XYZ, ncol=3,byrow=TRUE)
 M <- matrix(c(3.2406, -1.5372, -0.4986, -0.9689, 1.8758, 0.0415, 0.0557, -0.2040, 1.0570),3,3,byrow=TRUE)
 RGB <- t(M %*% t(XYZ))
-# START: lines added March 2013 to set out-of-gamut flag.  
+# START: lines added March 2013 to set out-of-gamut flag.
 # The out-of-gamut flag is a column vector of Boolean true/false values.  Each
 # entry corresponds to one row of the input matrix XYZ.
 NumberOfInputs <- dim(RGB)[1]
@@ -253,29 +460,28 @@ XYZmatrix
 Lightness_from_linear  <-  function( Y )
     {
     #   thresh = (24/116)^3
-    
-    s = sign(Y)    
+
+    s = sign(Y)
     Y = s * Y       # Y is now non-negative
-    
+
     out = ifelse( Y < (24/116)^3, (116/12)^3 * Y, 116*Y^(1/3) - 16 )
-    
+
     #   correct any negatives by multiplying by s
     return( s * out )
     }
-    
-#   nonlinear L         in the interval [0,100]    
+
+#   nonlinear L         in the interval [0,100]
 #   returns linear Y    in the interval [0,1]
 linear_from_Lightness  <-  function( L )
-    {    
+    {
     s   = sign(L)
     L   = s * L     # L is now non-negative
-    
-    out = ifelse( L < 8, (12/116)^3 * L, ((L + 16)/116)^3 )
-    
-    #   correct any negatives by multiplying by s
-    return( s * out )    
-    }
-    
-    
 
-        
+    out = ifelse( L < 8, (12/116)^3 * L, ((L + 16)/116)^3 )
+
+    #   correct any negatives by multiplying by s
+    return( s * out )
+    }
+
+
+

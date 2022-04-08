@@ -74,7 +74,39 @@ r
 #
 #   returns such a matrix, or NULL in case of error
 #
+
+#   A   a non-empty numeric NxM matrix, or something that can be converted to be one
+#
+#   returns such a matrix, or NULL in case of error
+#
+#   This is intended to check user-supplied A, so there is a lot of checking.
+#
 prepareNx3  <-  function( A, M=3 )
+    {    
+    ok  = is.numeric(A) &&  0<length(A)  &&  (length(dim(A))<=2)
+    
+    ok  = ok  &&  ifelse( is.matrix(A), ncol(A)==M, ((length(A) %% M)==0)  )
+    
+    if( ! ok )
+        {
+        mess    = substr( as.character(A)[1], 1, 20 )
+        
+        Aname = deparse(substitute(A))        
+             
+        log.string( ERROR, "Argument '%s' must be a non-empty numeric Nx%d matrix (with N>0). %s='%s...'", 
+                                    Aname, M, Aname, mess )
+        return(NULL)
+        }
+    
+    if( ! is.matrix(A) )
+        A = matrix( A, ncol=M, byrow=TRUE )
+        
+    return( A )
+    }
+
+
+
+prepareNx3_old  <-  function( A, M=3 )
     {
     ok  = is.numeric(A)  &&  ((length(A) %% M)==0)  &&  0<length(A)
     if( ! ok )

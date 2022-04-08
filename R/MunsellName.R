@@ -12,6 +12,8 @@
 #       Value   is in the interval [0,10]
 #       Chroma  is positive  (except Chroma=0 for neutrals)
 #
+#   rownames(out) are set to MunsellName
+#
 #   author:  Glenn Davis
 
 HVCfromMunsellName <- function( MunsellName )

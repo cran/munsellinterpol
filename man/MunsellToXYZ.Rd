@@ -19,17 +19,19 @@ which is converted to an Nx3 matrix using \code{\link{HVCfromMunsellName}()}. }
 
 \value{
 an Nx3 matrix with XYZ values in the rows.
-The rownames are copied from the input HVC matrix.
-Exception: If the input matrix rownames are \code{NULL},
-then the output rownames are the Munsell notation.
+The rownames of XYZ are copied from the input HVC matrix,
+unless the rownames are \code{NULL} and
+then the output rownames are the Munsell notations for HVC.
 Note that these XYZ values are for viewing under Illuminant C, with Y=100.
 There is no chromatic adaptation.
 }
 
 \details{
-This function calls  
-\code{\link{MunsellToxyY}()} and
-\code{\link[spacesXYZ:toXYZ]{XYZfromxyY}()}.
+The conversion is done in these steps:
+\itemize{
+\item HVC  \rarrow  xyY using \code{\link{MunsellToxyY}()} and \code{...}. This xyY is for Illuminant C.
+\item xyY  \rarrow  XYZ using \code{\link[spacesXYZ:toXYZ]{spacesXYZ::XYZfromxyY}()} 
+}
 }
 
 \references{
@@ -41,11 +43,13 @@ The Munsell and Kubelka-Munk Toolbox
 \author{Jose Gama and Glenn Davis}
 \examples{
 MunsellToXYZ('7.6P 8.9/2.2')
+##                     X        Y        Z
+##  7.6P 8.9/2.2 75.6055 74.61345 92.92308
 }
 
 \seealso{
 \code{\link{MunsellToxyY}()},
-\code{\link[spacesXYZ:toXYZ]{XYZfromxyY}()} 
+\code{\link[spacesXYZ:toXYZ]{spacesXYZ::XYZfromxyY}()} 
 }
 
 

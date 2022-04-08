@@ -87,8 +87,12 @@ plotLociHC  <-  function( value=5, hue=seq(2.5,100,by=2.5), chroma='auto', coord
 #   value       a *single* value this time
 plotLociHC.xy  <-  function( value, hue, chroma, main, est, ... )    
     {
-    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return(NULL)
-    
+    p   = 'spacesXYZ'
+    if( ! requireNamespace( p, quietly=TRUE ) )
+        {
+        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        return(NULL)
+        }
 
     df  = expand.grid( H=hue, C=chroma )
 
@@ -221,8 +225,13 @@ plotLociHC.xy  <-  function( value, hue, chroma, main, est, ... )
 
 plotLociHC.ab  <-  function( value, hue, chroma, main, est, ...  )    
     {
-    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return(NULL)
-    
+    p   = 'spacesXYZ'
+    if( ! requireNamespace( p, quietly=TRUE ) )
+        {
+        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        return(NULL)
+        }
+        
     # par( omi=rep(0.5,4) )
     
     XYZ.C   = spacesXYZ::XYZfromxyY( c( p.xyC['NBS', ], 100 ) )   

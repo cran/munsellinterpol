@@ -1,10 +1,12 @@
 \name{MunsellToxyY}
 \alias{MunsellToxyY}
-\title{Convert a Munsell specification into xyY coordinates}
-\description{\code{MunsellToxyY} Converts a 
-Munsell specification into xyY coordinates, by interpolating over the 
+
+\title{Convert Munsell HVC to xyY coordinates}
+
+\description{\code{MunsellToxyY} Converts Munsell HVC to xyY coordinates, by interpolating over the
 extrapolated Munsell renotation data
 }
+
 \usage{MunsellToxyY( MunsellSpec, xyC='NBS', hcinterp='bicubic', vinterp='cubic',
                      YfromV='ASTM', warn=TRUE ) }
 
@@ -86,9 +88,11 @@ when V\eqn{\ge}1 the Value spacing is 1, but when V\eqn{\le}1 the Value spacing 
 \value{
 a \code{data.frame} with these columns:
 \item{SAMPLE_NAME}{the original \code{MunsellSpec} if that was a character vector.
-Or the Munsell notation string converted from HVC.}
-\item{HVC}{the input Nx3 matrix}
-\item{xyY}{the computed output matrix, with CIE xyY coordinates of MunsellSpec illuminated by Illuminant C.  In case of error, x and y are set to \code{NA}.}
+Or the Munsell notation string converted from the input matrix HVC.}
+\item{HVC}{the input Nx3 matrix, or the HVC matrix converted from the input Munsell notation}
+\item{xyY}{the computed output matrix, with CIE xyY coordinates of MunsellSpec illuminated by Illuminant C.
+In case of error, x and y are set to \code{NA}.
+The rownames of xyY are set to those of HVC, unless they are NULL when they are set to \code{SAMPLE_NAME}.}
 }
 
 \details{
@@ -145,7 +149,7 @@ and the Petition for adoption of transmission standards
 for color television before the Federal Communications Commission]
 (1953)
 
-Rheinboldt, Werner C. and 
+Rheinboldt, Werner C. and
 John P. Menard.
 \bold{Mechanized Conversion of Colorimetric Data to Munsell Renotations}.
 Journal of the Optical Society of America.
@@ -170,6 +174,8 @@ The Munsell and Kubelka-Munk Toolbox
 
 \examples{
 MunsellToxyY( '7.6P 8.9/2.2' )
+##    SAMPLE_NAME  HVC.H HVC.V HVC.C      xyY.x      xyY.y      xyY.Y
+##  1 7.6P 8.9/2.2  87.6   8.9   2.2  0.3109520  0.3068719 74.6134498
 }
 
 \keyword{Munsell}

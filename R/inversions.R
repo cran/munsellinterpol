@@ -2,8 +2,13 @@
 
 makeDataForPrediction <- function( Munsell2xy, value, p.LookupList )
     {
-    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return(NULL)
-    
+    p   = 'spacesXYZ'
+    if( ! requireNamespace( p, quietly=TRUE ) )
+        {
+        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        return(NULL)
+        }
+        
     dfsub  = Munsell2xy[ Munsell2xy$V == value , ]    # &  Munsell2xy$real
     
     if( nrow(dfsub) == 0 )  return(NULL)
@@ -82,8 +87,12 @@ makeDataForPrediction <- function( Munsell2xy, value, p.LookupList )
 #       "coeffs"            2x9 matrix of coefficients
 addPredictions <- function( data, warn=TRUE )
     {
-    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return(NULL)
-    
+    p   = 'spacesXYZ'
+    if( ! requireNamespace( p, quietly=TRUE ) )
+        {
+        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        return(NULL)
+        }
 
     #   get value from first row
     value   = data$V[1]

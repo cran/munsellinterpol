@@ -23,7 +23,8 @@ which is then converted to a numeric vector using
 
 \item{space}{the name of an installed RGB space.
 Spaces \code{'sRGB'} and \code{'AdobeRGB'} are pre-installed,
-and others can be installed with \code{\link{installRGB}()}.}
+and others can be installed using \code{\link[spacesRGB:installRGB]{spacesRGB::installRGB}()} 
+}
 
 \item{adapt}{method used to adapt xyY for Illuminant C to xyY for Illuminant D65.
 It is passed to \code{\link{MunsellToRGB}()}.
@@ -41,7 +42,8 @@ the last \code{'\%s'} is replaced by \code{adapt}.
 }
 
 \item{...}{other arguments passed to the function \code{MunsellToRGB()}.
-This includes \code{hcinterp}, \code{vinterp}, and \code{xyC}.}
+This includes \code{hcinterp}, \code{vinterp}, and \code{xyC}.
+}
 }
 
 \details{
@@ -75,7 +77,7 @@ and with the clamped RGB coordinates printed inside.
 \code{\link{MunsellToRGB}()},
 \code{\link{HueNumberFromString}()},
 \code{\link{IsWithinMacAdamLimits}()},
-\code{\link{installRGB}()}
+\code{\link[spacesRGB:installRGB]{spacesRGB::installRGB}()}
 }
 
 \keyword{plot}

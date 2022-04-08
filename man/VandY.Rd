@@ -134,12 +134,12 @@ Standard Practice for Specifying Color by the Munsell System.
 
 \seealso{
 \code{\link{MunsellToxyY}()},
-\code{\link{xyYtoMunsell}()},
+\code{\link{xyYtoMunsell}()}
 }
-
 
 \examples{
 VfromY( c(0,50,100) )
+##  [1]  0.00000  7.53772 10.00000
 }
 
 \keyword{datasets}

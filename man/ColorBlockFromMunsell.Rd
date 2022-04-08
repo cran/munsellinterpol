@@ -1,9 +1,9 @@
 \name{ColorBlockFromMunsell}
 \alias{ColorBlockFromMunsell}
 
-\title{Get ISCC-NBS Number and ISCC-NBS Name from Munsell Hue, Value, and Chroma}
+\title{Get ISCC-NBS Number and ISCC-NBS Name from Munsell HVC or Munsell Notation}
 
-\description{Get ISCC-NBS Number and ISCC-NBS Name from Munsell Hue, Value, and Chroma.
+\description{Get ISCC-NBS Number and ISCC-NBS Name from Munsell HVC or Munsell Notation.
 }
 
 \usage{ColorBlockFromMunsell( MunsellSpec ) }

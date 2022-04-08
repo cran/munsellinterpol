@@ -248,6 +248,7 @@ pantone
 
 Note that `Emerald` is unfortunately outside the sRGB gamut.
 Now compare the original color, and the centroid approximation to it.
+The color match is poor.
 ```{r echo=TRUE}
 color.pant = rgb( RGB, max=255 )
 color.cent = rgb( MunsellToRGB( block$Centroid, space='sRGB' )$RGB, max=255 )
@@ -259,7 +260,8 @@ library( flextable )
 myrt <- regulartable( tbl )
 myrt <- align( myrt, j=4, align='left', part='all' )
 myrt <- align( myrt, j=2:3, align='center', part='all' )
-myrt <- height( myrt, height=1 )
+myrt <- hrule( myrt, rule='exact' )
+myrt <- height( myrt, height=0.75 )
 myrt <- width( myrt, j=c(1,4), width=2 ) ; myrt <- width( myrt, j=2:3, width=2.5 )
 myrt <- fontsize( myrt, size=14, part='all' ) ; myrt <- fontsize( myrt, size=16, part='header' )
 for( i in 1:nrow(tbl) )
@@ -268,8 +270,7 @@ myrt
 ```
 <br>
 This table is best viewed on a display calibrated for sRGB.
-The color match is poor - clearly the ISCC-NBS designation is coarser than the Pantone designation.
-In fact, in the 6 levels of color designation
+In the 6 levels of color designation
 (from coarsest to finest) in  @kelly1976,
 ISCC-NBS is Level 3 and Pantone would most likely be Level 4.
 

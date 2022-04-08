@@ -3,11 +3,12 @@
 
 IsWithinMacAdamLimits <- function( xyY, Illuminant='C' )
     {
-    #   if( ! requireNamespace( 'geometry', quietly=TRUE ) )    return( NULL )
-    
-    if( ! requireNamespace( 'spacesXYZ', quietly=TRUE ) )   return( NULL )
-        
-        
+    p   = 'spacesXYZ'
+    if( ! requireNamespace( p, quietly=TRUE ) )
+        {
+        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        return(NULL)
+        }
         
     xyY = prepareNx3( xyY )    
     if( is.null(xyY) )  return(NULL)
