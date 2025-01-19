@@ -68,11 +68,13 @@ In general, in this package the xy for these non-real points is further from whi
 than the corresponding points in `all.dat`.
 For the meaning of `all.dat` see **Appendix A**.
 
-The package dependencies are:
+The package's strong dependencies are:
 
 <ul>
-<li>**geometry** @geometry - for building the convex hull of the object colors of Illuminant C</li>
 <li>**rootSolve** @rootSolve - for inverting the forward conversion HVC $\to$ xyY</li>
+<li>**spacesXYZ** @spacesXYZ - for conversion between CIE xyY and other CIE spaces</li>
+<li>**spacesRGB** @spacesRGB - for conversion between RGB and CIE XYZ</li>
+<li>**logger** @logger - for all logging to the console</li>
 </ul>
 The package **microbenchmark**  @microbenchmark  is suggested,
 for its high-precision timer.
@@ -246,7 +248,7 @@ pantone[[ "ISCC-NBS Centroid" ]] = block$Centroid
 pantone
 ```
 
-Note that `Emerald` is unfortunately outside the sRGB gamut.
+Note that `Emerald` is unfortunately outside the sRGB cube.
 Now compare the original color, and the centroid approximation to it.
 The color match is poor.
 ```{r echo=TRUE}
@@ -273,6 +275,8 @@ This table is best viewed on a display calibrated for sRGB.
 In the 6 levels of color designation
 (from coarsest to finest) in  @kelly1976,
 ISCC-NBS is Level 3 and Pantone would most likely be Level 4.
+
+
 
 <br><br>
 
@@ -612,6 +616,39 @@ For more on these, see the
 <a href="lightness.pdf">Uniform Lightness Scales</a> vignette.
 </dd>
 </dl>
+
+
+
+
+<br><br>
+
+## Appendix E - Logging
+
+Logging is performed using the package **logger**  @logger.
+This is a powerful package that allows a separate configuration
+for logging from within **munsellinterpol**, and that is what I have done.
+During package loading, the logging threshold is changed from `INFO` to `WARN`.
+To change it back again, one can execute:  
+`logger::log_threshold( logger::INFO, namespace="munsellinterpol" )     # preferred`  
+or  
+`library( logger )                                                # not preferred`  
+`log_threshold( INFO, namespace="munsellinterpol" )`
+
+The layout callback function is customized;
+it adds the name of the calling function to the message.
+To change it back again, one can execute:  
+`log_layout( layout_simple, namespace="munsellinterpol" )`  
+or to install ones own layout function, one can execute:  
+`log_layout( <your function>, namespace="munsellinterpol" )`.
+
+The appender callback functions is also customized;
+it comes to an immediate stop if the log event level is `FATAL`.
+To continue execution after such a log event, one can execute:  
+`log_appender( appender_console, namespace="munsellinterpol" )`
+
+The formatter callback function is initialized to be `formatter_sprintf()`;
+this should not be changed.
+
 
 
 

@@ -51,9 +51,9 @@ For all functions the Hue Number is wrapped to (0,100].
 
 \note{
 Ever since the \emph{Munsell Book of Color (1929)},
-the Munsell hue circle has been divided into 10 \emph{principal hues} or arcs.
-And each principal hue has been assigned a 10-point scale,
-with 5 at the midpoint of the arc.
+the Munsell hue circle has been divided into 5 \emph{principal hues} and
+5 \emph{intermediate hues}, to define a total of 10 arcs.
+Each of these hues has been assigned a 10-point scale, with 5 at the midpoint of the arc.
 Moreover, the hue "origin" has been at '10RP'.
 So a 100-point scale (with no letters) for the entire hue circle is obvious and trivial
 to construct,
@@ -76,9 +76,8 @@ it is possible that the 100-point scale first appeared in \emph{ASTM D-1535 (196
 or even earlier in \emph{ASTM D 1525-58T (1958)}.
 \cr
 Interestingly, in the \emph{Atlas of the Munsell Color System (1915)} there were only
-5 principal hues, and each arc was assigned a 10-point scale.
+5 principal hues (with no intermediate hues) and each of the 5 arcs was assigned a 10-point scale.
 If the entire hue circle of 1915 were assigned a scale, it would have been a 50-point scale.
-
 
 }
 

@@ -19,13 +19,15 @@ xyYtoMunsell  <-  function( xyY,
                             hcinterp='bicubic',
                             vinterp='cubic',
                             VfromY='ASTM',
+                            rtol=1.e-8,
+                            atol=1.e-6,
                             warn=TRUE,
                             perf=FALSE )
     {
     p   = 'rootSolve'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        log_level( ERROR, "required package '%s' could not be loaded.", p )
         return(NULL)
         }
 
@@ -41,7 +43,7 @@ xyYtoMunsell  <-  function( xyY,
     xyC  = process_xyC( xyC )
     if( any(is.na(xyC)) )
         {
-        log.string( ERROR, "xyC is invalid." )
+        log_level( ERROR, "xyC is invalid." )
         return(NULL)
         }
 
@@ -49,7 +51,7 @@ xyYtoMunsell  <-  function( xyY,
     hcinterp    = process_hcinterp(hcinterp)
     if( is.na(hcinterp) )
         {
-        log.string( ERROR, "hcinterp='%s' is invalid.", hcinterp )
+        log_level( ERROR, "hcinterp='%s' is invalid.", hcinterp )
         return(NULL)
         }
 
@@ -65,7 +67,7 @@ xyYtoMunsell  <-  function( xyY,
     vinterp    = process_vinterp(vinterp)
     if( is.na(vinterp) )
         {
-        log.string( ERROR, "vinterp='%s' is invalid.", as.character(vinterp) )
+        log_level( ERROR, "vinterp='%s' is invalid.", as.character(vinterp) )
         return(NULL)
         }
 
@@ -75,7 +77,7 @@ xyYtoMunsell  <-  function( xyY,
     idx     = pmatch( toupper(VfromY), full )
     if( is.na(idx) )
         {
-        log.string( ERROR, "VfromY='%s' is invalid. ('MgO' is not allowed in this function).", VfromY )
+        log_level( ERROR, "VfromY='%s' is invalid. ('MgO' is not allowed in this function).", VfromY )
         return(NULL)
         }
 
@@ -111,7 +113,7 @@ xyYtoMunsell  <-  function( xyY,
         #HC[1] = HC[1] %% 100
         #
         #if( HC[2] < 0 )
-        #    log.string( WARN, "Chroma = %g < 0.  hue=%g value=%g.  evaluation=%d.",
+        #    log_level( WARN, "Chroma = %g < 0.  hue=%g value=%g.  evaluation=%d.",
         #                HC[2], HC[1], value, evaluation )
 
 
@@ -217,7 +219,7 @@ xyYtoMunsell  <-  function( xyY,
                         {
                         #   despite the dilation, count==3 still happens for 11 out of 994 optimals
                         #   TODO:  another workaround might be shrinking the polym() model, as already done for value=0.2
-                        # log.string( TRACE, "cubic  count=%d   evaluation=%d   value=%g", count, evaluation, value )
+                        # log_level( TRACE, "cubic  count=%d   evaluation=%d   value=%g", count, evaluation, value )
                         xy  = splineCardinal( Vsub[fmask], xyvec[fmask, ], xout=value )
                         }
 
@@ -330,14 +332,14 @@ xyYtoMunsell  <-  function( xyY,
         ABstart = approxABfromxyY( xyY[i, ], c(xyC,100), V.vector )
         HCstart = unlist( HCfromAB( ABstart[1], ABstart[2] ) )
 
-        res = try( rootSolve::multiroot( forwardfun, ABstart, rtol=1.e-8, atol=1.e-6, ctol=0, verbose=FALSE,
+        res = try( rootSolve::multiroot( forwardfun, ABstart, rtol=rtol, atol=atol, ctol=0, verbose=FALSE,
                                             value=value, vlevel=vlevel, xy_target=xy_target ),  silent=F )
 
         if( inherits(res,"try-error" ) )   # class(res) == "try-error" )
            {
            #    failed to find the root
            # print(res)
-           log.string( DEBUG, "rootSolve::multiroot() failed.  ABstart=%g,%g.   HCstart=%g,%g.  value=%g",
+           log_level( DEBUG, "rootSolve::multiroot() failed.  ABstart=%g,%g.   HCstart=%g,%g.  value=%g",
                                          ABstart[1], ABstart[2], HCstart[1], HCstart[2], value )
            next
            }
@@ -352,6 +354,8 @@ xyYtoMunsell  <-  function( xyY,
         iterations.vec[i]   = res$iter
         evaluations.vec[i]  = evaluation
         estim.precis.vec[i] = res$estim.precis
+        
+        log_level( TRACE, "xy=%g,%g  iters=%d  estim.precis=%g", xy_target[1], xy_target[2], res$iter, res$estim.precis )
         }
 
 
@@ -386,7 +390,7 @@ xyYtoMunsell  <-  function( xyY,
     if( FALSE )
         {
         time_elapsed = gettime() - time_start
-        log.string( INFO, "Processed %d samples in %g seconds.  %g/sample.  [mean(time.elapsed)=%g].",
+        log_level( INFO, "Processed %d samples in %g seconds.  %g/sample.  [mean(time.elapsed)=%g].",
                                     n, time_elapsed, time_elapsed/n,  mean(out$time.elapsed,na.rm=TRUE) )
         }
 
@@ -398,7 +402,7 @@ xyYtoMunsell  <-  function( xyY,
         mask    = is.na(HVC[ ,1])  |  is.na(HVC[ ,3])
         if( any(mask)  )
             {
-            log.string( WARN, "%d samples, out of %d, could not be mapped; HVC row set to NA.",
+            log_level( WARN, "%d samples, out of %d, could not be mapped; HVC row set to NA.",
                                                 sum(mask), n )
             }
         }
@@ -414,7 +418,7 @@ approxABfromxyY <- function( xyY, xyY.white, V.vector )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        log_level( ERROR, "required package '%s' could not be loaded.", p )
         return(NULL)
         }
 
@@ -450,7 +454,7 @@ approxABfromxyY <- function( xyY, xyY.white, V.vector )
         term    = c( xd, xd2, xd2*xd, yd, xd*yd, xd2*yd, yd2, xd*yd2, yd2*yd )    # compare order here with polym() in makeInversionCoeffs()
         }
     else
-        log.string( FATAL, "vars='%s' is invalid.", vars )
+        log_level( FATAL, "vars='%s' is invalid.", vars )
 
     AB  = numeric(2)
     for( k in 1:2 )

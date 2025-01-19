@@ -34,7 +34,7 @@ NickersonColorDifference <- function( HVC0, HVC1, symmetric=TRUE )
         
     if( nrow(HVC0) != nrow(HVC1) )
         {
-        log.string( ERROR, "nrow(HVC0) = %d != %d = nrow(HVC1).",
+        log_level( ERROR, "nrow(HVC0) = %d != %d = nrow(HVC1).",
                             nrow(HVC0), nrow(HVC1) )
         return(NULL)
         }

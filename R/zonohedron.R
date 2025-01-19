@@ -23,13 +23,13 @@ zonohedron  <- function( W, tol=1.e-6 )
     ok  = is.numeric(W)  &&  is.matrix(W)  &&  3<=nrow(W)  &&  ncol(W)==3
     if( ! ok )
         {
-        log.string( ERROR, "argument W is not an nx3 numeric matrix, with n>=3." )
+        log_level( ERROR, "argument W is not an nx3 numeric matrix, with n>=3." )
         return(NULL)
         }
         
     if( any( is.na(W) ) )
         {
-        log.string( ERROR, "matrix W is invalid because it has %d entries that are NA.", sum(is.na(W)) )
+        log_level( ERROR, "matrix W is invalid because it has %d entries that are NA.", sum(is.na(W)) )
         return(NULL)
         }
     
@@ -55,7 +55,7 @@ zonohedron  <- function( W, tol=1.e-6 )
     bad     = normal2 <= tol*tol * WW2
     if( all(bad) )
         {
-        log.string( ERROR, "argument W does not have rank 3, with relative tol=%g.", tol )
+        log_level( ERROR, "argument W does not have rank 3, with relative tol=%g.", tol )
         return(NULL)
         }
 
@@ -64,7 +64,7 @@ zonohedron  <- function( W, tol=1.e-6 )
         {    
         mess    = sprintf( "%d bad normals, out of %d.\n", sum(bad), length(bad) )
         cat(mess)
-        #   log.string( INFO, "%d normals flagged as too small, out of %d.", sum(bad), length(bad) )
+        #   log_level( INFO, "%d normals flagged as too small, out of %d.", sum(bad), length(bad) )
         normal[ bad, ]  = NA_real_        
         }
     
@@ -140,7 +140,7 @@ zonohedron  <- function( W, tol=1.e-6 )
     betamin = min( out$face$beta, na.rm=TRUE )
     if( betamin <= 0 )
         {
-        log.string( FATAL, "Internal Error.  min(beta)=%g <= 0.", tol, betamin )
+        log_level( FATAL, "Internal Error.  min(beta)=%g <= 0.", tol, betamin )
         return(NULL)
         }
         

@@ -113,13 +113,13 @@ makeLookupList <- function( Munsell2xy, xyC=c(0.3101,0.3163), kfactor=c(0.7,0.5)
             
         if( is.na(cmax) )
             {
-            log.string( INFO, "At V=%g, there is data up to the maximum C=%g.",
+            log_level( INFO, "At V=%g, there is data up to the maximum C=%g.",
                             Value.vector[iV], Chroma.vector[length(Chroma.vector)] )
             attr( out[[iV]], "C.vector" ) = Chroma.vector            
             }
         else
             {
-            log.string( INFO, "At V=%g, there is data up to C=%g.",
+            log_level( INFO, "At V=%g, there is data up to C=%g.",
                                 Value.vector[iV], Chroma.vector[cmax] )
                 
             out[[iV]]$x = out[[iV]]$x[ , 1:cmax ]
@@ -154,7 +154,7 @@ makeLookupList <- function( Munsell2xy, xyC=c(0.3101,0.3163), kfactor=c(0.7,0.5)
     
     time_elapsed  = gettime()  -  time_start
     
-    log.string( INFO, "Made list in %g seconds.", time_elapsed )
+    log_level( INFO, "Made list in %g seconds.", time_elapsed )
     
     return( invisible(out) )
     }
@@ -180,7 +180,7 @@ extrapGAM  <-  function( Lookup4D, Munsell2xy, kfactor=c(0.9,0.5)  )
     
     samples   = 0
     
-    log.string( INFO, "Processing colors with V < 1..."  )
+    log_level( INFO, "Processing colors with V < 1..."  )
     
     #   for value < 1 make a special data.frame, and make only 1 model from it
     #   use a subset of points for V<1, plus all points for V==1
@@ -215,16 +215,16 @@ extrapGAM  <-  function( Lookup4D, Munsell2xy, kfactor=c(0.9,0.5)  )
     k   = round( kfactor[1] * nrow(data.dark) )
     
     form    = sprintf( "x ~ s( A, B, V,  bs='tp', k=%d )", k )
-    log.string( INFO, "Computing model '%s'...", form ) ; flush.console();
+    log_level( INFO, "Computing model '%s'...", form ) ; flush.console();
     gam.x = mgcv::gam( formula(form), data=data.dark )  
 
     form    = sprintf( "y ~ s( A, B, V,  bs='tp', k=%d )", k )
-    log.string( INFO, "Computing model '%s'...", form ) ; flush.console();    
+    log_level( INFO, "Computing model '%s'...", form ) ; flush.console();    
     gam.y = mgcv::gam( formula(form), data=data.dark )    
     
-    log.string( INFO, "Very Dark"  )
-    log.string( INFO, "x residual range = [%g,%g]", range(residuals(gam.x))[1],  range(residuals(gam.x))[2] )
-    log.string( INFO, "y residual range = [%g,%g]", range(residuals(gam.y))[1],  range(residuals(gam.y))[2] )
+    log_level( INFO, "Very Dark"  )
+    log_level( INFO, "x residual range = [%g,%g]", range(residuals(gam.x))[1],  range(residuals(gam.x))[2] )
+    log_level( INFO, "y residual range = [%g,%g]", range(residuals(gam.y))[1],  range(residuals(gam.y))[2] )
     }
     
     
@@ -249,19 +249,19 @@ extrapGAM  <-  function( Lookup4D, Munsell2xy, kfactor=c(0.9,0.5)  )
         k   = round( kfactor[1] * nrow(dfmodel) )
         
         form    = sprintf( "x ~ s( H, C,  bs='tp', k=%d )", k )
-        log.string( INFO, "value=%g.  Computing model '%s'...", value, form ) ; flush.console();
+        log_level( INFO, "value=%g.  Computing model '%s'...", value, form ) ; flush.console();
         gam.x = mgcv::gam( formula(form), data=dfmodel )  
 
         form    = sprintf( "y ~ s( H, C,  bs='tp', k=%d )", k )
-        log.string( INFO, "value=%g.  Computing model '%s'...", value, form ) ; flush.console();    
+        log_level( INFO, "value=%g.  Computing model '%s'...", value, form ) ; flush.console();    
         gam.y = mgcv::gam( formula(form), data=dfmodel )    
 
-        log.string( INFO, "x residual range = [%g,%g]", range(residuals(gam.x))[1],  range(residuals(gam.x))[2] )
-        log.string( INFO, "y residual range = [%g,%g]", range(residuals(gam.y))[1],  range(residuals(gam.y))[2] )
+        log_level( INFO, "x residual range = [%g,%g]", range(residuals(gam.x))[1],  range(residuals(gam.x))[2] )
+        log_level( INFO, "y residual range = [%g,%g]", range(residuals(gam.y))[1],  range(residuals(gam.y))[2] )
         }
         
         
-        #log.string( INFO, "For value=%g, found %d real samples.", value, nrow(dfreal) )        
+        #log_level( INFO, "For value=%g, found %d real samples.", value, nrow(dfreal) )        
         
         #   make 2D mask of the ones used for modeling
         mask2D  = matrix( FALSE, length(Hue.vector), length(Chroma.vector) )
@@ -286,7 +286,7 @@ extrapGAM  <-  function( Lookup4D, Munsell2xy, kfactor=c(0.9,0.5)  )
             
             if( ! any(mask) )
                 {
-                #   log.string( INFO, "For value=%g, and iC=%d, no extrapolation needed.", value, iC )        
+                #   log_level( INFO, "For value=%g, and iC=%d, no extrapolation needed.", value, iC )        
                 next    # no extrapolation needed here
                 }
                 
@@ -306,7 +306,7 @@ extrapGAM  <-  function( Lookup4D, Munsell2xy, kfactor=c(0.9,0.5)  )
             mask.na = is.na( x )
             if( any(mask.na) )
                 {
-                log.string( WARN, "For value=%g and chroma=%g,  %d of the extrapolated xy's are NA.",
+                log_level( WARN, "For value=%g and chroma=%g,  %d of the extrapolated xy's are NA.",
                                         value,  Chroma.vector[iC], sum(mask.na) )
                 df  = newdata[mask.na, , drop=FALSE]
                 #   df$Luv  = Luv[mask.na, , drop=FALSE]
@@ -322,10 +322,10 @@ extrapGAM  <-  function( Lookup4D, Munsell2xy, kfactor=c(0.9,0.5)  )
             }   
         }
     
-    log.string( INFO, "Extrapolated %d very dark samples in %g seconds.", samples, gettime() - time_start )  
+    log_level( INFO, "Extrapolated %d very dark samples in %g seconds.", samples, gettime() - time_start )  
 
     #   for V >= 1 do one value at a time
-    log.string( INFO, "Processing colors with V >= 1..." )
+    log_level( INFO, "Processing colors with V >= 1..." )
     
     for( value in 1:10 )
         {
@@ -347,8 +347,8 @@ extrapGAM  <-  function( Lookup4D, Munsell2xy, kfactor=c(0.9,0.5)  )
         
         ran.x   = range(residuals(gam.x))
         ran.y   = range(residuals(gam.y))
-        log.string( INFO, "value=%g.  x residual range = [%g,%g]", value, ran.x[1], ran.x[2] ) 
-        log.string( INFO, "value=%g.  y residual range = [%g,%g]", value, ran.y[1], ran.y[2] ) 
+        log_level( INFO, "value=%g.  x residual range = [%g,%g]", value, ran.x[1], ran.x[2] ) 
+        log_level( INFO, "value=%g.  y residual range = [%g,%g]", value, ran.y[1], ran.y[2] ) 
         flush.console(); 
         
         #   do not extrapolate if a value is already present
@@ -375,7 +375,7 @@ extrapGAM  <-  function( Lookup4D, Munsell2xy, kfactor=c(0.9,0.5)  )
             }        
         }
 
-    log.string( INFO, "Extrapolated %d samples in %g seconds.", samples, gettime() - time_start )
+    log_level( INFO, "Extrapolated %d samples in %g seconds.", samples, gettime() - time_start )
     
     return( out )
     }
@@ -465,7 +465,7 @@ makeRequiredMask3D <- function( Munsell2xy )
             }
         }
 
-    log.string( INFO, "Made extrapolation mask in %g seconds.",
+    log_level( INFO, "Made extrapolation mask in %g seconds.",
                             gettime() - time_start )
                             
     count   = integer( nV )                     

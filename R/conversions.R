@@ -10,7 +10,7 @@ MunsellToXYZ <- function( MunsellSpec, ... )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        log_level( ERROR, "required package '%s' could not be loaded.", p )
         return(NULL)
         }
 
@@ -31,7 +31,7 @@ XYZtoMunsell <- function( XYZ, ... )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        log_level( ERROR, "required package '%s' could not be loaded.", p )
         return(NULL)
         }
 
@@ -63,7 +63,7 @@ MunsellToLab <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        log_level( ERROR, "required package '%s' could not be loaded.", p )
         return(NULL)
         }
 
@@ -80,7 +80,7 @@ MunsellToLab <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
     white   = process_white(white)
     if( any(is.na(white)) )
         {
-        log.string( ERROR, "argument white is invalid"  )
+        log_level( ERROR, "argument white is invalid"  )
         return(NULL)
         }
 
@@ -110,7 +110,7 @@ LabToMunsell <- function( Lab, white='D65', adapt='Bradford', ... )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        log_level( ERROR, "required package '%s' could not be loaded.", p )
         return(NULL)
         }
 
@@ -120,7 +120,7 @@ LabToMunsell <- function( Lab, white='D65', adapt='Bradford', ... )
     white   = process_white(white)
     if( any(is.na(white)) )
         {
-        log.string( ERROR, "argument white is invalid"  )
+        log_level( ERROR, "argument white is invalid"  )
         return(NULL)
         }
 
@@ -168,7 +168,7 @@ MunsellToLuv <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        log_level( ERROR, "required package '%s' could not be loaded.", p )
         return(NULL)
         }
 
@@ -182,7 +182,7 @@ MunsellToLuv <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
     white   = process_white(white)
     if( any(is.na(white)) )
         {
-        log.string( ERROR, "argument white is invalid"  )
+        log_level( ERROR, "argument white is invalid"  )
         return(NULL)
         }
 
@@ -219,7 +219,7 @@ LuvToMunsell <- function( Luv, white='D65', adapt='Bradford', ... )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        log_level( ERROR, "required package '%s' could not be loaded.", p )
         return(NULL)
         }
 
@@ -229,7 +229,7 @@ LuvToMunsell <- function( Luv, white='D65', adapt='Bradford', ... )
     white   = process_white(white)
     if( any(is.na(white)) )
         {
-        log.string( ERROR, "argument white is invalid"  )
+        log_level( ERROR, "argument white is invalid"  )
         return(NULL)
         }
 
@@ -283,7 +283,7 @@ sRGBtoMunsell <- function( sRGB, maxSignal=255, ... )
         {
         if( ! requireNamespace( p, quietly=TRUE ) )
             {
-            log.string( ERROR, "required package '%s' could not be loaded.", p )
+            log_level( ERROR, "required package '%s' could not be loaded.", p )
             return(NULL)
             }
         }
@@ -327,7 +327,7 @@ MunsellTosRGB <- function( MunsellSpec, maxSignal=255, ... )
         {
         if( ! requireNamespace( p, quietly=TRUE ) )
             {
-            log.string( ERROR, "required package '%s' could not be loaded.", p )
+            log_level( ERROR, "required package '%s' could not be loaded.", p )
             return(NULL)
             }
         }
@@ -369,13 +369,27 @@ MunsellTosRGB <- function( MunsellSpec, maxSignal=255, ... )
     return( out )
     }
 
+
+
+#   return numeric XYZ with Y normalized to 100, and not 1
+
 process_white <- function( white )
     {
     if( is.character(white) )
         {
-        if( length(white) != 1 )    return(NA)
+        if( length(white) != 1 )    return(NA_real_)
+        
+        #   first try lookup to XYZ
+        out = spacesXYZ::standardXYZ(white)
+        
+        if( all( is.finite(out) ) ) return( 100*out )
 
-        return( 100 * spacesXYZ::standardXYZ(white) )
+        #   next try lookup to xy
+        out = spacesXYZ::standardxy(white)
+        
+        if( all( is.finite(out) ) ) return(  spacesXYZ::XYZfromxyY( c(out,100) ) )
+
+        return( NA_real_ )
         }
 
     if( is.numeric(white) )
@@ -389,7 +403,7 @@ process_white <- function( white )
             return( spacesXYZ::XYZfromxyY( c(white,100) ) )
         }
 
-    return(NA)
+    return(NA_real_)
     }
 
 

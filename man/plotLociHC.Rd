@@ -52,7 +52,7 @@ The plot limits (\code{xlim} and \code{ylim}) are set to include
 all points where the Hue radials intersect the Chroma ovoids,
 plus the white point.
 \cr
-If \code{value} is one of {0.2,0.4,0.6,0.8,1,2,3,4,5,6,7,8,9,10}
+If \code{value} is one of \{0.2,0.4,0.6,0.8,1,2,3,4,5,6,7,8,9,10\}
 then published points from \code{real.dat}
 are plotted with filled black points (real points),
 and extrapolated points from \code{all.dat} are drawn with open circles (unreal points).

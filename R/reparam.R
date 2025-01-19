@@ -15,13 +15,13 @@ makeReparamFunctionList <- function( .lambda, .illum, .xyz, .mode='equalize', .p
     
     if( length(.illum) != n )
         {
-        log.string( ERROR, "length(.illum) = %d is incorrect.", length(.illum) )
+        log_level( ERROR, "length(.illum) = %d is incorrect.", length(.illum) )
         return(NULL)
         }
         
     if( ! all( dim(.xyz) == c(n,3) ) )
         {
-        log.string( ERROR, "dim(.xyz) = %d,%d is incorrect.", dim(.xyz)[1], dim(.xyz)[2] )
+        log_level( ERROR, "dim(.xyz) = %d,%d is incorrect.", dim(.xyz)[1], dim(.xyz)[2] )
         return(NULL)
         }
 
@@ -35,20 +35,20 @@ makeReparamFunctionList <- function( .lambda, .illum, .xyz, .mode='equalize', .p
     step.wl = unique( diff(.lambda) )       
     if( length(step.wl) != 1 )
         {
-        log.string( ERROR, "%d wavelengths are not regular.", length(.lambda) )        
+        log_level( ERROR, "%d wavelengths are not regular.", length(.lambda) )        
         return(NULL)
         }      
 
     #   check that coredata is full-rank
     singular    = svd( coredata, nu=0, nv=0 )$d
     
-    #   log.string( DEBUG, "SVD time = %g sec", as.double(Sys.time()) - time_svd )
+    #   log_level( DEBUG, "SVD time = %g sec", as.double(Sys.time()) - time_svd )
     
     thresh  = max( dim(coredata) ) * singular[1] * 2^(-52)
     rank = sum( thresh < singular )
     if( rank <  min(dim(coredata)) )
         {
-        log.string( ERROR, "The responsivity matrix   is rank-deficient (rank=%d < %d).", 
+        log_level( ERROR, "The responsivity matrix   is rank-deficient (rank=%d < %d).", 
                                  rank, min(dim(coredata)) )        
         return(NULL)
         }    
@@ -76,7 +76,7 @@ makeReparamFunctionList <- function( .lambda, .illum, .xyz, .mode='equalize', .p
         
         if( any(omega == 0) )
             {
-            log.string( ERROR, "Responder has responsivity=0 at 1 or more wavelengths, which is invalid." )
+            log_level( ERROR, "Responder has responsivity=0 at 1 or more wavelengths, which is invalid." )
             return(NULL)
             }
             
@@ -97,7 +97,7 @@ makeReparamFunctionList <- function( .lambda, .illum, .xyz, .mode='equalize', .p
         }
     else
         {
-        log.string( ERROR, ".mode='%s' is invalid.", .mode )
+        log_level( ERROR, ".mode='%s' is invalid.", .mode )
         return(NULL)
         }
         

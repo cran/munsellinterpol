@@ -9,7 +9,7 @@ RGBtoMunsell <- function( RGB, space='sRGB', which='scene', maxSignal=255, adapt
         {
         if( ! requireNamespace( p, quietly=TRUE ) )
             {
-            log.string( ERROR, "required package '%s' could not be loaded.", p )
+            log_level( ERROR, "required package '%s' could not be loaded.", p )
             return(NULL)
             }
         }
@@ -71,7 +71,7 @@ MunsellToRGB <- function( MunsellSpec, space='sRGB', which='scene', maxSignal=25
         {
         if( ! requireNamespace( p, quietly=TRUE ) )
             {
-            log.string( ERROR, "required package '%s' could not be loaded.", p )
+            log_level( ERROR, "required package '%s' could not be loaded.", p )
             return(NULL)
             }
         }

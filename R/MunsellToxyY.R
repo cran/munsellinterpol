@@ -42,7 +42,7 @@ MunsellToxyY  <-  function( MunsellSpec,
     xyC  = process_xyC( xyC )
     if( any(is.na(xyC)) )
         {
-        log.string( ERROR, "xyC is invalid." )
+        log_level( ERROR, "xyC is invalid." )
         return(NULL)
         }     
 
@@ -50,7 +50,7 @@ MunsellToxyY  <-  function( MunsellSpec,
     hcinterp    = process_hcinterp(hcinterp)
     if( is.na(hcinterp) )
         {
-        log.string( ERROR, "hcinterp='%s' is invalid.", hcinterp )
+        log_level( ERROR, "hcinterp='%s' is invalid.", hcinterp )
         return(NULL)
         }  
 
@@ -65,7 +65,7 @@ MunsellToxyY  <-  function( MunsellSpec,
     vinterp     = process_vinterp(vinterp)
     if( is.na(vinterp) )
         {
-        log.string( ERROR, "vinterp='%s' is invalid.", vinterp )
+        log_level( ERROR, "vinterp='%s' is invalid.", vinterp )
         return(NULL)
         }  
 
@@ -74,7 +74,7 @@ MunsellToxyY  <-  function( MunsellSpec,
     idx     = pmatch( toupper(YfromV), full )
     if( is.na(idx) )
         {
-        log.string( ERROR, "YfromV='%s' is invalid. ('MgO' is not allowed in this function).", YfromV )
+        log_level( ERROR, "YfromV='%s' is invalid. ('MgO' is not allowed in this function).", YfromV )
         return(NULL)
         }  
     
@@ -87,7 +87,7 @@ MunsellToxyY  <-  function( MunsellSpec,
         base::unlockBinding( "p.LookupList", asNamespace('munsellinterpol') )
     
         # fill all the lookup tables with x and y for illuminant C  
-        log.string( TRACE, "filling p.LookupList with xy=%g,%g for illuminant C.", xyC[1], xyC[2] )
+        log_level( TRACE, "filling p.LookupList with xy=%g,%g for illuminant C.", xyC[1], xyC[2] )
         for( k in 1:length(p.LookupList) )
             {
             p.LookupList[[k]]$x[ ,1] <<- xyC[1]
@@ -112,7 +112,7 @@ MunsellToxyY  <-  function( MunsellSpec,
         chroma  = HVC[i,3]
         if( ! is.finite(chroma) )
             {
-            #   log.string( ERROR, "Failed to map sample %d, of %d. chroma=%g.", i, n, chroma )
+            #   log_level( ERROR, "Failed to map sample %d, of %d. chroma=%g.", i, n, chroma )
             next
             }
             
@@ -137,7 +137,7 @@ MunsellToxyY  <-  function( MunsellSpec,
             xyY[i,2]    = hcinterpfun( H.vector, C.vector, p.LookupList[[iV]]$y, hue, chroma )$z
             
             #if( any( is.na(xyY[i, ]) ) )
-            #    log.string( ERROR, "Failed to map sample %d, of %d. Exactly on V plane.", i, n )
+            #    log_level( ERROR, "Failed to map sample %d, of %d. Exactly on V plane.", i, n )
                 
             next
             }
@@ -169,7 +169,7 @@ MunsellToxyY  <-  function( MunsellSpec,
     
         if( any( is.na(xymat) ) )
             {
-            #log.string( ERROR, "Failed to map sample %d, of %d. Between V planes.", i, n )     
+            #log_level( ERROR, "Failed to map sample %d, of %d. Between V planes.", i, n )     
             #rownames( xymat ) = as.character(vvec)          #; colnames(xymat) = c('x','y') ;       print( xymat )            
             #print( xymat )            
             next
@@ -203,7 +203,7 @@ MunsellToxyY  <-  function( MunsellSpec,
     if( FALSE  &&   100 <= n )
         {
         time_elapsed = gettime() - time_start
-        log.string( INFO, "Processed %d samples in %g seconds.  %g/sample.",
+        log_level( INFO, "Processed %d samples in %g seconds.  %g/sample.",
                             n, time_elapsed, time_elapsed/n )               
         }
     
@@ -215,7 +215,7 @@ MunsellToxyY  <-  function( MunsellSpec,
         
         if( any(mask,na.rm=TRUE) )
             {
-            log.string( WARN, "%d samples, out of %d, could not be mapped; xy set to NA.", sum(mask), n )
+            log_level( WARN, "%d samples, out of %d, could not be mapped; xy set to NA.", sum(mask), n )
             }
             
         #   check for xy outside the triangle
@@ -224,7 +224,7 @@ MunsellToxyY  <-  function( MunsellSpec,
         
         if( any(mask) )
             {
-            log.string( WARN, "%d samples, out of %d, were mapped to xy outside the triangle.", sum(mask), n )
+            log_level( WARN, "%d samples, out of %d, were mapped to xy outside the triangle.", sum(mask), n )
             if( sum(mask) <= 10 )
                 print( out[mask, ] )
             }            

@@ -34,11 +34,22 @@ p.vinterpOverride   = FALSE
 .onLoad <- function( libname, pkgname )
     {
     p.microbenchmark    <<- requireNamespace( 'microbenchmark', quietly=TRUE )  #;  cat( "p.microbenchmark=", p.microbenchmark, '\n' )
+    
+    if( requireNamespace( "logger", quietly=FALSE ) )
+        {
+        #   log_formatter( formatter_mine )
+        #   layout_mine and appender_mine are defined in logger.R
+        log_formatter( logger::formatter_sprintf, namespace=pkgname )   # force sprintf(), even if glue is installed
+        log_layout( layout_mine, namespace=pkgname )                    # put fn() between timestamp and the msg
+        log_appender( appender_mine, namespace=pkgname )                # maybe stop on ERROR or FATAL
+        log_threshold( WARN, namespace=pkgname )                        # default is INFO
+        }
 
     p.VfromY            <<- makeVfromYs()    #  this loads the list p.VfromY, and takes less than 0.25 seconds
 
     if( requireNamespace( "spacesXYZ", quietly=TRUE ) )
         {
+        #   these 2 are not needed, the variables are unlocked during .onLoad()
         #unlockBinding( "p.D65toC_CAT", asNamespace('munsellinterpol') )
         #unlockBinding( "p.CtoD65_CAT", asNamespace('munsellinterpol') )
 
@@ -57,21 +68,22 @@ p.vinterpOverride   = FALSE
     }
 
 
+
 .onAttach <- function( libname, pkgname )
     {
     #print( libname )
     #print( pkgname )
 
     if( FALSE )
-    {
-    info    = library( help='munsellinterpol' )        #eval(pkgname)
-    info    = format( info )
-    mask    = grepl( "^(Version|Author|Built)", info )     #Title
-    info    = gsub( "[ ]+", ' ', info[mask] )
-    mess    = sprintf( "This is %s", pkgname )
-    mess    = paste( c( mess, info ), collapse='.  ' )   #; cat(mess)
-    packageStartupMessage( mess )
-    }
+        {
+        info    = library( help='munsellinterpol' )        #eval(pkgname)
+        info    = format( info )
+        mask    = grepl( "^(Version|Author|Built)", info )     #Title
+        info    = gsub( "[ ]+", ' ', info[mask] )
+        mess    = sprintf( "This is %s", pkgname )
+        mess    = paste( c( mess, info ), collapse='.  ' )   #; cat(mess)
+        packageStartupMessage( mess )
+        }
 
     for( p in c( "spacesXYZ", "spacesRGB" ) )
         {
@@ -82,31 +94,6 @@ p.vinterpOverride   = FALSE
             }
         }
 
-
-    # unlockBinding( "p.LookupList", asNamespace('munsellinterpol') )         # asNamespace(pkgname) here generates a NOTE !
-    # unlockBinding( "p.VfromY", asNamespace('munsellinterpol') )             # asNamespace(pkgname) here generates a NOTE !
-    # unlockBinding( "p.microbenchmark", asNamespace('munsellinterpol') )     # asNamespace(pkgname) here generates a NOTE !
-
-    #   unlockBinding( "p.ListRGB", asNamespace('munsellinterpol') )            # asNamespace(pkgname) here generates a NOTE !
-    #   unlockBinding( "p.InversionCoeffs", asNamespace('munsellinterpol') )    # asNamespace(pkgname) here generates a NOTE !
-    #   packageStartupMessage( "4 variables unlocked." )
-
-
-    # p.microbenchmark    <<- requireNamespace( 'microbenchmark', quietly=TRUE )  #;  cat( "p.microbenchmark=", p.microbenchmark, '\n' )
-
-    # p.VfromY            <<- makeVfromYs()    #  this loads the list p.VfromY, and takes less than 0.25 seconds
-
-    #packageStartupMessage( ".onAttach().  about to export some functions" )
-    #for( i in 1:sys.nframe() )
-    #    packageStartupMessage( paste( i-1, environmentName( sys.frame(i-1) ), sep=' ' ) )
-
-    #assign( "LabtoMunsell", LabToMunsell, pos='package:munsellinterpol' )
-    #assign( "LuvtoMunsell", LuvToMunsell, pos='package:munsellinterpol' )
-    
-    #assign( "LabtoMunsell", function(...) { LabToMunsell(...) }, pos='package:munsellinterpol' )
-    #assign( "LuvtoMunsell", function(...) { LuvToMunsell(...) }, pos='package:munsellinterpol' )
-    
-    
     
     #   surprisingly, *exporting* these 2 functions is not necessary
     #namespaceExport( 'package:munsellinterpol', "LabToMunsell" )

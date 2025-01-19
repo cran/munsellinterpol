@@ -62,6 +62,6 @@ block = ColorBlockFromMunsell( HVC2 )
 obj[[ "ISCC-NBS Name" ]] = block$Name
 obj
 
-## ---- echo=FALSE, results='asis'------------------------------------------------------------------
+## ----echo=FALSE, results='asis'-------------------------------------------------------------------
 sessionInfo()
 

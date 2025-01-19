@@ -16,21 +16,21 @@ bicubicCardinal  <- function( x, y, z, x0, y0 )
     lenx    = length(x)
     if( lenx != nrow(z) )
         {
-        log.string( ERROR, "length(x)=%d != %d=nrow(z)", length(x), nrow(z) )
+        log_level( ERROR, "length(x)=%d != %d=nrow(z)", length(x), nrow(z) )
         return(NULL)
         }
 
     leny    = length(y)        
     if( leny != ncol(z) )
         {
-        log.string( ERROR, "length(y)=%d != %d=ncol(z)", length(y), ncol(z) )
+        log_level( ERROR, "length(y)=%d != %d=ncol(z)", length(y), ncol(z) )
         return(NULL)
         }
     
     n   = length(y0)
     if( length(x0) != n )
         {
-        log.string( ERROR, "length(x0)=%d != %d=length(y0)", length(x0), n )
+        log_level( ERROR, "length(x0)=%d != %d=length(y0)", length(x0), n )
         return(NULL)
         }
         
@@ -55,7 +55,7 @@ bicubicCardinal  <- function( x, y, z, x0, y0 )
         if( xexact  &&  yexact )
             {
             #   exactly on a grid point.  If one of the neighbors is NA it does not matter
-            zout[k] = z[ i0, j0 ]   #; log.string( INFO, "Exactly on grid point %g,%g", x0[k], y0[k] )
+            zout[k] = z[ i0, j0 ]   #; log_level( INFO, "Exactly on grid point %g,%g", x0[k], y0[k] )
             next
             }
         
@@ -106,21 +106,21 @@ bilinearApprox  <- function( x, y, z, x0, y0 )
     lenx    = length(x)
     if( lenx != nrow(z) )
         {
-        log.string( ERROR, "length(x)=%d != %d=nrow(z)", length(x), nrow(z) )
+        log_level( ERROR, "length(x)=%d != %d=nrow(z)", length(x), nrow(z) )
         return(NULL)
         }
 
     leny    = length(y)        
     if( leny != ncol(z) )
         {
-        log.string( ERROR, "length(y)=%d != %d=ncol(z)", length(y), ncol(z) )
+        log_level( ERROR, "length(y)=%d != %d=ncol(z)", length(y), ncol(z) )
         return(NULL)
         }
     
     n   = length(y0)
     if( length(x0) != n )
         {
-        log.string( ERROR, "length(x0)=%d != %d=length(y0)", length(x0), n )
+        log_level( ERROR, "length(x0)=%d != %d=length(y0)", length(x0), n )
         return(NULL)
         }
         
@@ -143,7 +143,7 @@ bilinearApprox  <- function( x, y, z, x0, y0 )
         if( xexact  &&  yexact )
             {
             #   exactly on a grid point.  If one of the neighbors is NA it does not matter
-            zout[k] = z[ i0, j0 ]   #; log.string( INFO, "Exactly on grid point %g,%g", x0[k], y0[k] )
+            zout[k] = z[ i0, j0 ]   #; log_level( INFO, "Exactly on grid point %g,%g", x0[k], y0[k] )
             next
             }
         
@@ -209,7 +209,7 @@ splineCardinal <- function( x, y, xout )
     
     if( nrow(y) != n )
         {
-        log.string( ERROR, "length(x) = %d  !=  %d = nrow(y).", length(x), nrow(y) )
+        log_level( ERROR, "length(x) = %d  !=  %d = nrow(y).", length(x), nrow(y) )
         return(NULL)
         }
         

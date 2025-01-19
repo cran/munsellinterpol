@@ -1,6 +1,13 @@
 # NEWS for **munsellinterpol** package
 
 
+### Version 3.1-0  [2025-01-19]
+
+* all logging now done with package **logger**, which is Imported
+* updates to User Guide, including 3 new Pantone Colors of the Year
+* in function `xyYtoMunsell()`, add new arguments `rtol` and `atol`
+
+
 ### Version 3.0-0  [2022-04-08]
 
 * for conversion functions not involving `XYZ`, ensure that an exact neutral converts to an exact neutral

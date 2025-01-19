@@ -4,11 +4,14 @@
 \title{Convert xyY coordinates to Munsell HVC}
 
 \description{\code{xyYtoMunsell} Convert xyY coordinates to Munsell HVC,
-by interpolating over the extrapolated Munsell renotation data
+by interpolating over the extrapolated Munsell renotation data.\cr
+HVC \eqn{\to} xyY is the forward direction, and xyY \eqn{\to} HVC is the inverse direction.
+This inversion requires requires root-finding,
+which is done using \code{\link[rootSolve:multiroot]{rootSolve::multiroot()}}.
 }
 
 \usage{xyYtoMunsell( xyY, xyC='NBS', hcinterp='bicubic', vinterp='cubic',
-                     VfromY='ASTM', warn=TRUE, perf=FALSE ) }
+                     VfromY='ASTM', rtol=1.e-8, atol=1.e-6, warn=TRUE, perf=FALSE ) }
 
 \arguments{
 \item{xyY}{a numeric Nx3 matrix with CIE xyY coordinates in the rows,
@@ -28,6 +31,10 @@ See \code{\link{MunsellToxyY}()} for details. }
 See \code{\link{VfromY}()} for details.
 Option \code{'MGO'} is not allowed because then Y>100 when V=10.
 }
+
+\item{rtol}{relative tolerance passed to \code{\link[rootSolve:multiroot]{rootSolve::multiroot()}} }
+
+\item{atol}{absolute tolerance passed to \code{\link[rootSolve:multiroot]{rootSolve::multiroot()}} }
 
 \item{warn}{if an xyY cannot be mapped
 (usually because the root finder has wandered afar),
@@ -117,8 +124,8 @@ The Munsell and Kubelka-Munk Toolbox
 
 \seealso{
 \code{\link{MunsellToxyY}()},
-\code{\link[rootSolve:rootSolve]{rootSolve::multiroot}()},
-\code{\link[microbenchmark:microbenchmark]{microbenchmark::get_nanotime}()}
+\code{\link[rootSolve:multiroot]{rootSolve::multiroot()}},
+\code{\link[microbenchmark:microbenchmark]{microbenchmark::get_nanotime()}}
 }
 
 

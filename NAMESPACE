@@ -41,6 +41,8 @@ export( HVCfromMunsellName,
 #   export for testing only
 # export( process_white )
 
+import( logger )
+
 importFrom(rootSolve,multiroot)
 #   importFrom(arrangements,combinations)
 #   importFrom(geometry, delaunayn, tsearchn)

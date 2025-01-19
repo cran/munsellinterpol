@@ -6,7 +6,7 @@ IsWithinMacAdamLimits <- function( xyY, Illuminant='C' )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        log_level( ERROR, "required package '%s' could not be loaded.", p )
         return(NULL)
         }
         
@@ -17,7 +17,7 @@ IsWithinMacAdamLimits <- function( xyY, Illuminant='C' )
     idx     = pmatch( toupper(Illuminant), full )
     if( is.na(idx) )
         {
-        log.string( ERROR, "Illuminant='%s' is invalid.", Illuminant )
+        log_level( ERROR, "Illuminant='%s' is invalid.", Illuminant )
         return(NULL)
         }
     Illuminant  = full[idx]
@@ -74,14 +74,14 @@ sectionOptimals  <-  function( Y, n=100, illum='C' )
     ok  = (0 < Y)  &  (Y < 100)
     if( ! ok )
         {
-        log.string( WARN, "Y=%g is invalid; it must be in interval (0,100).", Y )
+        log_level( WARN, "Y=%g is invalid; it must be in interval (0,100).", Y )
         return(NULL)
         }
         
     ok  = illum %in% colnames( p.ACDs )
     if( ! ok )   
         {
-        log.string( ERROR, "illum='%s' is invalid.", illum )
+        log_level( ERROR, "illum='%s' is invalid.", illum )
         return(NULL)
         }
 
@@ -90,7 +90,7 @@ sectionOptimals  <-  function( Y, n=100, illum='C' )
     
     if( ! identical( wave, p.xyz1931$Wavelength ) )
         {
-        log.string( FATAL, "illuminant '%s' and xyz have different wavelengths.", illum )
+        log_level( FATAL, "illuminant '%s' and xyz have different wavelengths.", illum )
         return(NULL)
         }
     

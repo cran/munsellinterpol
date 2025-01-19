@@ -6,7 +6,7 @@ plotLociHC  <-  function( value=5, hue=seq(2.5,100,by=2.5), chroma='auto', coord
     ok  = is.numeric(value)  &&  1<=length(value)  &&  all( 0<value  &  value<=10 )
     if( ! ok )
         {
-        log.string( ERROR, "All Values must be numeric and in the interval (0,10]." )
+        log_level( ERROR, "All Values must be numeric and in the interval (0,10]." )
         return(FALSE)
         }
         
@@ -15,7 +15,7 @@ plotLociHC  <-  function( value=5, hue=seq(2.5,100,by=2.5), chroma='auto', coord
         hue = HueNumberFromString(hue)
         if( all( is.na(hue) ) )
             {
-            log.string( "All character hues are invalid." )
+            log_level( "All character hues are invalid." )
             return(FALSE)
             }
         }
@@ -23,7 +23,7 @@ plotLociHC  <-  function( value=5, hue=seq(2.5,100,by=2.5), chroma='auto', coord
     ok  = is.numeric(hue)  &&  1<=length(hue)
     if( ! ok )
         {
-        log.string( ERROR, "All Hues must be numeric." )
+        log_level( ERROR, "All Hues must be numeric." )
         return(FALSE)
         }
         
@@ -34,13 +34,13 @@ plotLociHC  <-  function( value=5, hue=seq(2.5,100,by=2.5), chroma='auto', coord
     ok  = ok || (is.character(chroma) && chroma[1] == 'auto')
     if( ! ok )
         {
-        log.string( ERROR, "All Chromas must be numeric and positive, or the string 'auto'." )
+        log_level( ERROR, "All Chromas must be numeric and positive, or the string 'auto'." )
         return(FALSE)
         }
     
     if( ! (coords %in% c('xy','ab','AB') ) )
         {
-        log.string( ERROR, "coords = '%s' is invalid.", coords )
+        log_level( ERROR, "coords = '%s' is invalid.", coords )
         return(FALSE)
         }
         
@@ -62,7 +62,7 @@ plotLociHC  <-  function( value=5, hue=seq(2.5,100,by=2.5), chroma='auto', coord
                 }
             else
                 {
-                log.string( ERROR, "Cannot determine maximum chroma for value=%g.", val )
+                log_level( ERROR, "Cannot determine maximum chroma for value=%g.", val )
                 next
                 }
             }
@@ -90,7 +90,7 @@ plotLociHC.xy  <-  function( value, hue, chroma, main, est, ... )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        log_level( ERROR, "required package '%s' could not be loaded.", p )
         return(NULL)
         }
 
@@ -228,7 +228,7 @@ plotLociHC.ab  <-  function( value, hue, chroma, main, est, ...  )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        log_level( ERROR, "required package '%s' could not be loaded.", p )
         return(NULL)
         }
         
@@ -427,7 +427,7 @@ plotPatchesH  <-  function( hue, space='sRGB', adapt='Bradford', background='gra
         hue = HueNumberFromString(hue)
         if( any( is.na(hue) ) )
             {
-            log.string( "One or more of the character hues is invalid." )
+            log_level( "One or more of the character hues is invalid." )
             return( invisible(FALSE) )
             }
         }
@@ -435,7 +435,7 @@ plotPatchesH  <-  function( hue, space='sRGB', adapt='Bradford', background='gra
     ok  = is.numeric(hue)  &&  1<=length(hue)
     if( ! ok )
         {
-        log.string( ERROR, "All Hues must be numeric." )
+        log_level( ERROR, "All Hues must be numeric." )
         return( invisible(FALSE) )
         }
         

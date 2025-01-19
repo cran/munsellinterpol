@@ -22,7 +22,7 @@ HVCfromMunsellName <- function( MunsellName )
     
     if( n==0  ||  ! is.character(MunsellName) )
         {
-        log.string( ERROR, "MunsellName is not a character vector with positive length." )
+        log_level( ERROR, "MunsellName is not a character vector with positive length." )
         return(NULL)
         }
 

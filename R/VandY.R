@@ -20,7 +20,7 @@ YfromV <- function( V, which='ASTM' )
         
         if( is.na(w) )
             {
-            log.string( WARN, "which='%s' is invalid.", which )
+            log_level( WARN, "which='%s' is invalid.", which )
             return( rep(NA_real_,length(V) ) )
             }    
         which   = w
@@ -47,7 +47,7 @@ YfromV <- function( V, which='ASTM' )
         out = V^2
     else
         {
-        log.string( FATAL, "Internal Error. which='%s' is invalid.", as.character(which) )
+        log_level( FATAL, "Internal Error. which='%s' is invalid.", as.character(which) )
         return(NULL)
         }
 
@@ -68,7 +68,7 @@ VfromY  <- function( Y, which='ASTM' )
         w  = pmatchYV( which )
         if( is.na(w) )
             {
-            log.string( WARN, "which='%s' is invalid.", which )
+            log_level( WARN, "which='%s' is invalid.", which )
             return( rep(NA_real_,length(Y) ) )
             }    
         which   = w
@@ -83,7 +83,7 @@ VfromY  <- function( Y, which='ASTM' )
         out = sqrt(Y)
     else
         {
-        log.string( FATAL, "Internal Error. which='%s' is invalid.", as.character(which) )
+        log_level( FATAL, "Internal Error. which='%s' is invalid.", as.character(which) )
         return(NULL)
         }        
         
@@ -96,7 +96,7 @@ makeVfromYs <- function()
     {
     whichvec = c( 'ASTM', 'OSA', 'MGO' ) 
     
-    #log.string( INFO, "Making %d splinefuns...", length(whichvec) )
+    #log_level( INFO, "Making %d splinefuns...", length(whichvec) )
     #time_start  = gettime()
     
     out = list()
@@ -113,7 +113,7 @@ makeVfromYs <- function()
         out[[w]]    = splinefun( YfromV(V,which=w), V, method='fmm' )       # declared in events.R
         }
     
-    #log.string( INFO, "done.  [in %g sec]\n", gettime()-time_start )   # less than 0.25 seconds
+    #log_level( INFO, "done.  [in %g sec]\n", gettime()-time_start )   # less than 0.25 seconds
     
     return( out )
     }

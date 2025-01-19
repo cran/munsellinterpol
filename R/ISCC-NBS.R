@@ -35,7 +35,7 @@ ColorBlockFromMunsell  <-  function( MunsellSpec )
         
         mask    = is.na( HVC[ ,1] )
         if( any(mask) )
-            log.string( ERROR, "%d (out of %d) Munsell notations are invalid.", sum(mask), nrow(HVC) )
+            log_level( ERROR, "%d (out of %d) Munsell notations are invalid.", sum(mask), nrow(HVC) )
         
         rnames  = MunsellSpec
         }
@@ -81,7 +81,7 @@ ColorBlockFromMunsell  <-  function( MunsellSpec )
         
         if( nrow(theRow) != 1 )
             {
-            log.string( ERROR, "(internal).  Expected exactly 1 match for hvc=%g,%g,%g, but found %d.\n", 
+            log_level( ERROR, "(internal).  Expected exactly 1 match for hvc=%g,%g,%g, but found %d.\n", 
                                     hvc[1],hvc[2],hvc[3], nrow(theRow) )
             next
             }

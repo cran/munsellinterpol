@@ -5,7 +5,7 @@ makeDataForPrediction <- function( Munsell2xy, value, p.LookupList )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        log_level( ERROR, "required package '%s' could not be loaded.", p )
         return(NULL)
         }
         
@@ -90,7 +90,7 @@ addPredictions <- function( data, warn=TRUE )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log.string( ERROR, "required package '%s' could not be loaded.", p )
+        log_level( ERROR, "required package '%s' could not be loaded.", p )
         return(NULL)
         }
 
@@ -131,7 +131,7 @@ addPredictions <- function( data, warn=TRUE )
     out$B.pred  = predict( modB, newdata=data )  
     
     if( warn  &&  any( is.na(out$A.pred) ) )
-        log.string( WARN, "%d of A.pred are NA", sum(is.na(out$A.pred)) )
+        log_level( WARN, "%d of A.pred are NA", sum(is.na(out$A.pred)) )
 
     #   add predicted HC
     tmp = HCfromAB( out$A.pred, out$B.pred )
@@ -146,7 +146,7 @@ addPredictions <- function( data, warn=TRUE )
     out$y.pred  = xyY[ ,2]
     
     if( warn  &&  any( is.na(out$x.pred) ) )
-        log.string( WARN, "%d of x.pred are NA", sum(is.na(out$x.pred)) )
+        log_level( WARN, "%d of x.pred are NA", sum(is.na(out$x.pred)) )
     
     #   add predicted ab
     xyC     = p.xyC['NBS', ]    
@@ -162,7 +162,7 @@ addPredictions <- function( data, warn=TRUE )
     mask    = is.na(out$a.pred) 
     if( warn  &&  any(mask) )
         {
-        log.string( WARN, "%d of a.pred are NA", sum(mask) )
+        log_level( WARN, "%d of a.pred are NA", sum(mask) )
         print( out[mask, ] )
         }
         

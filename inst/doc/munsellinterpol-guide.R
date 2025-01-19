@@ -10,19 +10,19 @@ MunsellToxyY( '4.2RP 5.5/8' )
 xyY = MunsellToxyY( '4.2RP 5.5/8' )$xyY
 xyYtoMunsell( xyY )
 
-## ---- echo=TRUE,  message=TRUE, results='hold', fig.width=7, fig.height=6,  fig.show='hold'-------
+## ----echo=TRUE,  message=TRUE, results='hold', fig.width=7, fig.height=6,  fig.show='hold'--------
 par( omi=c(0,0,0,0), mai=c(0.6,0.7,0.4,0.2) )
 plotPatchesH( "10GY", back='#f7f7f7' )
 
-## ---- echo=TRUE,  message=TRUE, results='hold', fig.width=7, fig.height=6,  fig.show='hold'-------
+## ----echo=TRUE,  message=TRUE, results='hold', fig.width=7, fig.height=6,  fig.show='hold'--------
 par( omi=c(0,0,0,0), mai=c(0.6,0.7,0.4,0.2) )
 plotPatchesH( "10GY", space='AdobeRGB', back='#f7f7f7' )
 
-## ---- echo=TRUE,  message=TRUE, results='hold', fig.width=7, fig.height=6,  fig.show='hold'-------
+## ----echo=TRUE,  message=TRUE, results='hold', fig.width=7, fig.height=6,  fig.show='hold'--------
 par( omi=c(0,0,0,0), mai=c(0.6,0.7,0.6,0.2) )
 plotLociHC( value=8 )
 
-## ---- echo=TRUE,  message=TRUE, results='hold', fig.width=7, fig.height=6,  fig.show='hold'-------
+## ----echo=TRUE,  message=TRUE, results='hold', fig.width=7, fig.height=6,  fig.show='hold'--------
 par( omi=c(0,0,0,0), mai=c(0.6,0.7,0.6,0.2) )
 plotLociHC( value=8, coords='ab' )
 
@@ -60,6 +60,6 @@ for( i in 1:nrow(tbl) )
 { myrt <- bg(myrt, i=i, j=2, bg=color.pant[i]) ; myrt <- bg(myrt, i=i, j=3, bg=color.cent[i]) }
 myrt
 
-## ---- echo=FALSE, results='asis'------------------------------------------------------------------
+## ----echo=FALSE, results='asis'-------------------------------------------------------------------
 sessionInfo()
 
