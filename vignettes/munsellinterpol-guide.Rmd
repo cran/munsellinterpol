@@ -157,7 +157,8 @@ par( omi=c(0,0,0,0), mai=c(0.6,0.7,0.4,0.2) )
 plotPatchesH( "10GY", back='#f7f7f7' )
 ```
 
-This is the forward conversion HVC $\to$ xyY $\to$ xyY $\to$ sRGB.
+This is the forward conversion 
+$\text{HVC} \to \text{xyY}_C \to \text{XYZ}_C \to \text{XYZ}_{D65} \to \text{sRGB}$.
 There is no interpolation here, unless the Hue is not a multiple of 2.5, which is allowed.
 For each Value, the Chroma is extended up to the MacAdam limit,
 and this determines the limit of the Chroma axis.

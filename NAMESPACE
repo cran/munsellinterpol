@@ -35,7 +35,8 @@ export( HVCfromMunsellName,
 #       sectionOptimals,
         RGBtoMunsell,
         MunsellToRGB,
-        NickersonColorDifference
+        NickersonColorDifference,
+        roundHVC
         )
 
 #   export for testing only

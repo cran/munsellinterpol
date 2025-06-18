@@ -7,7 +7,7 @@
 see \cite{Nickerson}.
 }
 
-\usage{NickersonColorDifference( HVC0, HVC1, symmetric=TRUE ) }
+\usage{NickersonColorDifference( HVC0, HVC1, symmetric=TRUE, coeffs=c(0.4,6,3) ) }
 
 \arguments{
 \item{HVC0}{a numeric Nx3 matrix with HVC values in the rows, or a vector that can be converted to such a matrix, by row.
@@ -28,7 +28,12 @@ which is converted to an Nx3 matrix using \code{\link{HVCfromMunsellName}()}.
 
 \item{symmetric}{if \code{FALSE} then use the original Nickerson difference formula,
 and if \code{TRUE} then use a symmetrized version;
-see \bold{Details}. 
+see \bold{Details}.
+}
+
+\item{coeffs}{the coefficients for Hue, Value, and Chroma in the difference equation,
+see \bold{Details}.  The defaults are the ones used by Nickerson, but tweaking them is possible
+in special circumstances.  The argument must have length 3 and all coefficents positive.
 }
 }
 

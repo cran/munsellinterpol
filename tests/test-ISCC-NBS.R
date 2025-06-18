@@ -1,6 +1,8 @@
 
 library( munsellinterpol )
 
+options( width=144 )
+
 #
 #   checkColorLookup()
 #   performs lookup with ColorBlockFromMunsell() and verifies that the color block number is correct

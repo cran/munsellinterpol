@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Glenn Davis" />
+
+<meta name="date" content="2025-06-17" />
+
+<title>Soil Colors</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<style type="text/css">.tabwid {
+font-size: initial;
+padding-bottom: 1em;
+}
+.tabwid table{
+border-spacing:0px !important;
+border-collapse:collapse;
+line-height:1;
+margin-left:auto;
+margin-right:auto;
+border-width: 0;
+border-color: transparent;
+caption-side: top;
+}
+.tabwid-caption-bottom table{
+caption-side: bottom;
+}
+.tabwid_left table{
+margin-left:0;
+}
+.tabwid_right table{
+margin-right:0;
+}
+.tabwid td, .tabwid th {
+padding: 0;
+}
+.tabwid a {
+text-decoration: none;
+}
+.tabwid thead {
+background-color: transparent;
+}
+.tabwid tfoot {
+background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+.katex-display {
+margin: 0 0 !important;
+}
+</style>
+<script>document.addEventListener("DOMContentLoaded", function(event) {
+  var els = document.querySelectorAll(".tabwid");
+  var tabwid_link = document.querySelector('link[href*="tabwid.css"]')
+  if (tabwid_link === null) {
+    const tabwid_styles = document.evaluate("//style[contains(., 'tabwid')]", document, null, XPathResult.ANY_TYPE, null );
+    tabwid_link = tabwid_styles.iterateNext();
+  }
+
+  Array.prototype.forEach.call(els, function(template) {
+      const dest = document.createElement("div");
+      template.parentNode.insertBefore(dest, template.nextSibling)
+      dest.setAttribute("class", "flextable-shadow-host");
+      const fantome = dest.attachShadow({mode: 'open'});
+      fantome.appendChild(template);
+      if (tabwid_link !== null) {
+        fantome.appendChild(tabwid_link.cloneNode(true));
+      }
+  });
+
+  const shadowHosts = document.querySelectorAll('.flextable-shadow-host:not(:has(div > table.no-shadow-dom))');
+  shadowHosts.forEach(host => {
+    if (host.shadowRoot) {
+      const spanElements = host.shadowRoot.querySelector('div > table > caption > span[id]');
+      if (spanElements) {
+        const id = spanElements.getAttribute("id");
+        host.setAttribute("id", id);
+      }
+    }
+  });
+
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Soil Colors</h1>
+<h4 class="author">Glenn Davis</h4>
+<h4 class="date">2025-06-17</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#load-and-plot-selected-soil-spectra" id="toc-load-and-plot-selected-soil-spectra">Load and Plot Selected Soil
+Spectra</a></li>
+<li><a href="#a-function-to-compute-hvc-and-lab-from-reflectance-spectra" id="toc-a-function-to-compute-hvc-and-lab-from-reflectance-spectra">A
+Function to Compute HVC and Lab from Reflectance Spectra</a></li>
+<li><a href="#pick-an-illuminant-and-compute-the-munsell-hvc-for-it" id="toc-pick-an-illuminant-and-compute-the-munsell-hvc-for-it">Pick an
+Illuminant and Compute the Munsell HVC for It</a></li>
+<li><a href="#round-to-the-nearest-chip-in-the-munsell-soil-charts" id="toc-round-to-the-nearest-chip-in-the-munsell-soil-charts">Round to
+the Nearest Chip in the Munsell Soil Charts</a></li>
+<li><a href="#comparisons" id="toc-comparisons">Comparisons</a></li>
+<li><a href="#references" id="toc-references">References</a></li>
+<li><a href="#session-information" id="toc-session-information">Session
+Information</a></li>
+</ul>
+</div>
+
+<style type="text/css">
+body {
+max-width: 725px; 
+}
+h1{
+font-size: 18pt; 
+}
+</style>
+<p><br><br></p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(munsellinterpol)</span></code></pre></div>
+<p>The goal of this vignette is to give examples of rounding to the
+closest official color chip in one or more Munsell chart sets. The five
+chart sets are <strong>Soil</strong> <span class="citation">[11]</span>,
+<strong>Rock</strong> <span class="citation">[12]</span>,
+<strong>Bead</strong> <span class="citation">[13]</span>,
+<strong>Plant</strong> <span class="citation">[14]</span>, and
+<strong>The New Student Color Set</strong> <span class="citation">[10]</span>. For the color chip data we depend
+completely on Ferguson <span class="citation">[7]</span>. The
+supplementary material from this paper was put in computer readable form
+by Willie Ondricek, who greatly improved the wording of this vignette.
+One of the fields in this supplementary material is a color name for
+each chip; we call this name the <code>Ferguson Name</code>. In this
+vignette, we only use examples from the Munsell Soil-Color Charts.</p>
+<p>The key function in this vignette is <code>roundHVC()</code>. Other
+featured functions from <strong>munsellinterpol</strong> are
+<code>XYZtoMunsell()</code>, <code>MunsellNameFromHVC()</code>, and
+<code>ColorBlockFromMunsell()</code>. Other packages that play a very
+important part are <strong>OxSR</strong> <span class="citation">[8]</span>, <strong>colorSpec</strong> <span class="citation">[5]</span>, and <strong>spacesXYZ</strong> <span class="citation">[4]</span>. But we will not attach these and prefix
+their functions with the namespace to make it easier to locate them. The
+package <strong>flextable</strong> <span class="citation">[9]</span> is
+used in one section to display some RGB color patches.</p>
+<p><br><br></p>
+</div>
+<div id="load-and-plot-selected-soil-spectra" class="section level1">
+<h1>Load and Plot Selected Soil Spectra</h1>
+<p>The package <strong>OxSR</strong> has some high resolution (0.5 nm)
+reflectance spectra for 23 soil samples; these spectra are stored in the
+object <code>OxSR::soil_refle</code>. Of these 23 we have pre-selected a
+subset of 6 samples with high variability. The following function also
+adds an ideal neutral sample with constant reflectance of 18% - an 18%
+gray card <span class="citation">[16]</span>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>load_soil <span class="ot">&lt;-</span> <span class="cf">function</span>( <span class="at">soil_raw=</span>OxSR<span class="sc">::</span>soil_refle, <span class="at">subset=</span><span class="fu">c</span>( <span class="st">&quot;a4&quot;</span>, <span class="st">&quot;a6&quot;</span>, <span class="st">&quot;a8&quot;</span>, <span class="st">&quot;a11&quot;</span>, <span class="st">&quot;a14&quot;</span>, <span class="st">&quot;a15&quot;</span> ),</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>                                         <span class="at">wave=</span><span class="dv">380</span><span class="sc">:</span><span class="dv">780</span> )</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    {</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    <span class="co">#   locate only the wavelengths in OxSR::soil_refle that are relevant for color</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>    <span class="co">#   the given data.frame OxSR::soil_refle goes way into the infra-red and these are not needed</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>    <span class="co">#   We already know that all relevant multiples of 1nm are in soil_raw</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>    idx     <span class="ot">=</span> <span class="fu">match</span>( wave, soil_raw<span class="sc">$</span>wavelength_nm )</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>    <span class="co">#   extract just a subset of samples with high variability</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="co">#   the reflectances in OxSR::soil_refle are percentages, so divide by 100    </span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    mat     <span class="ot">=</span> <span class="fu">as.matrix</span>(soil_raw)[ idx, subset ] <span class="sc">/</span> <span class="dv">100</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>    </span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>    <span class="co">#   convert the matrix mat to a colorSpec object</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>    soil_spec <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">colorSpec</span>( mat, <span class="at">wavelength=</span>wave, <span class="at">quantity=</span><span class="st">&#39;reflectance&#39;</span> )</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>    </span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>    <span class="co">#   add neutral gray as a test sample</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>    gray      <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">neutralMaterial</span>( <span class="fl">0.18</span>, <span class="at">wavelength=</span>wave )</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>    soil_spec <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">bind</span>( soil_spec, gray )</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>   </span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>    <span class="fu">return</span>( soil_spec ) </span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>    }</span></code></pre></div>
+<p>Load the spectra and plot them.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>soil_spec <span class="ot">=</span> <span class="fu">load_soil</span>()</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">par</span>( <span class="at">omi=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">mai=</span><span class="fu">c</span>(<span class="fl">0.6</span>,<span class="fl">0.6</span>,<span class="fl">0.3</span>,<span class="fl">0.3</span>) )</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">plot</span>( soil_spec, <span class="at">legend=</span><span class="st">&quot;topleft&quot;</span> )</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- -->
+The graphed colors here are computed for Illuminant D65. This may not
+always be appropriate, so here is another function that can create and
+use illuminants of any Correlated Color Temperature (CCT).</p>
+<p><br><br></p>
+</div>
+<div id="a-function-to-compute-hvc-and-lab-from-reflectance-spectra" class="section level1">
+<h1>A Function to Compute HVC and Lab from Reflectance Spectra</h1>
+<p>The argument <code>CCT</code> in the following function is the
+desired Correlated Color Temperature of the illuminant.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>soil_data <span class="ot">&lt;-</span> <span class="cf">function</span>( soil_spec, CCT )</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>    {</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    wave    <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">wavelength</span>(soil_spec) </span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    </span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    <span class="co">#   make illuminant from the CCT. This is the reference illuminant in IES Standard TM-30.</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    illum   <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">referenceSpectraTM30</span>( CCT, <span class="at">wavelength=</span>wave )</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>    </span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    <span class="co">#   make scanner from this illuminant and the standard x,y,z responsivities of the human eye</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    scanner <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">product</span>( illum, <span class="st">&quot;soil&quot;</span>, colorSpec<span class="sc">::</span>xyz1931<span class="fl">.1</span>nm, <span class="at">wavelength=</span>wave )</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    </span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>    <span class="co">#   scale so the Perfect Reflecting Diffuser has Y=100; which is conventional for Munsell work</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    scanner <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">calibrate</span>( scanner, <span class="at">response=</span><span class="fu">c</span>(<span class="cn">NA</span>,<span class="dv">100</span>,<span class="cn">NA</span>), <span class="at">method=</span><span class="st">&#39;scaling&#39;</span> )</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>    </span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>    <span class="co">#   compute white point of illum</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>    white   <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">product</span>( colorSpec<span class="sc">::</span><span class="fu">neutralMaterial</span>(<span class="dv">1</span>,<span class="at">wavelength=</span>wave), scanner )</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>    </span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>    <span class="co">#   compute XYZ for all soil samples; this is XYZ under illum</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>    XYZ     <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">product</span>( soil_spec, scanner )</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>    </span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>    <span class="co">#   compute Lab for all soil samples, under illum</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>    Lab <span class="ot">=</span> spacesXYZ<span class="sc">::</span><span class="fu">LabfromXYZ</span>( XYZ, white )</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>    </span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>    <span class="co"># chromatically adapt soil sample XYZ under illum, to sample XYZ under Illuminant C</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>    white.C <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> spacesXYZ<span class="sc">::</span><span class="fu">standardXYZ</span>( <span class="st">&quot;C.NBS&quot;</span> )   <span class="co"># use the original NBS variant of this white point</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>    theCAT  <span class="ot">=</span> spacesXYZ<span class="sc">::</span><span class="fu">CAT</span>( white, white.C )</span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>    XYZ.C   <span class="ot">=</span> spacesXYZ<span class="sc">::</span><span class="fu">adaptXYZ</span>( theCAT, XYZ )</span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>    </span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>    <span class="co">#   convert XYZ.C (XYZ under Illuminant C) to Munsell HVC.</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a>    HVC     <span class="ot">=</span> <span class="fu">XYZtoMunsell</span>( XYZ.C, <span class="at">xyC=</span><span class="st">&quot;NBS&quot;</span> )  <span class="co">#  use the original NBS variant, as in standardXYZ() above</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a>    <span class="fu">rownames</span>(HVC)   <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">specnames</span>(soil_spec)</span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a>    </span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>    <span class="co"># create output data.frame and add 4 columns: HVC, Munsell notation, ISCC-NBS color name, and Lab</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a>    out <span class="ot">=</span> <span class="fu">data.frame</span>( <span class="at">row.names=</span><span class="fu">rownames</span>(HVC) )</span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a>    out<span class="sc">$</span>HVC     <span class="ot">=</span> HVC</span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a>    out<span class="sc">$</span>Munsell <span class="ot">=</span> <span class="fu">MunsellNameFromHVC</span>( HVC )</span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a>    out[[ <span class="st">&quot;ISCC-NBS Name&quot;</span> ]] <span class="ot">=</span> <span class="fu">ColorBlockFromMunsell</span>( HVC )<span class="sc">$</span>Name</span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a>    out<span class="sc">$</span>Lab     <span class="ot">=</span> Lab</span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a>    </span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a>    <span class="fu">return</span>( out )</span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a>    }</span></code></pre></div>
+<p>This one is fairly long, but it does a lot of work.</p>
+<p><br><br></p>
+</div>
+<div id="pick-an-illuminant-and-compute-the-munsell-hvc-for-it" class="section level1">
+<h1>Pick an Illuminant and Compute the Munsell HVC for It</h1>
+<p>When viewing soil samples, these are the official
+recommendations:</p>
+<blockquote>
+<p>The visual impression of color from the standard color chips is
+accurate only under standard conditions of light intensity and quality.
+Comparison of soil color to the standard Munsell chips should be done
+without sunglasses and in normal sunlight. … If artificial light is used
+… the light source used must be as near to the white light of midday as
+possible. — from <em>Conditions for measuring color</em> in <span class="citation">[11]</span></p>
+</blockquote>
+<p>Instead of “normal sunlight” I believe the authors actually meant
+“normal daylight”, as in the next sentence “light of midday”. The
+American Cinematographer Manual, p 199 of <span class="citation">[6]</span>, says that a reasonable Correlated Color
+Temperature (CCT) for “Average Summer Daylight” is 6500 K. So we’ll
+choose the CIE-standardized daylight illuminant with CCT=6500 for this
+calculation. Note that the white point of this illuminant is also the
+white point for the color space sRGB.</p>
+<p>Some teams of soil scientists may use viewing conditions that are
+different, and also want agreement between human and instrumental
+Munsell colors. Here are some possible alternatives to the daylight
+illuminant with CCT=6500 (D65). An unofficial page <span class="citation">[15]</span>, recommends that viewing is done under
+“Natural light conditions (preferably on a cloudy day or in shaded
+area)”. Reference <span class="citation">[6]</span> states that a
+reasonable CCT for “Average Summer Shade” is 8000K. So if viewing is
+done in a shaded area, CCT=8000 might be more appropriate. For viewing
+indoors under incandescent lamps, warm light with CCT=3000 K might be
+more appropriate. For viewing indoors under LEDs, an actual LED spectrum
+might be more appropriate. There are many such LED spectra in packages
+<strong>photobiologyLEDs</strong> <span class="citation">[2]</span> and
+<strong>photobiologyLamps</strong> <span class="citation">[3]</span>.
+These can be converted to <code>colorSpec</code> objects using
+<code>photobiologyInOut::as.colorSpec()</code> <span class="citation">[1]</span>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>dat_soil <span class="ot">=</span> <span class="fu">soil_data</span>( soil_spec, <span class="at">CCT=</span><span class="dv">6500</span> )</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>dat_soil</span></code></pre></div>
+<pre><code>##                   HVC.H       HVC.V       HVC.C        Munsell                 ISCC-NBS Name
+## a4           18.5080067   5.3137162   0.9324906 8.5YR 5.3/0.93           light brownish gray
+## a6           13.4661350   5.7955799   4.1294108  3.5YR 5.8/4.1                   light brown
+## a8           12.9220689   5.4686500   3.9175170  2.9YR 5.5/3.9           light reddish brown
+## a11          19.2796152   6.2947929   1.6599596  9.3YR 6.3/1.7 light grayish yellowish brown
+## a14          17.1148841   6.8192429   3.1407503  7.1YR 6.8/3.1         light yellowish brown
+## a15          13.4261954   5.0039322   3.3763618    3.4YR 5/3.4                   light brown
+## Neutral0.18 100.0000000   4.8519274   0.0000000         N 4.9/                   medium gray
+##                 Lab.L     Lab.a     Lab.b
+## a4          54.186009  2.018138  5.414906
+## a6          59.009553 13.256621 18.519024
+## a8          55.734273 13.181574 16.807799
+## a11         63.973658  2.786787 10.440434
+## a14         69.112885  7.290566 17.315536
+## a15         51.039279 11.337843 14.982868
+## Neutral0.18 49.496108  0.000000  0.000000</code></pre>
+<p>Note that all 6 pre-selected soil samples are within the
+<strong>YR</strong> (Yellow-Red) Hues. Actually all 23 soil samples are
+<strong>YR</strong>, and not just these selected 6 ! Note that for the
+<code>Neutral0.18</code> test sample (not soil), <code>C=a=b=0</code> as
+they should be.</p>
+<p><br><br></p>
+</div>
+<div id="round-to-the-nearest-chip-in-the-munsell-soil-charts" class="section level1">
+<h1>Round to the Nearest Chip in the Munsell Soil Charts</h1>
+<p>The above samples have high precision, but unfortunately that
+precision makes it inconvenient to report in a way that researchers
+familiar with the Munsell Soil Color Charts can relate to. For the sake
+of consistency with the traditional way of communicating colors, it is
+sometimes better to provide the Munsell notation for the closest color
+chip in the official Soil Charts.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>dat_rnd     <span class="ot">=</span> <span class="fu">roundHVC</span>( dat_soil<span class="sc">$</span>HVC, <span class="at">books=</span><span class="st">&quot;soil&quot;</span> )</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>dat_rnd<span class="sc">$</span>HVC <span class="ot">=</span> <span class="cn">NULL</span>     <span class="co"># delete matrix HVC, because it is redundant in this context</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>dat_rnd</span></code></pre></div>
+<pre><code>##                             ISCC-NBS Name MunsellRounded       Ferguson Name
+## a4                    light brownish gray      7.5YR 5/1                Gray
+## a6                            light brown      2.5YR 6/4 Light reddish brown
+## a8                    light reddish brown      2.5YR 5/4       Reddish brown
+## a11         light grayish yellowish brown       10YR 6/2 Light brownish gray
+## a14                 light yellowish brown      7.5YR 7/3                Pink
+## a15                           light brown      2.5YR 5/3       Reddish brown
+## Neutral0.18                   medium gray           N 5/                Gray</code></pre>
+<p>The Munsell notations in the <code>MunsellRounded</code> column are
+guaranteed to be in the Soil Color Charts; note that all 6 are distinct.
+The <code>ISCC-NBS Name</code>s are computed from the original and
+precise HVC, and the <code>Ferguson Name</code>s are computed from
+<code>MunsellRounded</code>. Note that these names are all
+different.</p>
+<p>Note that 3 of the samples are on the same Hue chart
+<strong>2.5YR</strong>. Plot that Hue chart and label those 3
+samples:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">par</span>( <span class="at">omi=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="at">mai=</span><span class="fu">c</span>(<span class="fl">0.4</span>,<span class="fl">0.4</span>,<span class="fl">0.25</span>,<span class="dv">0</span>) )</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">plotPatchesH</span>( <span class="st">&quot;2.5YR&quot;</span>,   <span class="at">value=</span><span class="fu">c</span>(<span class="fl">2.5</span>,<span class="dv">3</span><span class="sc">:</span><span class="dv">8</span>), <span class="at">chroma=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">8</span>) )</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="fu">text</span>( <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">4</span>,<span class="dv">4</span>), <span class="fu">c</span>(<span class="st">&quot;a6&quot;</span>,<span class="st">&quot;a8&quot;</span>,<span class="st">&quot;a15&quot;</span>), <span class="at">adj=</span><span class="fu">c</span>(<span class="fl">0.5</span>,<span class="fl">0.5</span>), <span class="at">col=</span><span class="st">&quot;white&quot;</span> )</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- -->
+The Value and Chroma vectors match the actual soil color chart, but the
+chips here are a superset of those in the chart. The top-right chip,
+<strong>2.5YR 8/8</strong>, is inside the object color gamut, but
+outside the sRGB gamut. These colors are best viewed on a display that
+is calibrated for sRGB.</p>
+<p><br><br></p>
+</div>
+<div id="comparisons" class="section level1">
+<h1>Comparisons</h1>
+<p>Finally, we make a table with side-by-side color comparisons of the
+precisely computed color in Munsell notation, and the Munsell notation
+after rounding to the closest color chip in the Munsell Soil Color
+Charts.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>tbl <span class="ot">=</span> <span class="fu">data.frame</span>( <span class="at">row.names=</span><span class="dv">1</span><span class="sc">:</span>(<span class="dv">2</span><span class="sc">*</span><span class="fu">nrow</span>(dat_soil)) )</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>tbl[[ <span class="st">&quot;Sample&quot;</span> ]]   <span class="ot">=</span> <span class="fu">as.character</span>( <span class="fu">rbind</span>(<span class="fu">rownames</span>(dat_soil),<span class="st">&#39;&#39;</span>) )</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>tbl[[ <span class="st">&quot;Precise&quot;</span> ]] <span class="ot">=</span> <span class="fu">as.character</span>( <span class="fu">rbind</span>(<span class="st">&#39;&#39;</span>,<span class="fu">MunsellNameFromHVC</span>( dat_soil<span class="sc">$</span>HVC, <span class="at">digits=</span><span class="dv">3</span> )) )</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>tbl[[ <span class="st">&quot;Rounded&quot;</span> ]]  <span class="ot">=</span> <span class="fu">as.character</span>( <span class="fu">rbind</span>(<span class="st">&#39;&#39;</span>,dat_rnd<span class="sc">$</span>MunsellRounded ) )</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="fu">library</span>( flextable )</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>myrt <span class="ot">&lt;-</span> <span class="fu">regulartable</span>( tbl )</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>myrt <span class="ot">&lt;-</span> <span class="fu">width</span>( myrt, <span class="at">j=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>), <span class="at">width=</span><span class="dv">2</span> )</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>myrt <span class="ot">&lt;-</span> <span class="fu">align</span>( myrt, <span class="at">j=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">align=</span><span class="st">&#39;center&#39;</span>, <span class="at">part=</span><span class="st">&#39;all&#39;</span> )</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>myrt <span class="ot">&lt;-</span> <span class="fu">hline</span>( myrt, <span class="at">i=</span><span class="fu">seq</span>( <span class="dv">2</span>, <span class="fu">nrow</span>(tbl)<span class="sc">-</span><span class="dv">2</span>, <span class="at">by=</span><span class="dv">2</span> ), <span class="at">border=</span><span class="fu">fp_border_default</span>( <span class="at">color=</span><span class="st">&quot;black&quot;</span>, <span class="at">width=</span><span class="dv">2</span> ) )</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>myrt <span class="ot">&lt;-</span> <span class="fu">hrule</span>( myrt, <span class="at">rule =</span> <span class="st">&quot;exact&quot;</span> )</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>idxcolor <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="fu">nrow</span>(tbl)<span class="sc">-</span><span class="dv">1</span>,<span class="at">by=</span><span class="dv">2</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>myrt <span class="ot">&lt;-</span> <span class="fu">height</span>( myrt, <span class="at">i=</span>idxcolor, <span class="at">height=</span><span class="dv">1</span> )</span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>myrt <span class="ot">&lt;-</span> <span class="fu">bg</span>( myrt, <span class="at">i=</span>idxcolor, <span class="at">j=</span><span class="dv">2</span>, <span class="at">bg=</span><span class="fu">rgb</span>( <span class="fu">round</span>(<span class="fu">MunsellTosRGB</span>(dat_soil<span class="sc">$</span>HVC)<span class="sc">$</span>RGB), <span class="at">max=</span><span class="dv">255</span> ) )</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>myrt <span class="ot">&lt;-</span> <span class="fu">bg</span>( myrt, <span class="at">i=</span>idxcolor, <span class="at">j=</span><span class="dv">3</span>, <span class="at">bg=</span><span class="fu">rgb</span>( <span class="fu">round</span>(<span class="fu">MunsellTosRGB</span>(dat_rnd<span class="sc">$</span>MunsellRounded)<span class="sc">$</span>RGB), <span class="at">max=</span><span class="dv">255</span> ) )</span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>myrt</span></code></pre></div>
+<div class="tabwid"><style>.cl-a0676758{}.cl-a05f7124{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a06272ac{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a0629dea{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629deb{width:2in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629df4{width:0.75in;height:1in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e80{width:2in;height:1in;background-color:rgba(137, 128, 120, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e81{width:2in;height:1in;background-color:rgba(130, 120, 112, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e8a{width:0.75in;height:0.25in;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e8b{width:2in;height:0.25in;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e8c{width:0.75in;height:1in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e94{width:2in;height:1in;background-color:rgba(176, 133, 110, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e95{width:2in;height:1in;background-color:rgba(181, 138, 118, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e9e{width:2in;height:1in;background-color:rgba(166, 125, 105, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e9f{width:2in;height:1in;background-color:rgba(154, 112, 94, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629ea0{width:2in;height:1in;background-color:rgba(168, 153, 137, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629ea8{width:2in;height:1in;background-color:rgba(161, 145, 125, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629ea9{width:2in;height:1in;background-color:rgba(193, 163, 138, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629eaa{width:2in;height:1in;background-color:rgba(197, 168, 143, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629eab{width:2in;height:1in;background-color:rgba(149, 114, 97, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629eb2{width:2in;height:1in;background-color:rgba(147, 114, 101, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629eb3{width:2in;height:1in;background-color:rgba(118, 118, 118, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629eb4{width:2in;height:1in;background-color:rgba(121, 121, 121, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629eb5{width:0.75in;height:0.25in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629ebc{width:2in;height:0.25in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a0676758"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a0629dea"><p class="cl-a06272ac"><span class="cl-a05f7124">Sample</span></p></th><th class="cl-a0629deb"><p class="cl-a06272ac"><span class="cl-a05f7124">Precise</span></p></th><th class="cl-a0629deb"><p class="cl-a06272ac"><span class="cl-a05f7124">Rounded</span></p></th></tr></thead><tbody><tr><td class="cl-a0629df4"><p class="cl-a06272ac"><span class="cl-a05f7124">a4</span></p></td><td class="cl-a0629e80"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e81"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629e8a"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">8.51YR 5.31/0.932</span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">7.5YR 5/1</span></p></td></tr><tr><td class="cl-a0629e8c"><p class="cl-a06272ac"><span class="cl-a05f7124">a6</span></p></td><td class="cl-a0629e94"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e95"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629e8a"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">3.47YR 5.8/4.13</span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">2.5YR 6/4</span></p></td></tr><tr><td class="cl-a0629e8c"><p class="cl-a06272ac"><span class="cl-a05f7124">a8</span></p></td><td class="cl-a0629e9e"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e9f"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629e8a"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">2.92YR 5.47/3.92</span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">2.5YR 5/4</span></p></td></tr><tr><td class="cl-a0629e8c"><p class="cl-a06272ac"><span class="cl-a05f7124">a11</span></p></td><td class="cl-a0629ea0"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629ea8"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629e8a"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">9.28YR 6.29/1.66</span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">10YR 6/2</span></p></td></tr><tr><td class="cl-a0629e8c"><p class="cl-a06272ac"><span class="cl-a05f7124">a14</span></p></td><td class="cl-a0629ea9"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629eaa"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629e8a"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">7.11YR 6.82/3.14</span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">7.5YR 7/3</span></p></td></tr><tr><td class="cl-a0629e8c"><p class="cl-a06272ac"><span class="cl-a05f7124">a15</span></p></td><td class="cl-a0629eab"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629eb2"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629e8a"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">3.43YR 5/3.38</span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">2.5YR 5/3</span></p></td></tr><tr><td class="cl-a0629e8c"><p class="cl-a06272ac"><span class="cl-a05f7124">Neutral0.18</span></p></td><td class="cl-a0629eb3"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629eb4"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629eb5"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629ebc"><p class="cl-a06272ac"><span class="cl-a05f7124">N 4.85/</span></p></td><td class="cl-a0629ebc"><p class="cl-a06272ac"><span class="cl-a05f7124">N 5/</span></p></td></tr></tbody></table></div>
+<p>These colors are best viewed on a display that is calibrated for
+sRGB.</p>
+<p><br><br></p>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-photobiologyInOut" class="csl-entry">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">APHALO, Pedro J. photobiologyInOut: Read
+spectral and logged data from foreign files. <em>UV4Plants Bulletin</em>
+[online]. 2015, <strong>2015</strong>(1), 21–29. Available at: doi:<a href="https://doi.org/10.19232/uv4pb.2015.1.14">10.19232/uv4pb.2015.1.14</a></div>
+</div>
+<div id="ref-photobiologyLEDs" class="csl-entry">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">APHALO, Pedro J. photobiologyLEDs: Spectral
+data for light-emitting-diodes. <em>UV4Plants Bulletin</em> [online].
+2015, <strong>2015</strong>(1), 21–29. Available at: doi:<a href="https://doi.org/10.19232/uv4pb.2015.1.14">10.19232/uv4pb.2015.1.14</a></div>
+</div>
+<div id="ref-photobiologyLamps" class="csl-entry">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">APHALO, Pedro J. photobiologyLamps: Spectral
+irradiance data for lamps. <em>UV4Plants Bulletin</em> [online]. 2015,
+<strong>2015</strong>(1), 21–29. Available at: doi:<a href="https://doi.org/10.19232/uv4pb.2015.1.14">10.19232/uv4pb.2015.1.14</a></div>
+</div>
+<div id="ref-spacesXYZ" class="csl-entry">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">DAVIS, Glenn. <em><span class="nocase">spacesXYZ: CIE XYZ and some of Its Derived Color
+Spaces</span></em> [online]. 2025. Available at: <a href="https://cran.r-project.org/package=spacesXYZ">https://cran.r-project.org/package=spacesXYZ</a></div>
+</div>
+<div id="ref-colorSpec" class="csl-entry">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">DAVIS, Glenn. <em><span class="nocase">colorSpec: Color Calculations with Emphasis on Spectral
+Data</span></em> [online]. 2018. Available at: <a href="https://CRAN.R-project.org/package=colorSpec">https://CRAN.R-project.org/package=colorSpec</a></div>
+</div>
+<div id="ref-Detmers1986" class="csl-entry">
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">DETMERS, F. H. and CINEMATOGRAPHERS, American
+Society of. <em><span>American Cinematographer Manual: Sixth
+Edition</span></em>. B.m.: The ASC Press, 1986. ISBN 9780935578072.
+</div>
+</div>
+<div id="ref-Ferguson2014" class="csl-entry">
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline">FERGUSON, Jonathan. <span class="nocase">Munsell notations and color names: Recommendations for
+Archaeological Practice</span>. <em>Journal of Field Archaeology</em>
+[online]. 2014, <strong>39</strong>(4), 327–335. Available at: doi:<a href="https://doi.org/10.1179/0093469014Z.00000000097">10.1179/0093469014Z.00000000097</a></div>
+</div>
+<div id="ref-OxSR" class="csl-entry">
+<div class="csl-left-margin">[8] </div><div class="csl-right-inline">FROSI, Gustavo, BARRÓN, Vidal, INDA, Alberto
+and BASTIANI, Kayn. <em>OxSR: Soil iron oxides via diffuse
+reflectance</em> [online]. 2025. Available at: <a href="https://github.com/FGu5tav0/OxSR/">https://github.com/FGu5tav0/OxSR/</a></div>
+</div>
+<div id="ref-flextable" class="csl-entry">
+<div class="csl-left-margin">[9] </div><div class="csl-right-inline">GOHEL, David and SKINTZOS, Panagiotis.
+<em><span class="nocase">flextable: Functions for Tabular
+Reporting</span></em> [online]. 2024. Available at: doi:<a href="https://doi.org/10.32614/CRAN.package.flextable">10.32614/CRAN.package.flextable</a></div>
+</div>
+<div id="ref-Long2011" class="csl-entry">
+<div class="csl-left-margin">[10] </div><div class="csl-right-inline">LONG, J. <em><span>The New Munsell<span></span>
+Student Color Set 3rd Edition</span></em>. B.m.: Bloomsbury Academic,
+2011. ISBN 9781609011567. </div>
+</div>
+<div id="ref-MunsellSoil" class="csl-entry">
+<div class="csl-left-margin">[11] </div><div class="csl-right-inline">MUNSELL, Color. <em><span>Munsell Soil-Color
+Charts</span></em>. B.m.: Munsell Color, 2009. </div>
+</div>
+<div id="ref-MunsellRock" class="csl-entry">
+<div class="csl-left-margin">[12] </div><div class="csl-right-inline">MUNSELL, Color. <em><span>Munsell Rock-Color
+Charts</span></em>. B.m.: Munsell Color, 2009. </div>
+</div>
+<div id="ref-MunsellBead" class="csl-entry">
+<div class="csl-left-margin">[13] </div><div class="csl-right-inline">MUNSELL, Color. <em><span>Munsell Bead Color
+Book</span></em>. B.m.: Munsell Color, 2012. </div>
+</div>
+<div id="ref-MunsellPlant" class="csl-entry">
+<div class="csl-left-margin">[14] </div><div class="csl-right-inline">MUNSELL, Color. <em><span class="nocase">Munsell Color Charts for Plant Tissues</span></em>. B.m.:
+Munsell Color, 1977. </div>
+</div>
+<div id="ref-Seelinger" class="csl-entry">
+<div class="csl-left-margin">[15] </div><div class="csl-right-inline">SEELINGER, Marc. <span class="nocase">Mastering
+Soil Analysis: How to Use the Munsell Soil Color Chart</span>.
+<em>https://swampschool.org/mastering-soil-analysis-how-to-use-the-munsell-soil-color-chart/</em>.
+2024. </div>
+</div>
+<div id="ref-graycard" class="csl-entry">
+<div class="csl-left-margin">[16] </div><div class="csl-right-inline">WIKIPEDIA CONTRIBUTORS. <em>Gray card —
+<span>Wikipedia</span><span>,</span> the free encyclopedia</em>
+[online]. 2024. Available at: <a href="https://en.wikipedia.org/w/index.php?title=Gray_card&amp;oldid=1244084939">https://en.wikipedia.org/w/index.php?title=Gray_card&amp;oldid=1244084939</a>.
+[Online; accessed 16-June-2025]</div>
+</div>
+</div>
+<p><br><br></p>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session Information</h1>
+<pre>
+R version 4.5.1 (2025-06-13 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26100)
+
+Matrix products: default
+  LAPACK version 3.12.1
+
+locale:
+[1] LC_COLLATE=C                           LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8 LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Los_Angeles
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] flextable_0.9.7       spacesXYZ_1.6-0       spacesRGB_1.7-0       munsellinterpol_3.2-0
+
+loaded via a namespace (and not attached):
+ [1] katex_1.5.0             jsonlite_2.0.0          compiler_4.5.1          equatags_0.2.1         
+ [5] Rcpp_1.0.14             zip_2.3.3               xml2_1.3.8              jquerylib_0.1.4        
+ [9] fontquiver_0.2.1        systemfonts_1.2.3       textshaping_1.0.1       uuid_1.2-1             
+[13] yaml_2.3.10             fastmap_1.2.0           R6_2.6.1                gdtools_0.4.2          
+[17] microbenchmark_1.5.0    curl_6.2.2              knitr_1.50              colorSpec_1.8-0        
+[21] logger_0.4.0            openssl_2.3.2           bslib_0.9.0             rlang_1.1.6            
+[25] V8_6.0.3                cachem_1.1.0            xfun_0.52               sass_0.4.10            
+[29] cli_3.6.5               OxSR_1.0.1              digest_0.6.37           grid_4.5.1             
+[33] rootSolve_1.8.2.4       askpass_1.2.1           lifecycle_1.0.4         evaluate_1.0.3         
+[37] glue_1.8.0              data.table_1.17.2       fontLiberation_0.1.0    officer_0.6.8          
+[41] ragg_1.4.0              xslt_1.5.1              fontBitstreamVera_0.1.1 rmarkdown_2.29         
+[45] tools_4.5.1             htmltools_0.5.8.1      
+</pre>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

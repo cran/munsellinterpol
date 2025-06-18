@@ -100,7 +100,7 @@ MunsellToxyY  <-  function( MunsellSpec,
     xyY = matrix( NA_real_, n, 3 )
     colnames( xyY ) = c( 'x', 'y', 'Y' )
     
-    #   do Y coordinates all in 1 call
+    #   do all Y coordinates in only 1 call
     xyY[ ,3]    = YfromV( HVC[ ,2], which=YfromV  )  #*  (whiteC[3]/100)
                 
     
@@ -110,7 +110,7 @@ MunsellToxyY  <-  function( MunsellSpec,
     for( i in 1:n )
         {
         chroma  = HVC[i,3]
-        if( ! is.finite(chroma) )
+        if( ! is.finite(chroma) || chroma<0 )
             {
             #   log_level( ERROR, "Failed to map sample %d, of %d. chroma=%g.", i, n, chroma )
             next
@@ -125,6 +125,12 @@ MunsellToxyY  <-  function( MunsellSpec,
                 
         hue     = HVC[i,1]
         value   = HVC[i,2]
+        
+        if( value == 0 )
+            {
+            #   we must have 0<chroma, and this is physically unrealizable
+            next
+            }
         
         iV = match( value, V.vector )
         if( ! is.na(iV) )
@@ -224,9 +230,13 @@ MunsellToxyY  <-  function( MunsellSpec,
         
         if( any(mask) )
             {
-            log_level( WARN, "%d samples, out of %d, were mapped to xy outside the triangle.", sum(mask), n )
-            if( sum(mask) <= 10 )
+            res = log_level( WARN, "%d samples, out of %d, were mapped to xy outside the triangle.", sum(mask), n )
+            
+            if( ! is.null(res)  &&  sum(mask) <= 10 )
+                {
+                #  since res is not NULL, a logging event actually occurred, and the number of problems is small
                 print( out[mask, ] )
+                }
             }            
         }
     

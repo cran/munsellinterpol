@@ -1,6 +1,13 @@
 # NEWS for **munsellinterpol** package
 
 
+### Version 3.2-0  [2025-06-17]
+
+* added new vignette: Soil Colors
+* added arguments `value` and `chroma` to `plotPatchesH()`
+* added argument `coeffs` to `NickersonColorDifference()`
+
+
 ### Version 3.1-0  [2025-01-19]
 
 * all logging now done with package **logger**, which is Imported

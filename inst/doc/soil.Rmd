@@ -1,0 +1,294 @@
+---
+title: "Soil Colors"
+author: "Glenn Davis"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+    number_sections: false
+bibliography: bibliography.bib
+
+# csl: iso690-numeric-brackets-cs.csl
+csl: personal.csl
+# csl: institute-of-mathematical-statistics.csl
+# csl: transactions-on-mathematical-software.csl
+vignette: >
+  %\VignetteIndexEntry{Soil Colors}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{css, echo=FALSE}
+body {
+  max-width: 725px;     /* make wider, default is 700px */
+}
+h1{
+  font-size: 18pt;    /* make the level 1 headers smaller */
+}
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options( width=100 )
+```
+
+<br><br>
+
+#  Introduction
+
+
+
+```{r echo=TRUE, message=TRUE}
+library(munsellinterpol)
+```
+
+The goal of this vignette is to give examples of rounding to the closest official color chip in
+one or more Munsell chart sets.
+The five chart sets are 
+**Soil** @MunsellSoil, **Rock** @MunsellRock, **Bead** @MunsellBead, **Plant** @MunsellPlant, 
+and **The New Student Color Set** @Long2011.
+For the color chip data we depend completely on Ferguson @Ferguson2014.
+The supplementary material from this paper was put in computer readable form by Willie Ondricek,
+who greatly improved the wording of this vignette.
+One of the fields in this supplementary material is a color name for each chip;
+we call this name the `Ferguson Name`.
+In this vignette, we only use examples from the Munsell Soil-Color Charts.
+
+The key function in this vignette is `roundHVC()`.
+Other featured functions from **munsellinterpol** are
+`XYZtoMunsell()`,
+`MunsellNameFromHVC()`, and
+`ColorBlockFromMunsell()`.
+Other packages that play a very important part are
+**OxSR** @OxSR, **colorSpec** @colorSpec, and **spacesXYZ** @spacesXYZ.
+But we will not attach these and prefix their functions with the namespace
+to make it easier to locate them.
+The package **flextable** @flextable is used in one section to display some RGB color patches.
+
+
+<br><br>
+
+# Load and Plot Selected Soil Spectra
+
+The package **OxSR** has some high resolution (0.5 nm) reflectance spectra for 23 soil samples;
+these spectra are stored in the object `OxSR::soil_refle`.
+Of these 23 we have pre-selected a subset of 6 samples with high variability.
+The following function also adds an ideal neutral sample with constant reflectance of 18% -
+an 18% gray card @graycard.
+
+```{r echo=TRUE, warning=TRUE }
+load_soil <- function( soil_raw=OxSR::soil_refle, subset=c( "a4", "a6", "a8", "a11", "a14", "a15" ),
+                                         wave=380:780 )
+    {
+    #   locate only the wavelengths in OxSR::soil_refle that are relevant for color
+    #   the given data.frame OxSR::soil_refle goes way into the infra-red and these are not needed
+    #   We already know that all relevant multiples of 1nm are in soil_raw
+    idx     = match( wave, soil_raw$wavelength_nm )
+
+    #   extract just a subset of samples with high variability
+    #   the reflectances in OxSR::soil_refle are percentages, so divide by 100    
+    mat     = as.matrix(soil_raw)[ idx, subset ] / 100
+    
+    #   convert the matrix mat to a colorSpec object
+    soil_spec = colorSpec::colorSpec( mat, wavelength=wave, quantity='reflectance' )
+    
+    #   add neutral gray as a test sample
+    gray      = colorSpec::neutralMaterial( 0.18, wavelength=wave )
+    soil_spec = colorSpec::bind( soil_spec, gray )
+   
+    return( soil_spec ) 
+    }
+```    
+
+Load the spectra and plot them.
+```{r echo=TRUE, warning=TRUE,  fig.width=7.3, fig.height=5.2,  fig.show='hold' }
+soil_spec = load_soil()
+par( omi=c(0,0,0,0), mai=c(0.6,0.6,0.3,0.3) )
+plot( soil_spec, legend="topleft" )
+```
+The graphed colors here are computed for Illuminant D65.
+This may not always be appropriate, so here is another function that
+can create and use illuminants of any Correlated Color Temperature (CCT).
+
+
+<br><br>
+
+# A Function to Compute HVC and Lab from Reflectance Spectra
+
+The argument `CCT` in the following function is the desired Correlated Color Temperature of the illuminant.
+
+```{r echo=TRUE, warning=TRUE }
+soil_data <- function( soil_spec, CCT )
+    {
+    wave    = colorSpec::wavelength(soil_spec) 
+    
+    #   make illuminant from the CCT. This is the reference illuminant in IES Standard TM-30.
+    illum   = colorSpec::referenceSpectraTM30( CCT, wavelength=wave )
+    
+    #   make scanner from this illuminant and the standard x,y,z responsivities of the human eye
+    scanner = colorSpec::product( illum, "soil", colorSpec::xyz1931.1nm, wavelength=wave )
+    
+    #   scale so the Perfect Reflecting Diffuser has Y=100; which is conventional for Munsell work
+    scanner = colorSpec::calibrate( scanner, response=c(NA,100,NA), method='scaling' )
+    
+    #   compute white point of illum
+    white   = colorSpec::product( colorSpec::neutralMaterial(1,wavelength=wave), scanner )
+    
+    #   compute XYZ for all soil samples; this is XYZ under illum
+    XYZ     = colorSpec::product( soil_spec, scanner )
+    
+    #   compute Lab for all soil samples, under illum
+    Lab = spacesXYZ::LabfromXYZ( XYZ, white )
+    
+    # chromatically adapt soil sample XYZ under illum, to sample XYZ under Illuminant C
+    white.C = 100 * spacesXYZ::standardXYZ( "C.NBS" )   # use the original NBS variant of this white point
+    theCAT  = spacesXYZ::CAT( white, white.C )
+    XYZ.C   = spacesXYZ::adaptXYZ( theCAT, XYZ )
+    
+    #   convert XYZ.C (XYZ under Illuminant C) to Munsell HVC.
+    HVC     = XYZtoMunsell( XYZ.C, xyC="NBS" )  #  use the original NBS variant, as in standardXYZ() above
+    rownames(HVC)   = colorSpec::specnames(soil_spec)
+    
+    # create output data.frame and add 4 columns: HVC, Munsell notation, ISCC-NBS color name, and Lab
+    out = data.frame( row.names=rownames(HVC) )
+    out$HVC     = HVC
+    out$Munsell = MunsellNameFromHVC( HVC )
+    out[[ "ISCC-NBS Name" ]] = ColorBlockFromMunsell( HVC )$Name
+    out$Lab     = Lab
+    
+    return( out )
+    }
+```
+This one is fairly long, but it does a lot of work.
+
+
+<br><br>
+
+#  Pick an Illuminant and Compute the Munsell HVC for It
+
+When viewing soil samples, these are the official recommendations:
+
+> The visual impression of color from the standard color chips is accurate only
+> under standard conditions of light intensity and quality.
+> Comparison of soil color to the standard Munsell chips should be done
+> without sunglasses and in normal sunlight. ...
+> If artificial light is used ... the light source used must be as near to
+> the white light of midday as possible.
+> --- from _Conditions for measuring color_ in @MunsellSoil
+
+Instead of "normal sunlight" I believe the authors actually meant "normal daylight",
+as in the next sentence "light of midday".
+The American Cinematographer Manual, p 199 of @Detmers1986,
+says that a reasonable Correlated Color Temperature (CCT)
+for "Average Summer Daylight" is 6500 K.
+So we'll choose the CIE-standardized daylight illuminant with CCT=6500 for this calculation.
+Note that the white point of this illuminant is also the white point for the color space sRGB.
+
+Some teams of soil scientists may use viewing conditions that are different,
+and also want agreement between human and instrumental Munsell colors.
+Here are some possible alternatives to the daylight illuminant with CCT=6500 (D65).
+An unofficial page @Seelinger, recommends that viewing is done under
+"Natural light conditions (preferably on a cloudy day or in shaded area)".
+Reference @Detmers1986 states that a reasonable CCT for "Average Summer Shade" is 8000K.
+So if viewing is done in a shaded area, CCT=8000 might be more appropriate.
+For viewing indoors under incandescent lamps, warm light with CCT=3000 K might be more appropriate.
+For viewing indoors under LEDs, an actual LED spectrum might be more appropriate.
+There are many such LED spectra in packages
+**photobiologyLEDs**  @photobiologyLEDs 
+and 
+**photobiologyLamps** @photobiologyLamps.
+These can be converted to `colorSpec` objects using 
+`photobiologyInOut::as.colorSpec()` @photobiologyInOut.
+
+
+```{r echo=TRUE, message=TRUE}
+dat_soil = soil_data( soil_spec, CCT=6500 )
+dat_soil
+```
+Note that all 6 pre-selected soil samples are within the **YR** (Yellow-Red) Hues.
+Actually all 23 soil samples are **YR**, and not just these selected 6 !
+Note that for the `Neutral0.18` test sample (not soil), `C=a=b=0` as they should be.
+
+
+
+<br><br>
+
+#  Round to the Nearest Chip in the Munsell Soil Charts
+
+The above samples have high precision, but unfortunately that precision makes it
+inconvenient to report in a way that researchers familiar with the Munsell Soil Color Charts can relate to.
+For the sake of consistency with the traditional way of communicating colors, it is sometimes better
+to provide the Munsell notation for the closest color chip in the official Soil Charts.
+
+```{r echo=TRUE, message=TRUE}
+dat_rnd     = roundHVC( dat_soil$HVC, books="soil" )
+dat_rnd$HVC = NULL     # delete matrix HVC, because it is redundant in this context
+dat_rnd
+```
+The Munsell notations in the `MunsellRounded` column are guaranteed to be in the Soil Color Charts;
+note that all 6 are distinct.
+The `ISCC-NBS Name`s are computed from the original and precise HVC,
+and the `Ferguson Name`s are computed from `MunsellRounded`.
+Note that these names are all different.
+
+Note that 3 of the samples are on the same Hue chart **2.5YR**.
+Plot that Hue chart and label those 3 samples:
+
+```{r echo=TRUE, message=TRUE, fig.width=7.3, fig.height=5.2,  fig.show='hold'}
+par( omi=c(0,0,0,0), mai=c(0.4,0.4,0.25,0) )
+plotPatchesH( "2.5YR",   value=c(2.5,3:8), chroma=c(1,2,3,4,6,8) )
+text( c(4,4,3), c(5,4,4), c("a6","a8","a15"), adj=c(0.5,0.5), col="white" )
+```
+The Value and Chroma vectors match the actual soil color chart, but the chips
+here are a superset of those in the chart.
+The top-right chip, **2.5YR 8/8**, is inside the object color gamut, but outside the sRGB gamut.
+These colors are best viewed on a display that is calibrated for sRGB.
+
+
+<br><br>
+
+#  Comparisons
+
+Finally, we make a table with side-by-side color comparisons of
+the precisely computed color in Munsell notation,
+and the Munsell notation after rounding to the closest color chip in the Munsell Soil Color Charts.
+
+```{r echo=TRUE, message=TRUE}
+tbl = data.frame( row.names=1:(2*nrow(dat_soil)) )
+tbl[[ "Sample" ]]   = as.character( rbind(rownames(dat_soil),'') )
+tbl[[ "Precise" ]] = as.character( rbind('',MunsellNameFromHVC( dat_soil$HVC, digits=3 )) )
+tbl[[ "Rounded" ]]  = as.character( rbind('',dat_rnd$MunsellRounded ) )
+
+library( flextable )
+myrt <- regulartable( tbl )
+myrt <- width( myrt, j=c(2,3), width=2 )
+myrt <- align( myrt, j=1:3, align='center', part='all' )
+myrt <- hline( myrt, i=seq( 2, nrow(tbl)-2, by=2 ), border=fp_border_default( color="black", width=2 ) )
+myrt <- hrule( myrt, rule = "exact" )
+idxcolor <- seq(1,nrow(tbl)-1,by=2)
+myrt <- height( myrt, i=idxcolor, height=1 )
+myrt <- bg( myrt, i=idxcolor, j=2, bg=rgb( round(MunsellTosRGB(dat_soil$HVC)$RGB), max=255 ) )
+myrt <- bg( myrt, i=idxcolor, j=3, bg=rgb( round(MunsellTosRGB(dat_rnd$MunsellRounded)$RGB), max=255 ) )
+myrt
+```
+These colors are best viewed on a display that is calibrated for sRGB.
+
+
+<br><br>
+
+# References
+
+<div id="refs"></div>
+
+
+
+<br><br>
+
+# Session Information
+
+<pre>
+```{r, echo=FALSE, results='asis'}
+sessionInfo()
+```
+</pre>

@@ -10,7 +10,9 @@
 \arguments{
 \item{XYZ}{a numeric Nx3 matrix with CIE XYZ coordinates in the rows,
 or a vector that can be converted to such a matrix, by row.
-The XYZ are for viewing in an environment with Illuminant C.}
+The XYZ are for viewing in an environment with Illuminant C.
+XYZ must be scaled so that Y=100 for the perfect reflecting diffuser.
+}
 
 \item{...}{other parameters passed to \code{\link{xyYtoMunsell}()} }
 }
@@ -46,9 +48,9 @@ The Munsell and Kubelka-Munk Toolbox
 }
 
 \examples{
-XYZtoMunsell( c(0.310897, 0.306510, 74.613450) )
-##                         H         V        C
-##  0.51PB 0.27/9.9 70.50874 0.2671142 9.916039
+XYZtoMunsell( c(31.0897, 30.6510, 74.613450) )
+##                      H        V        C
+## 5.4PB 6.1/9.4 75.43786 6.117631 9.416488
 }
 
 \keyword{XYZ}

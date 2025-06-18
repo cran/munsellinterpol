@@ -5,7 +5,7 @@
 #
 #   returns     numeric N-vector of pairwise differences
 
-NickersonColorDifference <- function( HVC0, HVC1, symmetric=TRUE )
+NickersonColorDifference <- function( HVC0, HVC1, symmetric=TRUE, coeffs=c(0.4,6,3) )
     {
     if( is.character(HVC0) )
         HVC0 = HVCfromMunsellName(HVC0)
@@ -39,6 +39,14 @@ NickersonColorDifference <- function( HVC0, HVC1, symmetric=TRUE )
         return(NULL)
         }
         
+    ok  = is.numeric(coeffs)  &&  length(coeffs)==3  &&  all( is.finite(coeffs) )  &&  all( 0 < coeffs )
+    if( ! ok )
+        {
+        log_level( ERROR, "argument coeffs is invalid." )
+        return(NULL)
+        }
+        
+        
     delta   = abs( HVC0 - HVC1 )
     
     #   scale the Delta Hue column by Chroma
@@ -52,7 +60,7 @@ NickersonColorDifference <- function( HVC0, HVC1, symmetric=TRUE )
         
     delta[ ,1]  = s * dHue
     
-    out = delta %*% c(0.4,6,3)
+    out = delta %*% coeffs
     
     dim(out)    = NULL
         

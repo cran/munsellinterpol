@@ -7,7 +7,8 @@ The colors are best viewed on a display calibrated for
 the RGB space given as the second argument.}
 
 \usage{plotPatchesH( hue, space='sRGB', adapt='Bradford', background='gray50',
-                        main="Hue \%s  (H=\%g)      [\%s   adapt=\%s]", ... ) }
+                        main="Hue \%s  (H=\%g)      [\%s   adapt=\%s]",
+                        value=NULL, chroma=NULL, ... ) }
 
 \arguments{
 
@@ -41,29 +42,36 @@ the next \code{'\%s'} is replaced by \code{space}, and
 the last \code{'\%s'} is replaced by \code{adapt}.
 }
 
+\item{value}{a vector of Munsell Values to use for the plot.
+Values must be in the interval [0,10], and in strictly increasing order.
+Non-integers, such as 2.5 and 8.5, are valid.
+If \code{value=NULL}, then it is set to \code{0:10}.
+}
+
+\item{chroma}{a vector of Munsell Chromas to use for the plot.
+Chromas must be non-negative and in strictly increasing order.
+Odd integers and non-integers are valid.
+If \code{chroma=NULL}, then a sequence of even numbers is chosen,
+starting at 0 and ending at the Chroma limit for the given Hue page, see \bold{Details}.
+}
+
 \item{...}{other arguments passed to the function \code{MunsellToRGB()}.
 This includes \code{hcinterp}, \code{vinterp}, and \code{xyC}.
 }
 }
 
 \details{
-The discrete Values are always the same: integers from 0 to 10.
-And so the plotting parameter \code{ylim=c(0,11)}.
-\cr
-The discrete Chromas are contiguous even integers depending on the Hue,
-and determined as follows.
-For the closest discrete Hue in \code{real.dat},
-the patches in \code{real.dat} are transformed to xyY using simple lookup.
+If \code{chroma=NULL},
+for the closest discrete Hue in \code{real.dat},
+the patches in \code{real.dat} are transformed to xyY using simple lookup with no interpolation.
 These are then tested against the MacAdam Limits for Illuminant C
 using \code{\link{IsWithinMacAdamLimits}()}.
 The patches outside the limits are discarded,
 and the maximum Chroma of the remaining patches,
-which is always an even integer, determines \code{xlim}.
+which is always an even integer, determines \code{chroma}.
 \cr
-Patches inside the MacAdam Limits can still be outside the RGB cube.
-Patches inside the cube are drawn in the usual way,
-and those outside are drawn in outline only,
-and with the clamped RGB coordinates printed inside.
+Patches inside the MacAdam Limits can still be outside the RGB cube;
+those patches are drawn in outline only, and with the clamped RGB coordinates printed inside.
 }
 
 \value{

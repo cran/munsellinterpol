@@ -2,9 +2,9 @@ Package: munsellinterpol
 Type: Package
 Title: Interpolate Munsell Renotation Data from Hue Value/Chroma to
         CIE/RGB
-Version: 3.1-0
+Version: 3.2-0
 Encoding: UTF-8
-Date: 2025-01-19
+Date: 2025-06-17
 Authors@R: c(person(given = "Jose", family = "Gama", role = c("aut","trl"), email = "rxprtgama@gmail.com"),
         person(given = "Paul", family = "Centore", role = c("aut","cph"), email = "centore@99main.com"),
         person(given = "Glenn", family = "Davis", role = c("aut","cre"), email = "gdavis@gluonics.com")  )
@@ -12,9 +12,10 @@ Description: Methods for interpolating data in the Munsell color system followin
 License: GPL (>= 3)
 LazyLoad: yes
 LazyData: yes
-Depends: R (>= 3.2.0)
-Imports: rootSolve, spacesRGB, spacesXYZ, logger
-Suggests: microbenchmark, mgcv, knitr, rmarkdown, flextable
+Depends: R (>= 3.5.0)
+Imports: rootSolve, spacesRGB, spacesXYZ (>= 1.6-0), logger
+Suggests: microbenchmark, mgcv, knitr, rmarkdown, colorSpec (>= 1.8-0),
+        flextable, OxSR
 Author: Jose Gama [aut, trl],
   Paul Centore [aut, cph],
   Glenn Davis [aut, cre]
@@ -23,5 +24,5 @@ Repository: CRAN
 NeedsCompilation: no
 VignetteBuilder: knitr
 BuildVignettes: yes
-Packaged: 2025-01-19 00:24:07 UTC; Glenn
-Date/Publication: 2025-01-19 10:00:02 UTC
+Packaged: 2025-06-17 16:18:04 UTC; Glenn
+Date/Publication: 2025-06-18 04:40:11 UTC
