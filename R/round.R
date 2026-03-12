@@ -3,7 +3,7 @@
 #   HVC     Nx3 matrix with HVC in the rows
 #   books   comma separated strings that designate searched books
 #
-#   the function depends on the data.frame  p.Books   which is in sysdata.rda
+#   the function depends on the data.frame  MunsellBooks   which is in munsellinterpol.rda
 
 roundHVC    <- function( HVC, books )
     {
@@ -25,15 +25,15 @@ roundHVC    <- function( HVC, books )
         }
 
     #   get the full and valid book names
-    #   find the "color.name" column of p.Books
-    j  = match( "color.name", colnames(p.Books) )
+    #   find the "FergusonName" column of MunsellBooks
+    j  = match( "FergusonName", colnames(munsellinterpol::MunsellBooks) )
     if( is.na(j) )
         {
-        log_level( FATAL, "Internal Error. column 'color.name' cannot be found." )
+        log_level( FATAL, "Internal Error. column 'FergusonName' cannot be found." )
         return(NULL)
         }
 
-    name_book   = colnames(p.Books)[ (j+1):ncol(p.Books) ]   #; cat( "name_book =", name_book, '\n' )
+    name_book   = colnames(munsellinterpol::MunsellBooks)[ (j+1):ncol(munsellinterpol::MunsellBooks) ]   #; cat( "name_book =", name_book, '\n' )
 
     idx = pmatch( tolower(bookvec), tolower(name_book), duplicates.ok=TRUE )    #; cat( "idx =", idx, '\n' )
     if( any( is.na(idx) ) )
@@ -44,20 +44,22 @@ roundHVC    <- function( HVC, books )
         }
 
     #   make mask for the valid chips
-    mask    = apply( p.Books[ , name_book[idx], drop=FALSE ], 1, any )
+    mask    = apply( munsellinterpol::MunsellBooks[ , name_book[idx], drop=FALSE ], 1, any )
 
-    sample_search    = p.Books[ mask, ]
+    sample_search    = munsellinterpol::MunsellBooks[ mask, ]
 
     log_level( INFO, "searching %d books and %d samples...", length(idx), nrow(sample_search) )
 
     HVCrnd              = matrix( NA_real_, nrow(HVC), ncol(HVC) )
     colnames(HVCrnd)    = c('H','V','C')
 
-    colorname   = rep( NA_character_, nrow(HVC) )
+    FergusonName    = rep( NA_character_, nrow(HVC) )
 
     #   search for closest sample one at a time
     for( k in 1:nrow(HVC) )
         {
+        if( any( is.na(HVC[k, ]) ) )    next    # HVC[k, ] is NA
+        
         HVCsample   = matrix( HVC[k, ], nrow=nrow(sample_search), ncol=ncol(HVC), byrow=TRUE )
         
         #   symmetric=FALSE results in fewer hue mismatches
@@ -78,17 +80,18 @@ roundHVC    <- function( HVC, books )
         i   = which.min( dist )
 
         HVCrnd[k, ]     = sample_search$HVC[i, ]
-        colorname[k]    = sample_search$color.name[i]
+        FergusonName[k] = sample_search$FergusonName[i]
         }
 
 
     rnames  = rownames(HVC)
+    
     if( is.null(rnames) )   rnames =  MunsellNameFromHVC( HVC )
 
-    if( anyDuplicated(rnames) )
-        #   rnames is no good because of duplication !  Use trivial names instead.
-        #   this should be very rare
-        rnames = 1:nrow(HVC)   #  there might be duplicate names
+    if( any(is.na(rnames))  ||  anyDuplicated(rnames) )
+        #   rnames is no good because some are NA or duplicated !  Use trivial names instead.
+        #   this should be rare
+        rnames = 1:nrow(HVC)   
 
     out = data.frame( row.names=rnames )
 
@@ -97,8 +100,8 @@ roundHVC    <- function( HVC, books )
 
     out[[ "ISCC-NBS Name" ]]    = ColorBlockFromMunsell( HVC )$Name
 
-    out$MunsellRounded          = MunsellNameFromHVC( HVCrnd )
-    out[[ "Ferguson Name" ]]    = colorname
+    out$MunsellRounded  = MunsellNameFromHVC( HVCrnd, digits=3 )
+    out$FergusonName    = FergusonName
 
     return(out)
     }

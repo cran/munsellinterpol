@@ -69,7 +69,7 @@ using \code{\link[spacesXYZ:adaptXYZ]{spacesXYZ::adaptXYZ}()}, with the given ch
 \references{
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{https://www.munsellcolourscienceforpainters.com/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
+\MKMTB
 }
 
 \author{Jose Gama and Glenn Davis}

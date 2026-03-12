@@ -43,14 +43,21 @@ ColorBlockFromMunsell  <-  function( MunsellSpec )
         {
         HVC = prepareNx3( MunsellSpec )
         if( is.null(HVC) )  return(NULL)
-
-        rnames  = MunsellNameFromHVC( HVC, digits=2 )
-        rownames(HVC)   = rnames
+        
+        rnames  = rownames(HVC)
+        
+        if( is.null(rnames) )
+            {
+            rnames  = MunsellNameFromHVC( HVC, digits=2 )
+            rownames(HVC)   = rnames
+            }
+            
         colnames(HVC)   = c('H','V','C')
         }
     
     n   = nrow(HVC)
-    if( anyDuplicated(rnames) ) rnames  = 1:n   # rnames will be used later
+    
+    if( any(is.na(rnames)) ||  anyDuplicated(rnames) ) rnames  = 1:n   # rnames will be used later
     
     number      = rep( NA_integer_, n )
     name        = rep( NA_character_, n )

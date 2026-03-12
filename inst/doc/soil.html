@@ -12,7 +12,7 @@
 
 <meta name="author" content="Glenn Davis" />
 
-<meta name="date" content="2025-06-17" />
+<meta name="date" content="2026-03-12" />
 
 <title>Soil Colors</title>
 
@@ -436,7 +436,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Soil Colors</h1>
 <h4 class="author">Glenn Davis</h4>
-<h4 class="date">2025-06-17</h4>
+<h4 class="date">2026-03-12</h4>
 
 
 <div id="TOC">
@@ -465,6 +465,21 @@ h1{
 font-size: 18pt; 
 }
 </style>
+<script>
+function ToggleDiv(ID) {
+  var D = document.getElementById("D-" + ID);
+  var B = document.getElementById("B-" + ID);
+  if (D.style.display === "none") {
+    // open the div and change button text
+    D.style.display = "block";
+    B.innerText = "Hide " + ID;
+  } else {
+    // close the div and change button text
+    D.style.display = "none";
+    B.innerText = "Show " + ID;
+  }
+}
+</script>
 <p><br><br></p>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
@@ -480,7 +495,7 @@ completely on Ferguson <span class="citation">[7]</span>. The
 supplementary material from this paper was put in computer readable form
 by Willie Ondricek, who greatly improved the wording of this vignette.
 One of the fields in this supplementary material is a color name for
-each chip; we call this name the <code>Ferguson Name</code>. In this
+each chip; we call this name the <code>FergusonName</code>. In this
 vignette, we only use examples from the Munsell Soil-Color Charts.</p>
 <p>The key function in this vignette is <code>roundHVC()</code>. Other
 featured functions from <strong>munsellinterpol</strong> are
@@ -533,8 +548,14 @@ use illuminants of any Correlated Color Temperature (CCT).</p>
 </div>
 <div id="a-function-to-compute-hvc-and-lab-from-reflectance-spectra" class="section level1">
 <h1>A Function to Compute HVC and Lab from Reflectance Spectra</h1>
-<p>The argument <code>CCT</code> in the following function is the
-desired Correlated Color Temperature of the illuminant.</p>
+<p>In the following function <code>soil_data()</code>, argument
+<code>soil_spec</code> is a <code>colorSpec</code> object with
+reflectance spectra of the soil, and <code>CCT</code> is the desired
+Correlated Color Temperature of the illuminant.</p>
+<button id="B-soil_data()" onclick="ToggleDiv(&#39;soil_data()&#39;)">
+Show soil_data()
+</button>
+<div id="D-soil_data()" style="display: none">
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>soil_data <span class="ot">&lt;-</span> <span class="cf">function</span>( soil_spec, CCT )</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>    {</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    wave    <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">wavelength</span>(soil_spec) </span>
@@ -555,26 +576,22 @@ desired Correlated Color Temperature of the illuminant.</p>
 <span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>    XYZ     <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">product</span>( soil_spec, scanner )</span>
 <span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>    </span>
 <span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>    <span class="co">#   compute Lab for all soil samples, under illum</span></span>
-<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>    Lab <span class="ot">=</span> spacesXYZ<span class="sc">::</span><span class="fu">LabfromXYZ</span>( XYZ, white )</span>
-<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>    </span>
-<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>    <span class="co"># chromatically adapt soil sample XYZ under illum, to sample XYZ under Illuminant C</span></span>
-<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>    white.C <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> spacesXYZ<span class="sc">::</span><span class="fu">standardXYZ</span>( <span class="st">&quot;C.NBS&quot;</span> )   <span class="co"># use the original NBS variant of this white point</span></span>
-<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>    theCAT  <span class="ot">=</span> spacesXYZ<span class="sc">::</span><span class="fu">CAT</span>( white, white.C )</span>
-<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>    XYZ.C   <span class="ot">=</span> spacesXYZ<span class="sc">::</span><span class="fu">adaptXYZ</span>( theCAT, XYZ )</span>
-<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>    </span>
-<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>    <span class="co">#   convert XYZ.C (XYZ under Illuminant C) to Munsell HVC.</span></span>
-<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a>    HVC     <span class="ot">=</span> <span class="fu">XYZtoMunsell</span>( XYZ.C, <span class="at">xyC=</span><span class="st">&quot;NBS&quot;</span> )  <span class="co">#  use the original NBS variant, as in standardXYZ() above</span></span>
-<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a>    <span class="fu">rownames</span>(HVC)   <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">specnames</span>(soil_spec)</span>
-<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a>    </span>
-<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>    <span class="co"># create output data.frame and add 4 columns: HVC, Munsell notation, ISCC-NBS color name, and Lab</span></span>
-<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a>    out <span class="ot">=</span> <span class="fu">data.frame</span>( <span class="at">row.names=</span><span class="fu">rownames</span>(HVC) )</span>
-<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a>    out<span class="sc">$</span>HVC     <span class="ot">=</span> HVC</span>
-<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a>    out<span class="sc">$</span>Munsell <span class="ot">=</span> <span class="fu">MunsellNameFromHVC</span>( HVC )</span>
-<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a>    out[[ <span class="st">&quot;ISCC-NBS Name&quot;</span> ]] <span class="ot">=</span> <span class="fu">ColorBlockFromMunsell</span>( HVC )<span class="sc">$</span>Name</span>
-<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a>    out<span class="sc">$</span>Lab     <span class="ot">=</span> Lab</span>
-<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a>    </span>
-<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a>    <span class="fu">return</span>( out )</span>
-<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a>    }</span></code></pre></div>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>    Lab     <span class="ot">=</span> spacesXYZ<span class="sc">::</span><span class="fu">LabfromXYZ</span>( XYZ, white )</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>    <span class="co">#   convert Lab to Munsell HVC, which automatically does a chromatic adaptation to Illuminant C</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>    HVC     <span class="ot">=</span> <span class="fu">LabtoMunsell</span>( Lab, <span class="at">white=</span>white )   <span class="co">#  the default is to use the original NBS variant of C</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>    <span class="fu">rownames</span>(HVC)   <span class="ot">=</span> colorSpec<span class="sc">::</span><span class="fu">specnames</span>(soil_spec)</span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>    </span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>    <span class="co"># create output data.frame and add 4 columns: HVC, Munsell notation, ISCC-NBS color name, and Lab</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>    out <span class="ot">=</span> <span class="fu">data.frame</span>( <span class="at">row.names=</span><span class="fu">rownames</span>(HVC) )</span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a>    out<span class="sc">$</span>HVC     <span class="ot">=</span> HVC</span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a>    out<span class="sc">$</span>Munsell <span class="ot">=</span> <span class="fu">MunsellNameFromHVC</span>( HVC )</span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a>    out[[ <span class="st">&quot;ISCC-NBS Name&quot;</span> ]] <span class="ot">=</span> <span class="fu">ColorBlockFromMunsell</span>( HVC )<span class="sc">$</span>Name</span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a>    out<span class="sc">$</span>Lab     <span class="ot">=</span> Lab</span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a>    </span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a>    <span class="fu">return</span>( out )</span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a>    }</span></code></pre></div>
+</div>
 <p>This one is fairly long, but it does a lot of work.</p>
 <p><br><br></p>
 </div>
@@ -614,22 +631,22 @@ These can be converted to <code>colorSpec</code> objects using
 <code>photobiologyInOut::as.colorSpec()</code> <span class="citation">[1]</span>.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>dat_soil <span class="ot">=</span> <span class="fu">soil_data</span>( soil_spec, <span class="at">CCT=</span><span class="dv">6500</span> )</span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>dat_soil</span></code></pre></div>
-<pre><code>##                   HVC.H       HVC.V       HVC.C        Munsell                 ISCC-NBS Name
-## a4           18.5080067   5.3137162   0.9324906 8.5YR 5.3/0.93           light brownish gray
-## a6           13.4661350   5.7955799   4.1294108  3.5YR 5.8/4.1                   light brown
-## a8           12.9220689   5.4686500   3.9175170  2.9YR 5.5/3.9           light reddish brown
-## a11          19.2796152   6.2947929   1.6599596  9.3YR 6.3/1.7 light grayish yellowish brown
-## a14          17.1148841   6.8192429   3.1407503  7.1YR 6.8/3.1         light yellowish brown
-## a15          13.4261954   5.0039322   3.3763618    3.4YR 5/3.4                   light brown
-## Neutral0.18 100.0000000   4.8519274   0.0000000         N 4.9/                   medium gray
-##                 Lab.L     Lab.a     Lab.b
-## a4          54.186009  2.018138  5.414906
-## a6          59.009553 13.256621 18.519024
-## a8          55.734273 13.181574 16.807799
-## a11         63.973658  2.786787 10.440434
-## a14         69.112885  7.290566 17.315536
-## a15         51.039279 11.337843 14.982868
-## Neutral0.18 49.496108  0.000000  0.000000</code></pre>
+<pre><code>##                  HVC.H      HVC.V      HVC.C        Munsell                 ISCC-NBS Name     Lab.L
+## a4          18.5080040  5.3137162  0.9324907 8.5YR 5.3/0.93           light brownish gray 54.186009
+## a6          13.4661351  5.7955799  4.1294108  3.5YR 5.8/4.1                   light brown 59.009553
+## a8          12.9220689  5.4686500  3.9175170  2.9YR 5.5/3.9           light reddish brown 55.734273
+## a11         19.2796151  6.2947929  1.6599596  9.3YR 6.3/1.7 light grayish yellowish brown 63.973658
+## a14         17.1148841  6.8192429  3.1407503  7.1YR 6.8/3.1         light yellowish brown 69.112885
+## a15         13.4261954  5.0039322  3.3763618    3.4YR 5/3.4                   light brown 51.039279
+## Neutral0.18  0.0000000  4.8519274  0.0000000         N 4.9/                   medium gray 49.496108
+##                 Lab.a     Lab.b
+## a4           2.018138  5.414906
+## a6          13.256621 18.519024
+## a8          13.181574 16.807799
+## a11          2.786787 10.440434
+## a14          7.290566 17.315536
+## a15         11.337843 14.982868
+## Neutral0.18  0.000000  0.000000</code></pre>
 <p>Note that all 6 pre-selected soil samples are within the
 <strong>YR</strong> (Yellow-Red) Hues. Actually all 23 soil samples are
 <strong>YR</strong>, and not just these selected 6 ! Note that for the
@@ -648,7 +665,7 @@ chip in the official Soil Charts.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>dat_rnd     <span class="ot">=</span> <span class="fu">roundHVC</span>( dat_soil<span class="sc">$</span>HVC, <span class="at">books=</span><span class="st">&quot;soil&quot;</span> )</span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>dat_rnd<span class="sc">$</span>HVC <span class="ot">=</span> <span class="cn">NULL</span>     <span class="co"># delete matrix HVC, because it is redundant in this context</span></span>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>dat_rnd</span></code></pre></div>
-<pre><code>##                             ISCC-NBS Name MunsellRounded       Ferguson Name
+<pre><code>##                             ISCC-NBS Name MunsellRounded        FergusonName
 ## a4                    light brownish gray      7.5YR 5/1                Gray
 ## a6                            light brown      2.5YR 6/4 Light reddish brown
 ## a8                    light reddish brown      2.5YR 5/4       Reddish brown
@@ -659,7 +676,7 @@ chip in the official Soil Charts.</p>
 <p>The Munsell notations in the <code>MunsellRounded</code> column are
 guaranteed to be in the Soil Color Charts; note that all 6 are distinct.
 The <code>ISCC-NBS Name</code>s are computed from the original and
-precise HVC, and the <code>Ferguson Name</code>s are computed from
+precise HVC, and the <code>FergusonName</code>s are computed from
 <code>MunsellRounded</code>. Note that these names are all
 different.</p>
 <p>Note that 3 of the samples are on the same Hue chart
@@ -682,10 +699,14 @@ is calibrated for sRGB.</p>
 precisely computed color in Munsell notation, and the Munsell notation
 after rounding to the closest color chip in the Munsell Soil Color
 Charts.</p>
+<button id="B-table code" onclick="ToggleDiv(&#39;table code&#39;)">
+Show table code
+</button>
+<div id="D-table code" style="display: none">
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>tbl <span class="ot">=</span> <span class="fu">data.frame</span>( <span class="at">row.names=</span><span class="dv">1</span><span class="sc">:</span>(<span class="dv">2</span><span class="sc">*</span><span class="fu">nrow</span>(dat_soil)) )</span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>tbl[[ <span class="st">&quot;Sample&quot;</span> ]]   <span class="ot">=</span> <span class="fu">as.character</span>( <span class="fu">rbind</span>(<span class="fu">rownames</span>(dat_soil),<span class="st">&#39;&#39;</span>) )</span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>tbl[[ <span class="st">&quot;Precise&quot;</span> ]] <span class="ot">=</span> <span class="fu">as.character</span>( <span class="fu">rbind</span>(<span class="st">&#39;&#39;</span>,<span class="fu">MunsellNameFromHVC</span>( dat_soil<span class="sc">$</span>HVC, <span class="at">digits=</span><span class="dv">3</span> )) )</span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>tbl[[ <span class="st">&quot;Rounded&quot;</span> ]]  <span class="ot">=</span> <span class="fu">as.character</span>( <span class="fu">rbind</span>(<span class="st">&#39;&#39;</span>,dat_rnd<span class="sc">$</span>MunsellRounded ) )</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>tbl<span class="sc">$</span>Sample  <span class="ot">=</span> <span class="fu">as.character</span>( <span class="fu">rbind</span>(<span class="fu">rownames</span>(dat_soil),<span class="st">&#39;&#39;</span>) )</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>tbl<span class="sc">$</span>Precise <span class="ot">=</span> <span class="fu">as.character</span>( <span class="fu">rbind</span>(<span class="st">&#39;&#39;</span>,<span class="fu">MunsellNameFromHVC</span>( dat_soil<span class="sc">$</span>HVC, <span class="at">digits=</span><span class="dv">3</span> )) )</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>tbl<span class="sc">$</span>Rounded <span class="ot">=</span> <span class="fu">as.character</span>( <span class="fu">rbind</span>(<span class="st">&#39;&#39;</span>,dat_rnd<span class="sc">$</span>MunsellRounded ) )</span>
 <span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a></span>
 <span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="fu">library</span>( flextable )</span>
 <span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>myrt <span class="ot">&lt;-</span> <span class="fu">regulartable</span>( tbl )</span>
@@ -696,9 +717,10 @@ Charts.</p>
 <span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>idxcolor <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="fu">nrow</span>(tbl)<span class="sc">-</span><span class="dv">1</span>,<span class="at">by=</span><span class="dv">2</span>)</span>
 <span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>myrt <span class="ot">&lt;-</span> <span class="fu">height</span>( myrt, <span class="at">i=</span>idxcolor, <span class="at">height=</span><span class="dv">1</span> )</span>
 <span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>myrt <span class="ot">&lt;-</span> <span class="fu">bg</span>( myrt, <span class="at">i=</span>idxcolor, <span class="at">j=</span><span class="dv">2</span>, <span class="at">bg=</span><span class="fu">rgb</span>( <span class="fu">round</span>(<span class="fu">MunsellTosRGB</span>(dat_soil<span class="sc">$</span>HVC)<span class="sc">$</span>RGB), <span class="at">max=</span><span class="dv">255</span> ) )</span>
-<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>myrt <span class="ot">&lt;-</span> <span class="fu">bg</span>( myrt, <span class="at">i=</span>idxcolor, <span class="at">j=</span><span class="dv">3</span>, <span class="at">bg=</span><span class="fu">rgb</span>( <span class="fu">round</span>(<span class="fu">MunsellTosRGB</span>(dat_rnd<span class="sc">$</span>MunsellRounded)<span class="sc">$</span>RGB), <span class="at">max=</span><span class="dv">255</span> ) )</span>
-<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>myrt</span></code></pre></div>
-<div class="tabwid"><style>.cl-a0676758{}.cl-a05f7124{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a06272ac{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a0629dea{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629deb{width:2in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629df4{width:0.75in;height:1in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e80{width:2in;height:1in;background-color:rgba(137, 128, 120, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e81{width:2in;height:1in;background-color:rgba(130, 120, 112, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e8a{width:0.75in;height:0.25in;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e8b{width:2in;height:0.25in;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e8c{width:0.75in;height:1in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e94{width:2in;height:1in;background-color:rgba(176, 133, 110, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e95{width:2in;height:1in;background-color:rgba(181, 138, 118, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e9e{width:2in;height:1in;background-color:rgba(166, 125, 105, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629e9f{width:2in;height:1in;background-color:rgba(154, 112, 94, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629ea0{width:2in;height:1in;background-color:rgba(168, 153, 137, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629ea8{width:2in;height:1in;background-color:rgba(161, 145, 125, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629ea9{width:2in;height:1in;background-color:rgba(193, 163, 138, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629eaa{width:2in;height:1in;background-color:rgba(197, 168, 143, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629eab{width:2in;height:1in;background-color:rgba(149, 114, 97, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629eb2{width:2in;height:1in;background-color:rgba(147, 114, 101, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629eb3{width:2in;height:1in;background-color:rgba(118, 118, 118, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629eb4{width:2in;height:1in;background-color:rgba(121, 121, 121, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629eb5{width:0.75in;height:0.25in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a0629ebc{width:2in;height:0.25in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a0676758"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a0629dea"><p class="cl-a06272ac"><span class="cl-a05f7124">Sample</span></p></th><th class="cl-a0629deb"><p class="cl-a06272ac"><span class="cl-a05f7124">Precise</span></p></th><th class="cl-a0629deb"><p class="cl-a06272ac"><span class="cl-a05f7124">Rounded</span></p></th></tr></thead><tbody><tr><td class="cl-a0629df4"><p class="cl-a06272ac"><span class="cl-a05f7124">a4</span></p></td><td class="cl-a0629e80"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e81"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629e8a"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">8.51YR 5.31/0.932</span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">7.5YR 5/1</span></p></td></tr><tr><td class="cl-a0629e8c"><p class="cl-a06272ac"><span class="cl-a05f7124">a6</span></p></td><td class="cl-a0629e94"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e95"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629e8a"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">3.47YR 5.8/4.13</span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">2.5YR 6/4</span></p></td></tr><tr><td class="cl-a0629e8c"><p class="cl-a06272ac"><span class="cl-a05f7124">a8</span></p></td><td class="cl-a0629e9e"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e9f"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629e8a"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">2.92YR 5.47/3.92</span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">2.5YR 5/4</span></p></td></tr><tr><td class="cl-a0629e8c"><p class="cl-a06272ac"><span class="cl-a05f7124">a11</span></p></td><td class="cl-a0629ea0"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629ea8"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629e8a"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">9.28YR 6.29/1.66</span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">10YR 6/2</span></p></td></tr><tr><td class="cl-a0629e8c"><p class="cl-a06272ac"><span class="cl-a05f7124">a14</span></p></td><td class="cl-a0629ea9"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629eaa"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629e8a"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">7.11YR 6.82/3.14</span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">7.5YR 7/3</span></p></td></tr><tr><td class="cl-a0629e8c"><p class="cl-a06272ac"><span class="cl-a05f7124">a15</span></p></td><td class="cl-a0629eab"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629eb2"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629e8a"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">3.43YR 5/3.38</span></p></td><td class="cl-a0629e8b"><p class="cl-a06272ac"><span class="cl-a05f7124">2.5YR 5/3</span></p></td></tr><tr><td class="cl-a0629e8c"><p class="cl-a06272ac"><span class="cl-a05f7124">Neutral0.18</span></p></td><td class="cl-a0629eb3"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629eb4"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td></tr><tr><td class="cl-a0629eb5"><p class="cl-a06272ac"><span class="cl-a05f7124"></span></p></td><td class="cl-a0629ebc"><p class="cl-a06272ac"><span class="cl-a05f7124">N 4.85/</span></p></td><td class="cl-a0629ebc"><p class="cl-a06272ac"><span class="cl-a05f7124">N 5/</span></p></td></tr></tbody></table></div>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>myrt <span class="ot">&lt;-</span> <span class="fu">bg</span>( myrt, <span class="at">i=</span>idxcolor, <span class="at">j=</span><span class="dv">3</span>, <span class="at">bg=</span><span class="fu">rgb</span>( <span class="fu">round</span>(<span class="fu">MunsellTosRGB</span>(dat_rnd<span class="sc">$</span>MunsellRounded)<span class="sc">$</span>RGB), <span class="at">max=</span><span class="dv">255</span> ) )</span></code></pre></div>
+</div>
+<p><br></p>
+<div class="tabwid"><style>.cl-732bf52a{}.cl-7321d3ce{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-7324c570{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-7324e622{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e62c{width:2in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e62d{width:0.75in;height:1in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e636{width:2in;height:1in;background-color:rgba(137, 128, 120, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e637{width:2in;height:1in;background-color:rgba(130, 120, 112, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e638{width:0.75in;height:0.25in;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e640{width:2in;height:0.25in;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e641{width:0.75in;height:1in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e64a{width:2in;height:1in;background-color:rgba(176, 133, 110, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e64b{width:2in;height:1in;background-color:rgba(181, 138, 118, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e64c{width:2in;height:1in;background-color:rgba(166, 125, 105, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e64d{width:2in;height:1in;background-color:rgba(154, 112, 94, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e654{width:2in;height:1in;background-color:rgba(168, 153, 137, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e655{width:2in;height:1in;background-color:rgba(161, 145, 125, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e656{width:2in;height:1in;background-color:rgba(193, 163, 138, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e657{width:2in;height:1in;background-color:rgba(197, 168, 143, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e658{width:2in;height:1in;background-color:rgba(149, 114, 97, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e65e{width:2in;height:1in;background-color:rgba(147, 114, 101, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e65f{width:2in;height:1in;background-color:rgba(118, 118, 118, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e660{width:2in;height:1in;background-color:rgba(121, 121, 121, 1.00);vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e661{width:0.75in;height:0.25in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7324e668{width:2in;height:0.25in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-732bf52a"><thead><tr style="overflow-wrap:break-word;"><th class="cl-7324e622"><p class="cl-7324c570"><span class="cl-7321d3ce">Sample</span></p></th><th class="cl-7324e62c"><p class="cl-7324c570"><span class="cl-7321d3ce">Precise</span></p></th><th class="cl-7324e62c"><p class="cl-7324c570"><span class="cl-7321d3ce">Rounded</span></p></th></tr></thead><tbody><tr><td class="cl-7324e62d"><p class="cl-7324c570"><span class="cl-7321d3ce">a4</span></p></td><td class="cl-7324e636"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e637"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td></tr><tr><td class="cl-7324e638"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e640"><p class="cl-7324c570"><span class="cl-7321d3ce">8.51YR 5.31/0.932</span></p></td><td class="cl-7324e640"><p class="cl-7324c570"><span class="cl-7321d3ce">7.5YR 5/1</span></p></td></tr><tr><td class="cl-7324e641"><p class="cl-7324c570"><span class="cl-7321d3ce">a6</span></p></td><td class="cl-7324e64a"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e64b"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td></tr><tr><td class="cl-7324e638"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e640"><p class="cl-7324c570"><span class="cl-7321d3ce">3.47YR 5.8/4.13</span></p></td><td class="cl-7324e640"><p class="cl-7324c570"><span class="cl-7321d3ce">2.5YR 6/4</span></p></td></tr><tr><td class="cl-7324e641"><p class="cl-7324c570"><span class="cl-7321d3ce">a8</span></p></td><td class="cl-7324e64c"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e64d"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td></tr><tr><td class="cl-7324e638"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e640"><p class="cl-7324c570"><span class="cl-7321d3ce">2.92YR 5.47/3.92</span></p></td><td class="cl-7324e640"><p class="cl-7324c570"><span class="cl-7321d3ce">2.5YR 5/4</span></p></td></tr><tr><td class="cl-7324e641"><p class="cl-7324c570"><span class="cl-7321d3ce">a11</span></p></td><td class="cl-7324e654"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e655"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td></tr><tr><td class="cl-7324e638"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e640"><p class="cl-7324c570"><span class="cl-7321d3ce">9.28YR 6.29/1.66</span></p></td><td class="cl-7324e640"><p class="cl-7324c570"><span class="cl-7321d3ce">10YR 6/2</span></p></td></tr><tr><td class="cl-7324e641"><p class="cl-7324c570"><span class="cl-7321d3ce">a14</span></p></td><td class="cl-7324e656"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e657"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td></tr><tr><td class="cl-7324e638"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e640"><p class="cl-7324c570"><span class="cl-7321d3ce">7.11YR 6.82/3.14</span></p></td><td class="cl-7324e640"><p class="cl-7324c570"><span class="cl-7321d3ce">7.5YR 7/3</span></p></td></tr><tr><td class="cl-7324e641"><p class="cl-7324c570"><span class="cl-7321d3ce">a15</span></p></td><td class="cl-7324e658"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e65e"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td></tr><tr><td class="cl-7324e638"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e640"><p class="cl-7324c570"><span class="cl-7321d3ce">3.43YR 5/3.38</span></p></td><td class="cl-7324e640"><p class="cl-7324c570"><span class="cl-7321d3ce">2.5YR 5/3</span></p></td></tr><tr><td class="cl-7324e641"><p class="cl-7324c570"><span class="cl-7321d3ce">Neutral0.18</span></p></td><td class="cl-7324e65f"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e660"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td></tr><tr><td class="cl-7324e661"><p class="cl-7324c570"><span class="cl-7321d3ce"></span></p></td><td class="cl-7324e668"><p class="cl-7324c570"><span class="cl-7321d3ce">N 4.85/</span></p></td><td class="cl-7324e668"><p class="cl-7324c570"><span class="cl-7321d3ce">N 5/</span></p></td></tr></tbody></table></div>
 <p>These colors are best viewed on a display that is calibrated for
 sRGB.</p>
 <p><br><br></p>
@@ -789,9 +811,9 @@ Soil Analysis: How to Use the Munsell Soil Color Chart</span>.
 <div id="session-information" class="section level1">
 <h1>Session Information</h1>
 <pre>
-R version 4.5.1 (2025-06-13 ucrt)
+R version 4.5.2 (2025-10-31 ucrt)
 Platform: x86_64-w64-mingw32/x64
-Running under: Windows 11 x64 (build 26100)
+Running under: Windows 11 x64 (build 26200)
 
 Matrix products: default
   LAPACK version 3.12.1
@@ -808,21 +830,21 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] flextable_0.9.7       spacesXYZ_1.6-0       spacesRGB_1.7-0       munsellinterpol_3.2-0
+[1] flextable_0.9.7       spacesXYZ_1.6-0       spacesRGB_1.7-0       munsellinterpol_3.3-2
 
 loaded via a namespace (and not attached):
- [1] katex_1.5.0             jsonlite_2.0.0          compiler_4.5.1          equatags_0.2.1         
+ [1] katex_1.5.0             jsonlite_2.0.0          compiler_4.5.2          equatags_0.2.1         
  [5] Rcpp_1.0.14             zip_2.3.3               xml2_1.3.8              jquerylib_0.1.4        
  [9] fontquiver_0.2.1        systemfonts_1.2.3       textshaping_1.0.1       uuid_1.2-1             
 [13] yaml_2.3.10             fastmap_1.2.0           R6_2.6.1                gdtools_0.4.2          
 [17] microbenchmark_1.5.0    curl_6.2.2              knitr_1.50              colorSpec_1.8-0        
 [21] logger_0.4.0            openssl_2.3.2           bslib_0.9.0             rlang_1.1.6            
 [25] V8_6.0.3                cachem_1.1.0            xfun_0.52               sass_0.4.10            
-[29] cli_3.6.5               OxSR_1.0.1              digest_0.6.37           grid_4.5.1             
+[29] cli_3.6.5               OxSR_1.0.1              digest_0.6.37           grid_4.5.2             
 [33] rootSolve_1.8.2.4       askpass_1.2.1           lifecycle_1.0.4         evaluate_1.0.3         
 [37] glue_1.8.0              data.table_1.17.2       fontLiberation_0.1.0    officer_0.6.8          
 [41] ragg_1.4.0              xslt_1.5.1              fontBitstreamVera_0.1.1 rmarkdown_2.29         
-[45] tools_4.5.1             htmltools_0.5.8.1      
+[45] tools_4.5.2             htmltools_0.5.8.1      
 </pre>
 </div>
 

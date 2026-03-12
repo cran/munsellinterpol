@@ -1,9 +1,19 @@
 # NEWS for **munsellinterpol** package
 
 
+### Version 3.3-2  [2026-03-12]
+
+* in the **Soil Colors** vignette, added Show/Hide buttons to some functions
+* in the **Soil Colors** vignette, simplified the function soil_data()
+* in the **User Guide**, added Pantone Color of the Year for 2026
+* move data.frame on the Munsell books from private to public, and documented it
+* added Glossy and Matte finish Munsell books to `roundHVC()`
+
+
 ### Version 3.2-0  [2025-06-17]
 
-* added new vignette: Soil Colors
+* added new function: `roundHVC()`
+* added new vignette: **Soil Colors**
 * added arguments `value` and `chroma` to `plotPatchesH()`
 * added argument `coeffs` to `NickersonColorDifference()`
 
@@ -21,7 +31,7 @@
 * for conversion functions involving `Lab` and `Luv`, allow reference white to be assigned by name
 * consistent handling of `rownames` in conversion function return values
 * for functions `LabtoMunsell` and `LuvtoMunsell` changed `t` to `T` (old spelling is still supported for a limited time)
-* to functions `RGBtoMunsell()` and `MunsellToRGB()`, added argument `which` 
+* to functions `RGBtoMunsell()` and `MunsellToRGB()`, added argument `which`
 * in the User Guide, added 3 new Pantone Colors of the Year
 * in links to other packages from man pages, added package names
 * added hue circle figure to the PDF manual

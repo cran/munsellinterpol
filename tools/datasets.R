@@ -1,4 +1,15 @@
 
+#   the functions here are to be run pre-build, but with munsellinterpol already installed.
+#   Note that the triple-colon trick ::: is used for
+#       munsellinterpol:::makeLookupList()
+#       munsellinterpol:::makeInversionCoeffs()
+#       munsellinterpol:::gettime()
+#
+#   the file created are:
+#       munsellinterpol.rda     for exported, and documented, data
+#       sysdata.rda             for non-exported, and non-documented, data
+
+
 
 #   These datasets are exported and can be inspected by the user.
 #   Each one here must be documented.
@@ -20,6 +31,12 @@ saveDatasets  <- function( pathout="../data/munsellinterpol.rda" )
 
     savevec = c( savevec, "CentroidsISCCNBS" )
 
+    #   the Munsell books: bead, soil, rock, etc.
+    MunsellBooks    = readAllBooks()
+    if( is.null(MunsellBooks) )   return(FALSE)
+    savevec = c( savevec, "MunsellBooks" )
+
+
     ##  ready to save it
     save( list=savevec, file=pathout, compress='xz' )   #     'xz'  'gzip'  FALSE
 
@@ -34,9 +51,9 @@ saveDatasets  <- function( pathout="../data/munsellinterpol.rda" )
 savePrivateDatasets  <- function( .path="sysdata.rda" )
     {
     library( logger )
-    
+
     log_threshold( INFO, namespace="munsellinterpol" )
-    
+
     savevec = character(0)
 
     #   load( "../data/munsellinterpol.rda" )
@@ -49,7 +66,7 @@ savePrivateDatasets  <- function( .path="sysdata.rda" )
 
     if( FALSE )
     {
-    #   these two 3x3 matrices are now built in to spacesXYZ
+    #   these two 3x3 matrices are now built into package spacesXYZ
     if( ! requireNamespace('spacesXYZ') )   return(FALSE)
 
     primary     = matrix( c(0.64,0.33,  0.3,0.6, 0.15,0.06 ), 3, 2, byrow=T )   # from sRGB standard
@@ -86,14 +103,21 @@ savePrivateDatasets  <- function( .path="sysdata.rda" )
     p.System_ISCCNBS    = read.table( pathin, header=TRUE, sep='\t', stringsAsFactors=F )
     attr( p.System_ISCCNBS, "header" )  = readLines( pathin, n=50 )
     savevec = c( savevec, "p.System_ISCCNBS" )
-    
-    #   the Munsell books, soil, rock, etc.
-    p.Books = readBooks()
+
+    if( FALSE )
+    {
+    #   the Munsell books: bead, soil, rock, etc.
+    p.Books = readAllBooks()
     if( is.null(p.Books) )   return(FALSE)
     savevec = c( savevec, "p.Books" )
-
+    }
+    
+    
+    
+    
     if( TRUE )
     {
+    #   these tables take the most time, by far
     Munsell2xy  = makeMunsell2xy()          # this one does not generate a warning
 
     p.LookupList = munsellinterpol:::makeLookupList( Munsell2xy, p.xyC['NBS', ], kfactor=c(0.70,0.50) )     # default is kfactor = c(0.9,0.5)
@@ -206,59 +230,13 @@ contained <- function( .data1, .data2 )
 
     return(out)
     }
-    
-    
-    
 
 
-readBooks   <- function( path="../inst/extdata/Supplement1_3.6.2024.csv" )
-    {
-    df  = read.table( path, sep='\t', row.names=NULL, col.names=c("Munsell","color.name","books"), fill=TRUE, na.strings='' )
-    if( is.null(df) )
-        {
-        cat( "Cannot read", path, '\n', file=stderr() )
-        return(NULL)
-        }
-        
-    #print( df[1:20, ] )
-        
-    HVC = HVCfromMunsellName( df$Munsell )
-    
-    valid   = ! is.na( HVC[ ,1] )
-    
-    #   take out the non-valid rows
-    row.names   = df$Munsell[valid]
-    
-    df  = df[ valid, ] 
-    rownames(df)    = row.names
-    
-    #   replace the first column with the matrix HVC
-    df[[1]] = HVC[ valid, ]
-    colnames(df)[1] = "HVC"
-    
-    #print( df[1:20, ] ) ; print( str(df) )
-    
-    #   replace the column 'books' with 5 distinct logical columns
-    book    = c( B="bead", N="newstudent", P="plant", R="rock", S="soil" )
-    
-    for( nam in names(book) )
-        {
-        df[[ book[nam] ]] = grepl( nam, df$books )
-        }
-        
-    #   remove the 'books' column, no longer needed
-    df$books    = NULL
-        
-    #print( df[1:20, ] ) ; print( str(df) )
-    
-    return( invisible(df) )
-    }
-        
-    
-    
-    
-    
-######################      deadwood below      #################################    
+
+
+
+
+######################      deadwood below      #################################
 
 
 

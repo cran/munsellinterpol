@@ -47,7 +47,7 @@ using \code{\link[spacesXYZ:adapt]{spacesXYZ::adaptXYZ}()} with the given chroma
 \references{
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{https://www.munsellcolourscienceforpainters.com/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
+\MKMTB
 }
 
 \author{Jose Gama and Glenn Davis}

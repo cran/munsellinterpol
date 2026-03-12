@@ -5,6 +5,7 @@
 #
 #   The wikipedia article does not say these RGBs are sRGBs,
 #   but Pantone affirms that they *are* sRGBs on separate pages under pantone.com.
+#   I would prefer to use the Lab coords, but these seem to require purchase ?
 
 Year	Name	Code	R	G	B
 2010	Turquoise	15-5519	69	181	170
@@ -24,3 +25,4 @@ Year	Name	Code	R	G	B
 2023	Viva Magenta	18-1750	190	52	85
 2024	Peach Fuzz	13-1023	255	190	152
 2025	Mocha Mousse	17-1230	164	120	100
+2026	Cloud Dancer	11-4201	240	238	233

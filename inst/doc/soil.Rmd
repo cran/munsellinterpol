@@ -27,6 +27,22 @@ h1{
 }
 ```
 
+<script>
+function ToggleDiv(ID) {
+  var D = document.getElementById("D-" + ID);
+  var B = document.getElementById("B-" + ID);
+  if (D.style.display === "none") {
+    // open the div and change button text
+    D.style.display = "block";
+    B.innerText = "Hide " + ID;
+  } else {
+    // close the div and change button text
+    D.style.display = "none";
+    B.innerText = "Show " + ID;
+  }
+}
+</script>
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -52,7 +68,7 @@ For the color chip data we depend completely on Ferguson @Ferguson2014.
 The supplementary material from this paper was put in computer readable form by Willie Ondricek,
 who greatly improved the wording of this vignette.
 One of the fields in this supplementary material is a color name for each chip;
-we call this name the `Ferguson Name`.
+we call this name the `FergusonName`.
 In this vignette, we only use examples from the Munsell Soil-Color Charts.
 
 The key function in this vignette is `roundHVC()`.
@@ -116,9 +132,12 @@ can create and use illuminants of any Correlated Color Temperature (CCT).
 
 # A Function to Compute HVC and Lab from Reflectance Spectra
 
-The argument `CCT` in the following function is the desired Correlated Color Temperature of the illuminant.
+In the following function `soil_data()`, argument `soil_spec` is a `colorSpec` object with
+reflectance spectra of the soil, and `CCT` is the desired Correlated Color Temperature of the illuminant.
 
-```{r echo=TRUE, warning=TRUE }
+<button id="B-soil_data()" onclick="ToggleDiv('soil_data()')">Show soil_data()</button>
+<div id="D-soil_data()" style="display: none">
+```{r  echo=TRUE, warning=TRUE, results="hide" }
 soil_data <- function( soil_spec, CCT )
     {
     wave    = colorSpec::wavelength(soil_spec) 
@@ -139,15 +158,10 @@ soil_data <- function( soil_spec, CCT )
     XYZ     = colorSpec::product( soil_spec, scanner )
     
     #   compute Lab for all soil samples, under illum
-    Lab = spacesXYZ::LabfromXYZ( XYZ, white )
-    
-    # chromatically adapt soil sample XYZ under illum, to sample XYZ under Illuminant C
-    white.C = 100 * spacesXYZ::standardXYZ( "C.NBS" )   # use the original NBS variant of this white point
-    theCAT  = spacesXYZ::CAT( white, white.C )
-    XYZ.C   = spacesXYZ::adaptXYZ( theCAT, XYZ )
-    
-    #   convert XYZ.C (XYZ under Illuminant C) to Munsell HVC.
-    HVC     = XYZtoMunsell( XYZ.C, xyC="NBS" )  #  use the original NBS variant, as in standardXYZ() above
+    Lab     = spacesXYZ::LabfromXYZ( XYZ, white )
+
+    #   convert Lab to Munsell HVC, which automatically does a chromatic adaptation to Illuminant C
+    HVC     = LabtoMunsell( Lab, white=white )   #  the default is to use the original NBS variant of C
     rownames(HVC)   = colorSpec::specnames(soil_spec)
     
     # create output data.frame and add 4 columns: HVC, Munsell notation, ISCC-NBS color name, and Lab
@@ -160,6 +174,7 @@ soil_data <- function( soil_spec, CCT )
     return( out )
     }
 ```
+</div>
 This one is fairly long, but it does a lot of work.
 
 
@@ -229,7 +244,7 @@ dat_rnd
 The Munsell notations in the `MunsellRounded` column are guaranteed to be in the Soil Color Charts;
 note that all 6 are distinct.
 The `ISCC-NBS Name`s are computed from the original and precise HVC,
-and the `Ferguson Name`s are computed from `MunsellRounded`.
+and the `FergusonName`s are computed from `MunsellRounded`.
 Note that these names are all different.
 
 Note that 3 of the samples are on the same Hue chart **2.5YR**.
@@ -254,11 +269,13 @@ Finally, we make a table with side-by-side color comparisons of
 the precisely computed color in Munsell notation,
 and the Munsell notation after rounding to the closest color chip in the Munsell Soil Color Charts.
 
+<button id="B-table code" onclick="ToggleDiv('table code')">Show table code</button>
+<div id="D-table code" style="display: none">
 ```{r echo=TRUE, message=TRUE}
 tbl = data.frame( row.names=1:(2*nrow(dat_soil)) )
-tbl[[ "Sample" ]]   = as.character( rbind(rownames(dat_soil),'') )
-tbl[[ "Precise" ]] = as.character( rbind('',MunsellNameFromHVC( dat_soil$HVC, digits=3 )) )
-tbl[[ "Rounded" ]]  = as.character( rbind('',dat_rnd$MunsellRounded ) )
+tbl$Sample  = as.character( rbind(rownames(dat_soil),'') )
+tbl$Precise = as.character( rbind('',MunsellNameFromHVC( dat_soil$HVC, digits=3 )) )
+tbl$Rounded = as.character( rbind('',dat_rnd$MunsellRounded ) )
 
 library( flextable )
 myrt <- regulartable( tbl )
@@ -270,6 +287,10 @@ idxcolor <- seq(1,nrow(tbl)-1,by=2)
 myrt <- height( myrt, i=idxcolor, height=1 )
 myrt <- bg( myrt, i=idxcolor, j=2, bg=rgb( round(MunsellTosRGB(dat_soil$HVC)$RGB), max=255 ) )
 myrt <- bg( myrt, i=idxcolor, j=3, bg=rgb( round(MunsellTosRGB(dat_rnd$MunsellRounded)$RGB), max=255 ) )
+```
+</div>
+<br>
+```{r echo=FALSE, message=TRUE}
 myrt
 ```
 These colors are best viewed on a display that is calibrated for sRGB.

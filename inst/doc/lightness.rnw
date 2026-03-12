@@ -49,7 +49,7 @@
 % \SweaveOpts{concordance=TRUE}
 
 \title{ {\Huge Uniform Lightness Scales} }
-\author{Glenn Davis  \url{    <gdavis@gluonics.com>}}
+\author{Glenn Davis}
 \maketitle
 % \thispagestyle{fancy}
 

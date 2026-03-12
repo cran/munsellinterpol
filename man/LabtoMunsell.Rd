@@ -46,7 +46,7 @@ The function \code{LabtoMunsell()} is equivalent but deprecated and provided for
 \references{
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{https://www.munsellcolourscienceforpainters.com/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
+\MKMTB
 }
 
 \seealso{

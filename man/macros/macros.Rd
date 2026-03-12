@@ -6,3 +6,5 @@
 % inner-product angular brackets, in either format
 \newcommand{\langle}{ \if{latex}{\out{$\langle$}} \if{html}{\out{&langle;}} }
 \newcommand{\rangle}{ \if{latex}{\out{$\rangle$}} \if{html}{\out{&rangle;}} }
+
+\newcommand{\MKMTB}{https://www.munsellcolorscienceforpainters.com/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}

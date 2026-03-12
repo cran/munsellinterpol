@@ -33,7 +33,7 @@ soil_spec = load_soil()
 par( omi=c(0,0,0,0), mai=c(0.6,0.6,0.3,0.3) )
 plot( soil_spec, legend="topleft" )
 
-## ----echo=TRUE, warning=TRUE----------------------------------------------------------------------
+## ----echo=TRUE, warning=TRUE, results="hide"------------------------------------------------------
 soil_data <- function( soil_spec, CCT )
     {
     wave    = colorSpec::wavelength(soil_spec) 
@@ -54,15 +54,10 @@ soil_data <- function( soil_spec, CCT )
     XYZ     = colorSpec::product( soil_spec, scanner )
     
     #   compute Lab for all soil samples, under illum
-    Lab = spacesXYZ::LabfromXYZ( XYZ, white )
-    
-    # chromatically adapt soil sample XYZ under illum, to sample XYZ under Illuminant C
-    white.C = 100 * spacesXYZ::standardXYZ( "C.NBS" )   # use the original NBS variant of this white point
-    theCAT  = spacesXYZ::CAT( white, white.C )
-    XYZ.C   = spacesXYZ::adaptXYZ( theCAT, XYZ )
-    
-    #   convert XYZ.C (XYZ under Illuminant C) to Munsell HVC.
-    HVC     = XYZtoMunsell( XYZ.C, xyC="NBS" )  #  use the original NBS variant, as in standardXYZ() above
+    Lab     = spacesXYZ::LabfromXYZ( XYZ, white )
+
+    #   convert Lab to Munsell HVC, which automatically does a chromatic adaptation to Illuminant C
+    HVC     = LabtoMunsell( Lab, white=white )   #  the default is to use the original NBS variant of C
     rownames(HVC)   = colorSpec::specnames(soil_spec)
     
     # create output data.frame and add 4 columns: HVC, Munsell notation, ISCC-NBS color name, and Lab
@@ -91,9 +86,9 @@ text( c(4,4,3), c(5,4,4), c("a6","a8","a15"), adj=c(0.5,0.5), col="white" )
 
 ## ----echo=TRUE, message=TRUE----------------------------------------------------------------------
 tbl = data.frame( row.names=1:(2*nrow(dat_soil)) )
-tbl[[ "Sample" ]]   = as.character( rbind(rownames(dat_soil),'') )
-tbl[[ "Precise" ]] = as.character( rbind('',MunsellNameFromHVC( dat_soil$HVC, digits=3 )) )
-tbl[[ "Rounded" ]]  = as.character( rbind('',dat_rnd$MunsellRounded ) )
+tbl$Sample  = as.character( rbind(rownames(dat_soil),'') )
+tbl$Precise = as.character( rbind('',MunsellNameFromHVC( dat_soil$HVC, digits=3 )) )
+tbl$Rounded = as.character( rbind('',dat_rnd$MunsellRounded ) )
 
 library( flextable )
 myrt <- regulartable( tbl )
@@ -105,6 +100,8 @@ idxcolor <- seq(1,nrow(tbl)-1,by=2)
 myrt <- height( myrt, i=idxcolor, height=1 )
 myrt <- bg( myrt, i=idxcolor, j=2, bg=rgb( round(MunsellTosRGB(dat_soil$HVC)$RGB), max=255 ) )
 myrt <- bg( myrt, i=idxcolor, j=3, bg=rgb( round(MunsellTosRGB(dat_rnd$MunsellRounded)$RGB), max=255 ) )
+
+## ----echo=FALSE, message=TRUE---------------------------------------------------------------------
 myrt
 
 ## ----echo=FALSE, results='asis'-------------------------------------------------------------------

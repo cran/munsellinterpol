@@ -72,7 +72,7 @@ See \code{\link{MunsellToxyY}()} and the \bold{User Guide - Appendix C}.
 \source{
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{https://www.munsellcolourscienceforpainters.com/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}\cr
+\MKMTB\cr
 \url{https://www.rit.edu/science/munsell-color-lab}\cr
 \url{https://www.rit-mcsl.org/MunsellRenotation/all.dat}\cr
 \url{https://www.rit-mcsl.org/MunsellRenotation/real.dat}
@@ -116,7 +116,7 @@ April 1956.
 
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{https://www.munsellcolourscienceforpainters.com/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
+\MKMTB
 }
 
 

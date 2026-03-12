@@ -107,7 +107,7 @@ And if the knot spacing is uniform:
 \source{
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{https://www.munsellcolourscienceforpainters.com/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}\cr
+\MKMTB\cr
 \url{https://www.rit.edu/science/munsell-color-lab}\cr
 \url{https://www.rit-mcsl.org/MunsellRenotation/all.dat}\cr
 \url{https://www.rit-mcsl.org/MunsellRenotation/real.dat}
@@ -162,7 +162,7 @@ Cubic Hermite spline.
 
 Paul Centore 2014
 The Munsell and Kubelka-Munk Toolbox
-\url{https://www.munsellcolourscienceforpainters.com/MunsellAndKubelkaMunkToolbox/MunsellAndKubelkaMunkToolbox.html}
+\MKMTB
 }
 
 \author{Jose Gama and Glenn Davis}
