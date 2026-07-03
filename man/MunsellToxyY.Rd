@@ -4,7 +4,15 @@
 \title{Convert Munsell HVC to xyY coordinates}
 
 \description{\code{MunsellToxyY} Converts Munsell HVC to xyY coordinates, by interpolating over the
-extrapolated Munsell renotation data
+extrapolated Munsell renotation data.
+
+Note that the returned \code{xyY} is relative to the white point of Illuminant C.
+Since Illuminant C is obsolete, it is almost certain that if \code{xyY} is used in subsequent
+calculations, it must be chromatically adapted to a different white point.
+This chromatic adaptation can be done using
+\code{\link[spacesXYZ:adaptxyY]{spacesXYZ::adaptxyY()}}.
+Alternatively, one can use \code{\link{MunsellToXYZ}()},
+which does the chromatic adaptation internally.
 }
 
 \usage{MunsellToxyY( MunsellSpec, xyC='NBS', hcinterp='bicubic', vinterp='cubic',
@@ -41,7 +49,7 @@ If \code{hcinterp} is \code{'bilinear'},
 this parameter only affects chips with Chroma \eqn{<} 2.
 }
 
-\item{hcinterp}{either \code{'bicubic'} or \code{'bilinear'} (partial matching enabled).
+\item{hcinterp}{the type of 2D interpolation for H and C; either \code{'bicubic'} or \code{'bilinear'} (partial matching enabled).
 In the bicubic case, for a general input point, the output value is interpolated
 using a 4x4 subgrid of the lookup table, and the interpolation function is class \eqn{C^1}
 (except at the neutrals).
@@ -49,7 +57,7 @@ In the bilinear case, the interpolation uses a 2x2 subgrid,
 and the function is class \eqn{C^0}.
 }
 
-\item{vinterp}{either \code{'cubic'} or \code{'linear'} (partial matching enabled).
+\item{vinterp}{the type of interpolation for V; either \code{'cubic'} or \code{'linear'} (partial matching enabled).
 In the cubic case, for a general input point, the output value is interpolated
 using 4 planes of constant Value, and the interpolation function is class \eqn{C^1}.
 In the linear case, the interpolation uses 2 planes and the function is class \eqn{C^0}.
@@ -90,7 +98,8 @@ a \code{data.frame} with these columns:
 \item{SAMPLE_NAME}{the original \code{MunsellSpec} if that was a character vector.
 Or the Munsell notation string converted from the input matrix HVC.}
 \item{HVC}{the input Nx3 matrix, or the HVC matrix converted from the input Munsell notation}
-\item{xyY}{the computed output matrix, with CIE xyY coordinates of MunsellSpec illuminated by Illuminant C.
+\item{xyY}{the computed output matrix, with CIE xyY of MunsellSpec,
+relative to the white point of Illuminant C.
 In case of error, x and y are set to \code{NA}.
 The rownames of xyY are set to those of HVC, unless they are NULL when they are set to \code{SAMPLE_NAME}.}
 }
@@ -168,7 +177,9 @@ The Munsell and Kubelka-Munk Toolbox
 \author{Jose Gama and Glenn Davis}
 
 \seealso{
-\code{\link{xyYtoMunsell}()}
+\code{\link{xyYtoMunsell}()},
+\code{\link{MunsellToXYZ}()},
+\code{\link[spacesXYZ:adaptxyY]{spacesXYZ::adaptxyY()}}
 }
 
 

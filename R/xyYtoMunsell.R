@@ -35,7 +35,7 @@ xyYtoMunsell  <-  function( xyY,
 
     xyY = prepareNx3(xyY)
     if( is.null(xyY) )  return(NULL)
-    
+
     if( is.null(colnames(xyY)) )
         colnames(xyY)   = c( 'x', 'y', 'Y' )
 
@@ -110,8 +110,6 @@ xyYtoMunsell  <-  function( xyY,
 
         HC  = unlist( HCfromAB( AB[1], AB[2] ) )
 
-        #HC[1] = HC[1] %% 100
-        #
         #if( HC[2] < 0 )
         #    log_level( WARN, "Chroma = %g < 0.  hue=%g value=%g.  evaluation=%d.",
         #                HC[2], HC[1], value, evaluation )
@@ -277,7 +275,11 @@ xyYtoMunsell  <-  function( xyY,
 
         if( value==0  ||  all( xy_target == xyC ) )
             {
-            #   neutrals are easy.  Note that value==0 must be pure black !
+            #   neutrals are easy.
+            #   Note that value==0 must be pure black !
+            #   Note that xy_target must be equal to xyC exactly, with no tolerance;
+            #       if the difference is extremely small we depend on approxABfromxyY() to set ABstart=(0,0)
+            #       and the rootSolve::multiroot() tolerances to find a root with C=0.
             #   Set both H and C to 0
             HVC[ i, c(1,3) ] = 0
             time.elapsed.vec[i] = (gettime()  - time_begin)
@@ -323,14 +325,13 @@ xyYtoMunsell  <-  function( xyY,
             vlevel  = iV    # vlevel will never be accessed, but this is what it would be if it were
             }
 
-        #   make an initial guess for HC
+        #   make an initial guess for AB
         evaluation = 0
 
         #HCstart  = approxHCfromxyY( xyY[i, ] , c(xyC,100) )
         #ABstart = unlist( ABfromHC( HCstart[1], HCstart[2] ) )
 
         ABstart = approxABfromxyY( xyY[i, ], c(xyC,100), V.vector )
-        HCstart = unlist( HCfromAB( ABstart[1], ABstart[2] ) )
 
         res = try( rootSolve::multiroot( forwardfun, ABstart, rtol=rtol, atol=atol, ctol=0, verbose=FALSE,
                                             value=value, vlevel=vlevel, xy_target=xy_target ),  silent=F )
@@ -339,6 +340,8 @@ xyYtoMunsell  <-  function( xyY,
            {
            #    failed to find the root
            # print(res)
+           HCstart = unlist( HCfromAB( ABstart[1], ABstart[2] ) )
+
            log_level( DEBUG, "rootSolve::multiroot() failed.  ABstart=%g,%g.   HCstart=%g,%g.  value=%g",
                                          ABstart[1], ABstart[2], HCstart[1], HCstart[2], value )
            next
@@ -354,15 +357,17 @@ xyYtoMunsell  <-  function( xyY,
         iterations.vec[i]   = res$iter
         evaluations.vec[i]  = evaluation
         estim.precis.vec[i] = res$estim.precis
-        
-        log_level( TRACE, "xy=%g,%g  iters=%d  estim.precis=%g", xy_target[1], xy_target[2], res$iter, res$estim.precis )
+
+        log_level( TRACE, "i=%d   ABstart=%g,%g  xy_target=%g,%g  iters=%d  estim.precis=%g.",
+                        i, ABstart[1], ABstart[2], xy_target[1], xy_target[2], res$iter, res$estim.precis )
         }
 
 
     #   hue wrap-around to interval (0,100]
-    hue             = HVC[ ,1] %% 100
-    hue[ hue==0 ]   = 100
-    HVC[ , 1]       = hue
+    hue         = HVC[ ,1] %% 100
+    mask        = (hue==0)  &  (HVC[ ,3]!=0)    # make exception to hue<-100 when Chroma==0
+    hue[mask]   = 100
+    HVC[ , 1]   = hue
 
     SAMPLE_NAME = MunsellNameFromHVC(HVC)
 
@@ -394,9 +399,6 @@ xyYtoMunsell  <-  function( xyY,
                                     n, time_elapsed, time_elapsed/n,  mean(out$time.elapsed,na.rm=TRUE) )
         }
 
-
-    #print(mask)
-
     if( warn )
         {
         mask    = is.na(HVC[ ,1])  |  is.na(HVC[ ,3])
@@ -412,7 +414,7 @@ xyYtoMunsell  <-  function( xyY,
 
 
 
-#   this one use global variable p.InversionCoeffs
+#   this one uses global variable p.InversionCoeffs
 approxABfromxyY <- function( xyY, xyY.white, V.vector )
     {
     p   = 'spacesXYZ'

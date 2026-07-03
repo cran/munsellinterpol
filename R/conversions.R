@@ -4,8 +4,11 @@
 ################      Munsell  <-->  XYZ    #######################
 
 #   Convert a Munsell specification into XYZ coordinates, by interpolating over the extrapolated Munsell renotation data.
-#   returns XYZ that is adapted to C, and with Y=100 for ref. white V=10
-MunsellToXYZ <- function( MunsellSpec, ... )
+#   MunsellSpec     an Nx3 matrix, or a character string
+#   white           if NULL then XYZ must be already adapted to C, and with Y=100 for ref. white V=10
+#   adapt           the chromatic adaptation method
+
+MunsellToXYZ <- function( MunsellSpec, white=NULL, adapt="Bradford", ... )
     {
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
@@ -14,19 +17,59 @@ MunsellToXYZ <- function( MunsellSpec, ... )
         return(NULL)
         }
 
-    tmp <- MunsellToxyY( MunsellSpec, ... )
+    if( ! is.null(white) )
+        {
+        white   = process_white(white)
+        if( any(is.na(white)) )
+            {
+            log_level( ERROR, "argument white is invalid" )
+            return(NULL)
+            }
+        }
+
+    tmp = MunsellToxyY( MunsellSpec, ... )
     if( is.null(tmp) )  return(NULL)
 
-    XYZ <- spacesXYZ::XYZfromxyY( tmp$xyY ) # copies rownames from xyY to XYZ
+    XYZ = spacesXYZ::XYZfromxyY( tmp$xyY ) # copies rownames from xyY to XYZ
 
-    #   rownames(XYZ)   = tmp$SAMPLE_NAME
+    if( ! is.null(white) )
+        {
+        # make CAT from illuminant C to given white
+
+        # first check whether the user has selected a non-default xyC
+        xyC  = intercept( "xyC", ... )
+
+        if( is.null(xyC) )  xyC  = 'NBS'     # this is the default
+
+        xy  = process_xyC( xyC )
+        if( any(is.na(xy)) )
+            {
+            log_level( ERROR, "xyC=%s is invalid.", paste0(as.character(xyC),collapse=',') )
+            return(NULL)
+            }
+
+        #   xy is now (x,y) chromaticity
+        white.C = spacesXYZ::XYZfromxyY( c(xy,100) )
+
+        theCAT  = spacesXYZ::CAT( white.C, white, method=adapt )
+        if( is.null(theCAT) )   return(NULL)
+
+        XYZ = spacesXYZ::adaptXYZ( theCAT, XYZ )
+
+        if( is.null(XYZ) )  return(NULL)
+        }
 
     return( XYZ )
     }
 
+
+
 #   convert XYZ to an HVC matrix
-#   XYZ     must be already adapted to C, and with Y=100 for ref. white V=10
-XYZtoMunsell <- function( XYZ, ... )
+#   XYZ     N x 3 matrix with XYZ vectors in the rows
+#   white   if NULL then XYZ must be already adapted to C, and with Y=100 for ref. white V=10
+#   adapt   the chromatic adaptation method
+
+XYZtoMunsell <- function( XYZ, white=NULL, adapt='Bradford', ... )
     {
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
@@ -35,10 +78,69 @@ XYZtoMunsell <- function( XYZ, ... )
         return(NULL)
         }
 
-    xyY = spacesXYZ::xyYfromXYZ(XYZ)
+    XYZ = prepareNx3( XYZ )
+    if( is.null(XYZ) )  return(NULL)
+
+    if( is.null(white) )
+        {
+        #   XYZ is already relative to Illuminant C, so nothing to do
+        XYZ.adapted = XYZ
+        }
+    else
+        {
+        white   = process_white(white)
+        if( any(is.na(white)) )
+            {
+            log_level( ERROR, "argument white is invalid"  )
+            return(NULL)
+            }
+
+        # make CAT from given white to Illuminant C
+
+        # first check whether the user has selected a non-default xyC
+        xyC  = intercept( "xyC", ... )
+
+        if( is.null(xyC) )  xyC  = 'NBS'     # this is the default
+
+        xy  = process_xyC( xyC )
+        if( any(is.na(xy)) )
+            {
+            log_level( ERROR, "xyC=%s is invalid.", paste0(as.character(xyC),collapse=',') )
+            return(NULL)
+            }
+
+        xyC = xy
+
+        #   xyC is now (x,y) chromaticity
+        white.C = spacesXYZ::XYZfromxyY( c(xyC,100) )
+
+        theCAT  = spacesXYZ::CAT( white, white.C, method=adapt )
+        if( is.null(theCAT) )   return(NULL)
+
+        XYZ.adapted = spacesXYZ::adaptXYZ( theCAT, XYZ )
+
+        if( is.null(XYZ.adapted) )  return(NULL)
+        }
+
+    xyY = spacesXYZ::xyYfromXYZ( XYZ.adapted )
     if( is.null(xyY) )  return(NULL)
 
     tmp = xyYtoMunsell( xyY, ... )
+    if( is.null(tmp) )  return(NULL)
+
+    if( FALSE )
+        {
+        if( exists('xyC') )
+            {
+            cat( "xyC =", xyC, "   xyY.adapted =", xyY, '\n' )
+            cat( "    delta =", xyC - xyY[1:2], '\n' )
+            }
+
+        print( tmp )
+        }
+
+
+
     HVC = tmp$HVC
 
     rnames  = rownames(XYZ)     # if XYZ is not a matrix, then rnames is NULL
@@ -74,9 +176,6 @@ MunsellToLab <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
 
     if( is.null(HVC) )  return(NULL)
 
-    XYZ = MunsellToXYZ( HVC, ... )
-    if( is.null(XYZ) )  return(NULL)
-
     white   = process_white(white)
     if( any(is.na(white)) )
         {
@@ -84,14 +183,10 @@ MunsellToLab <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
         return(NULL)
         }
 
-    #   adapt this XYZ from C to given white
-    white.C     = spacesXYZ::XYZfromxyY( c( p.xyC['NBS',],100) )
+    XYZ = MunsellToXYZ( HVC, white=white, adapt=adapt, ... )
+    if( is.null(XYZ) )  return(NULL)
 
-    theCAT      = spacesXYZ::CAT( white.C, white, method=adapt )
-
-    XYZ.adapted = spacesXYZ::adaptXYZ( theCAT, XYZ )            # copies rownames from XYZ to XYZ.adapted
-
-    Lab         = spacesXYZ::LabfromXYZ( XYZ.adapted, white )   # copies rownames from XYZ.adapted to Lab
+    Lab = spacesXYZ::LabfromXYZ( XYZ, white )   # copies rownames from XYZ to Lab
 
     #   do an additional test for neutrals
     #   to correct possible roundoff error
@@ -100,10 +195,9 @@ MunsellToLab <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
 
     if( any(neutral) )  Lab[neutral,2:3]  = 0     # when C==0, set both a=0 and b=0
 
-    #   rownames(Lab)   = rownames(XYZ)
-
     return( Lab )
     }
+
 
 LabToMunsell <- function( Lab, white='D65', adapt='Bradford', ... )
     {
@@ -120,23 +214,14 @@ LabToMunsell <- function( Lab, white='D65', adapt='Bradford', ... )
     white   = process_white(white)
     if( any(is.na(white)) )
         {
-        log_level( ERROR, "argument white is invalid"  )
+        log_level( ERROR, "argument white is invalid."  )
         return(NULL)
         }
 
-    # make CAT from given white to illuminant C
-    white.C = spacesXYZ::XYZfromxyY( c( p.xyC['NBS',],100) )
-
-    theCAT  = spacesXYZ::CAT( white, white.C, method=adapt )
-    if( is.null(theCAT) )   return(NULL)
-
     XYZ = spacesXYZ::XYZfromLab( Lab, white )
 
-    XYZ.adapted = spacesXYZ::adaptXYZ( theCAT, XYZ )
+    HVC = XYZtoMunsell( XYZ, white=white, adapt=adapt, ... )
 
-    if( is.null(XYZ.adapted) )  return(NULL)
-
-    HVC = XYZtoMunsell( XYZ.adapted, ... )
 
     #   do an additional test for neutrals
     #   to correct possible roundoff error
@@ -186,21 +271,10 @@ MunsellToLuv <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
         return(NULL)
         }
 
-    XYZ = MunsellToXYZ( HVC, ... )
+    XYZ = MunsellToXYZ( HVC, white=white, adapt=adapt, ... )
     if( is.null(XYZ) )  return(NULL)
 
-    # XYZ = spacesXYZ::XYZfromxyY( tmp$xyY )
-
-    # make CAT from illuminant C  to   given white
-    white.C = spacesXYZ::XYZfromxyY( c( p.xyC['NBS',],100) )
-
-    theCAT  = spacesXYZ::CAT( white.C, white, method=adapt )
-    if( is.null(theCAT) )   return(NULL)
-
-    # adapt XYZ from C to given white
-    XYZ.adapted = spacesXYZ::adaptXYZ( theCAT, XYZ )    # copies rownames from XYZ to XYZ.adapted
-
-    Luv = spacesXYZ::LuvfromXYZ( XYZ.adapted, white )   # copies rownames from XYZ.adapted to Luv
+    Luv = spacesXYZ::LuvfromXYZ( XYZ, white )   # copies rownames from XYZ to Luv
 
     #   do an additional test for neutrals
     #   to correct possible roundoff error
@@ -213,6 +287,7 @@ MunsellToLuv <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
 
     return( Luv )
     }
+
 
 LuvToMunsell <- function( Luv, white='D65', adapt='Bradford', ... )
     {
@@ -235,15 +310,7 @@ LuvToMunsell <- function( Luv, white='D65', adapt='Bradford', ... )
 
     XYZ = spacesXYZ::XYZfromLuv( Luv, white )
 
-    # make CAT from given white to illuminant C
-    white.C = spacesXYZ::XYZfromxyY( c( p.xyC['NBS',],100) )
-
-    theCAT  = spacesXYZ::CAT( white, white.C, method=adapt )
-    if( is.null(theCAT) )   return(NULL)
-
-    XYZ.adapted = spacesXYZ::adaptXYZ( theCAT, XYZ  )
-
-    HVC = XYZtoMunsell( XYZ.adapted, ... )
+    HVC = XYZtoMunsell( XYZ, white=white, adapt=adapt, ... )
 
     #   do an additional test for neutrals
     #   to correct possible roundoff error
@@ -338,7 +405,7 @@ MunsellTosRGB <- function( MunsellSpec, maxSignal=255, ... )
 
     out = tmp
 
-    #   look for chroma==0 exactly
+    #   look for Chroma==0 exactly
     neutral = out$HVC[ ,3] == 0
     neutral[ is.na(neutral) ]   = FALSE
 
@@ -360,6 +427,7 @@ MunsellTosRGB <- function( MunsellSpec, maxSignal=255, ... )
 
     if( any(neutral) )
         {
+        #   if Chroma=0 exactly, force RGBs to be exactly equal by computing their mean value
         RGB.mean = rowMeans( out$RGB[neutral, , drop=FALSE] )
 
         #   the vector on the right side is replicated over all columns on the left
@@ -372,21 +440,23 @@ MunsellTosRGB <- function( MunsellSpec, maxSignal=255, ... )
 
 
 #   return numeric XYZ with Y normalized to 100, and not 1
+#
+#   if white is invalid, returns NA_real_
 
 process_white <- function( white )
     {
     if( is.character(white) )
         {
         if( length(white) != 1 )    return(NA_real_)
-        
+
         #   first try lookup to XYZ
         out = spacesXYZ::standardXYZ(white)
-        
+
         if( all( is.finite(out) ) ) return( 100*out )
 
         #   next try lookup to xy
         out = spacesXYZ::standardxy(white)
-        
+
         if( all( is.finite(out) ) ) return(  spacesXYZ::XYZfromxyY( c(out,100) ) )
 
         return( NA_real_ )

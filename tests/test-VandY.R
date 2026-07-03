@@ -2,7 +2,7 @@
 library( munsellinterpol )
 
 printf <- function( msg, ... )
-    {    
+    {
     mess = sprintf( msg[1], ... )    # should this really be msg[1] ?
     cat( mess, '\n' )   #, file=stderr() )
     }
@@ -11,32 +11,34 @@ testInversion <- function()
     {
     #   round trip  V -> Y -> V
     Vvec = seq( 0, 10, len=10001 )
- 
+
     for( w in c( 'ASTM', 'OSA', 'MGO' )  )
         {
         Vtest   = VfromY( YfromV(Vvec,w), w )
-        
+
         ran = range( Vvec - Vtest )
-        printf(  "V with '%s', inversion range = [%g,%g]", w, ran[1], ran[2] )
-            
+        printf(  "V with '%s', round-trip delta range = [%g,%g]", w, ran[1], ran[2] )
+
         if( ! identical( round(Vvec,8), round(Vtest,8) ) )
             return(FALSE)
         }
-        
+
+    cat( '\n' )
+
     #   round trip Y -> V -> Y
     Yvec = seq( 0, 100, len=10001 )
- 
+
     for( w in c( 'ASTM', 'OSA', 'MGO' )  )
-        { 
+        {
         Ytest   = YfromV( VfromY(Yvec,w), w )
-        
+
         ran = range( Yvec - Ytest )
-        printf( "Y with '%s', inversion range = [%g,%g]", w, ran[1], ran[2] )
-            
+        printf( "Y with '%s', round-trip delta range = [%g,%g]", w, ran[1], ran[2] )
+
         if( ! identical( round(Yvec,7), round(Ytest,7) ) )
             return(FALSE)
         }
-        
+
     return(TRUE)
     }
 
@@ -105,61 +107,62 @@ testYfromV <- function()
     88.689875,89.159745,89.631535,90.105252,90.580908,91.058511,91.538072,92.019601,
     92.503107,92.988601,93.476093,93.965592,94.457109,94.950655,95.446239,95.943873,
     96.443567,96.945331,97.449176,97.955113,98.463153,98.973307,99.485586,100.000000)
-    
-    
+
+
     ##  ASTM test  ##
+    cat( '\n' )
     printf( "Testing YfromV(*,which='%s') on %d Values.", 'astm', length(Value)  )
-    
+
     Y.astm      = YfromV( Value, which='astm' )
-    
+
     delta   = max( abs(Y.astm - LuminanceFactor) )
     printf( "For ASTM quintic,  max( abs(Y.astm - LuminanceFactor) ) = %g\n", delta )
-    
+
     bytes.LD = .Machine$sizeof.longdouble
-    
+
     bytes.LD = 0    # force test using all.equal(), and not identical() which is too strict.  v 2.6-1  2020-02-01
-    
+
     if( 0 < bytes.LD )
         # strict test  (formerly the usual case)
         ok = identical( round(Y.astm,6), LuminanceFactor )
     else
         #   less strict test
         ok = isTRUE( all.equal( Y.astm, LuminanceFactor, tolerance = 1.e-5 ) )      # next time try 1.e-6, or maybe even 6.e-7
-    
+
     if( ! ok )
         {
-        printf( "Test of ASTM quintic failed, on test of %d Values.  bytes.LD=%d", 
+        printf( "Test of ASTM quintic failed, on test of %d Values.  bytes.LD=%d",
                         length(Value), bytes.LD )
         return(FALSE)
         }
 
-        
-    ##  Newhall test  ##        
+
+    ##  Newhall test  ##
     printf( "Testing YfromV(*,which='%s') on %d Values", 'OSA', length(Value)  )
 
     Y.newhall   = YfromV( Value, which='OSA' )
-    
+
     diff    = Y.astm  - Y.newhall
     ran = range( diff ) #; print(ran)
-    
+
     #idx = which.max( abs(diff) )
     #cat( Value[idx], Y.astm[idx], Y.newhall[idx], '\n' )
-    
+
     ok = max(abs(ran)) < 0.001
     if( ! ok )
         {
         printf( "Test of OSA quintic failed, on test of %d Values.", length(Value) )
         return(FALSE)
         }
-    
-    ##  MgO test  ##    
-    
+
+    ##  MgO test  ##
+
     #   these 2 vectors, Value and LuminanceFactor, are taken NBS publications
     Value = seq(0,10,by=1)
-    LuminanceFactor <- c(0,1.210,3.126,6.555,12.001,19.766,30.053,43.063,59.099,78.665,102.568)      
-    
+    LuminanceFactor <- c(0,1.210,3.126,6.555,12.001,19.766,30.053,43.063,59.099,78.665,102.568)
+
     Y.mgo = YfromV( Value, which='mgo' )
-    
+
     printf( "Testing YfromV(*,which='%s') on %d Values", 'MgO', length(Value)  )
 
     ok = identical( round(Y.mgo,3), LuminanceFactor )
@@ -168,11 +171,11 @@ testYfromV <- function()
         printf( "testYfromV(). Test of MgO quintic failed, on test of %d Values.", length(Value) )
         return(FALSE)
         }
-        
+
     return(TRUE)
     }
-    
-    
+
+
 if( ! testInversion() ) stop( "testInversion() failed !", call.=FALSE )
 
 if( ! testYfromV() )    stop( "testYfromV() failed !", call.=FALSE )

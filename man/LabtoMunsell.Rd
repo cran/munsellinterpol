@@ -33,8 +33,7 @@ The rownames are set to those of Lab.
 The conversion is done in these steps.
 \itemize{
 \item Lab  \rarrow  XYZ using \code{\link[spacesXYZ:toXYZ]{spacesXYZ::XYZfromLab}()} with the given \code{white}.
-\item XYZ is then adapted from the given \code{white} to Illuminant C using the given \code{adapt} method.
-\item XYZ \rarrow  HVC using \code{\link{XYZtoMunsell}()}.
+\item XYZ \rarrow  HVC using \code{\link{XYZtoMunsell}()}. Before the Munsell conversion, XYZ is internally adapted from the given \code{white} to Illuminant C using the given \code{adapt} method.
 }
 }
 

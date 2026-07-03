@@ -36,9 +36,9 @@ then the output rownames are the Munsell notations for HVC.
 \details{
 The conversion is done in these steps:
 \itemize{
-\item HVC  \rarrow  XYZ using \code{\link{MunsellToXYZ}()}
-\item XYZ is adapted from Illuminant C to the given \code{white} 
-using \code{\link[spacesXYZ:adapt]{spacesXYZ::adaptXYZ}()} with the given chromatic adaptation method
+\item HVC  \rarrow  XYZ using \code{\link{MunsellToXYZ}()}.
+In this function, XYZ is internally adapted from Illuminant C to the given \code{white} 
+using \code{\link[spacesXYZ:adapt]{spacesXYZ::adaptXYZ}()} with the given chromatic adaptation method.
 \item XYZ  \rarrow  Luv using \code{\link[spacesXYZ:fromXYZ]{spacesXYZ::LuvfromXYZ}()} with the given \code{white}
 }
 }

@@ -93,7 +93,7 @@ prepareNx3  <-  function( A, M=3 )
 
         Aname = deparse(substitute(A))
 
-        #   notice hack to make log_level() print name of parent function, and *NOT* prepareNx3()
+        #   notice .topcall assignment which makes log_level() print name of parent function, and *NOT* prepareNx3()
         log_level( ERROR, "Argument '%s' must be a non-empty numeric Nx%d matrix (with N>0). %s='%s...'",
                                     Aname, M, Aname, mess, .topcall=sys.call(-1L) )
         return(NULL)
@@ -106,6 +106,39 @@ prepareNx3  <-  function( A, M=3 )
     }
 
 
+#   varname name to search for, case-insensitive
+#   ...     list of variables
+#
+#   if varname is found in ..., returns its value
+#
+#   if varname is not found in ..., returns NULL
+#   matching is case-insensitive
+
+intercept   <- function( varname, ... )
+    {
+    theList =  list( ... )  #; print( theList )
+
+    n   = length(theList)
+    if( n == 0 )
+        {
+        # log_level( ERROR, "No arguments." )
+        return(NULL)
+        }
+
+    # logger::log_level( logger::DEBUG, "Found %d objects in '...'", n, namespace='munsellinterpol' )
+
+    theNames    = names(theList)
+
+    idx = match( tolower(varname), tolower(theNames) )
+
+    if( is.na(idx) )    return(NULL)
+
+    return( theList[[idx]] )
+    }
+
+
+
+#################       deadwood below      #########################
 
 prepareNx3_old  <-  function( A, M=3 )
     {

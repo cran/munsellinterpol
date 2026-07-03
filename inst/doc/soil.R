@@ -48,16 +48,16 @@ soil_data <- function( soil_spec, CCT )
     scanner = colorSpec::calibrate( scanner, response=c(NA,100,NA), method='scaling' )
     
     #   compute white point of illum
-    white   = colorSpec::product( colorSpec::neutralMaterial(1,wavelength=wave), scanner )
+    PRD     = colorSpec::neutralMaterial(1,wavelength=wave)    # the Perfect Reflecting Diffuser
+    white   = colorSpec::product( PRD, scanner )
     
     #   compute XYZ for all soil samples; this is XYZ under illum
     XYZ     = colorSpec::product( soil_spec, scanner )
     
-    #   compute Lab for all soil samples, under illum
-    Lab     = spacesXYZ::LabfromXYZ( XYZ, white )
-
-    #   convert Lab to Munsell HVC, which automatically does a chromatic adaptation to Illuminant C
-    HVC     = LabtoMunsell( Lab, white=white )   #  the default is to use the original NBS variant of C
+    #   convert XYZ to Munsell HVC
+    #   XYZtoMunsell() internally does a chromatic adaptation to the white point of Illuminant C
+    #   the default is to use the original NBS variant of the white point of Illuminant C
+    HVC     = XYZtoMunsell( XYZ, white=white )   
     rownames(HVC)   = colorSpec::specnames(soil_spec)
     
     # create output data.frame and add 4 columns: HVC, Munsell notation, ISCC-NBS color name, and Lab
@@ -65,7 +65,7 @@ soil_data <- function( soil_spec, CCT )
     out$HVC     = HVC
     out$Munsell = MunsellNameFromHVC( HVC )
     out[[ "ISCC-NBS Name" ]] = ColorBlockFromMunsell( HVC )$Name
-    out$Lab     = Lab
+    out$Lab     = spacesXYZ::LabfromXYZ( XYZ, white )
     
     return( out )
     }

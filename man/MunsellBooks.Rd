@@ -25,7 +25,7 @@ He also kindly provided photographs of the soil book, and much other material.
 
 
 \format{
-A data.frame with 1753 rows and these columns:
+\code{MunsellBooks} is a data.frame with 1753 rows and these columns:
 
 \tabular{ll}{
 {\code{HVC}} \tab 

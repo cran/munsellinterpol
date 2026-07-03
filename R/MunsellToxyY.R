@@ -247,7 +247,10 @@ MunsellToxyY  <-  function( MunsellSpec,
     return(out)
     }
     
-    
+#   xyC     single string or numeric 2-vector
+#
+#   returns valid numeric 2-vector, or NA in case that xyC is invalid
+
 process_xyC <- function( xyC )
     {
     if( is.character(xyC) )
@@ -269,6 +272,8 @@ process_xyC <- function( xyC )
     
     return( xyC )
     }
+    
+    
     
 process_hcinterp <- function( hcinterp )
     {    

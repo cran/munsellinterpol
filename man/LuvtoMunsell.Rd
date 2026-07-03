@@ -31,9 +31,9 @@ The rownames are set to those of Luv.
 The conversion is done in these steps:
 \itemize{
 \item Luv \rarrow XYZ using \code{\link[spacesXYZ:toXYZ]{spacesXYZ::XYZfromLuv}()} with the given \code{white}.
-\item XYZ is then adapted from the given \code{white} to Illuminant C using
+\item XYZ \rarrow HVC using \code{\link{XYZtoMunsell}()}. 
+Before the conversion to HVC, XYZ is internally adapted from the given \code{white} to Illuminant C using
 the given chromatic adaptation method, see \code{\link[spacesXYZ:adaptation]{spacesXYZ::CAT}()}.
-\item XYZ \rarrow HVC using \code{\link{XYZtoMunsell}()}
 }
 }
 

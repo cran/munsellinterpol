@@ -64,7 +64,7 @@ one or more Munsell chart sets.
 The five chart sets are 
 **Soil** @MunsellSoil, **Rock** @MunsellRock, **Bead** @MunsellBead, **Plant** @MunsellPlant, 
 and **The New Student Color Set** @Long2011.
-For the color chip data we depend completely on Ferguson @Ferguson2014.
+For the contents of these color charts we depend completely on Ferguson @Ferguson2014.
 The supplementary material from this paper was put in computer readable form by Willie Ondricek,
 who greatly improved the wording of this vignette.
 One of the fields in this supplementary material is a color name for each chip;
@@ -74,8 +74,9 @@ In this vignette, we only use examples from the Munsell Soil-Color Charts.
 The key function in this vignette is `roundHVC()`.
 Other featured functions from **munsellinterpol** are
 `XYZtoMunsell()`,
-`MunsellNameFromHVC()`, and
-`ColorBlockFromMunsell()`.
+`MunsellNameFromHVC()`,
+`ColorBlockFromMunsell()`, and
+`MunsellTosRGB()`.
 Other packages that play a very important part are
 **OxSR** @OxSR, **colorSpec** @colorSpec, and **spacesXYZ** @spacesXYZ.
 But we will not attach these and prefix their functions with the namespace
@@ -130,7 +131,7 @@ can create and use illuminants of any Correlated Color Temperature (CCT).
 
 <br><br>
 
-# A Function to Compute HVC and Lab from Reflectance Spectra
+# A Function to Compute XYZ and HVC from Reflectance Spectra
 
 In the following function `soil_data()`, argument `soil_spec` is a `colorSpec` object with
 reflectance spectra of the soil, and `CCT` is the desired Correlated Color Temperature of the illuminant.
@@ -152,16 +153,16 @@ soil_data <- function( soil_spec, CCT )
     scanner = colorSpec::calibrate( scanner, response=c(NA,100,NA), method='scaling' )
     
     #   compute white point of illum
-    white   = colorSpec::product( colorSpec::neutralMaterial(1,wavelength=wave), scanner )
+    PRD     = colorSpec::neutralMaterial(1,wavelength=wave)    # the Perfect Reflecting Diffuser
+    white   = colorSpec::product( PRD, scanner )
     
     #   compute XYZ for all soil samples; this is XYZ under illum
     XYZ     = colorSpec::product( soil_spec, scanner )
     
-    #   compute Lab for all soil samples, under illum
-    Lab     = spacesXYZ::LabfromXYZ( XYZ, white )
-
-    #   convert Lab to Munsell HVC, which automatically does a chromatic adaptation to Illuminant C
-    HVC     = LabtoMunsell( Lab, white=white )   #  the default is to use the original NBS variant of C
+    #   convert XYZ to Munsell HVC
+    #   XYZtoMunsell() internally does a chromatic adaptation to the white point of Illuminant C
+    #   the default is to use the original NBS variant of the white point of Illuminant C
+    HVC     = XYZtoMunsell( XYZ, white=white )   
     rownames(HVC)   = colorSpec::specnames(soil_spec)
     
     # create output data.frame and add 4 columns: HVC, Munsell notation, ISCC-NBS color name, and Lab
@@ -169,7 +170,7 @@ soil_data <- function( soil_spec, CCT )
     out$HVC     = HVC
     out$Munsell = MunsellNameFromHVC( HVC )
     out[[ "ISCC-NBS Name" ]] = ColorBlockFromMunsell( HVC )$Name
-    out$Lab     = Lab
+    out$Lab     = spacesXYZ::LabfromXYZ( XYZ, white )
     
     return( out )
     }

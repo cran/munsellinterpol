@@ -4,7 +4,17 @@
 \title{Convert xyY coordinates to Munsell HVC}
 
 \description{\code{xyYtoMunsell} Convert xyY coordinates to Munsell HVC,
-by interpolating over the extrapolated Munsell renotation data.\cr
+by interpolating over the tabulated Munsell renotation data.\cr
+
+Note that the input \code{xyY} must be relative to the white point of Illuminant C.
+Since Illuminant C is obsolete, it is almost certain that \code{xyY}
+in modern calculations \emph{must} be chromatically adapted
+to the white point of Illuminant C \emph{before} passing to this function.
+This chromatic adaptation can be done using
+\code{\link[spacesXYZ:adaptxyY]{spacesXYZ::adaptxyY()}}.
+Alternatively, one can use \code{\link{XYZtoMunsell}()},
+which does the chromatic adaptation internally.
+
 HVC \eqn{\to} xyY is the forward direction, and xyY \eqn{\to} HVC is the inverse direction.
 This inversion requires requires root-finding,
 which is done using \code{\link[rootSolve:multiroot]{rootSolve::multiroot()}}.
@@ -16,15 +26,16 @@ which is done using \code{\link[rootSolve:multiroot]{rootSolve::multiroot()}}.
 \arguments{
 \item{xyY}{a numeric Nx3 matrix with CIE xyY coordinates in the rows,
 or a vector that can be converted to such a matrix, by row.  
-These are for viewing in an environment with Illuminant C, with Y=100.}
+These are for viewing in an environment with the white point of Illuminant C.
+Y must be scaled so that Y=100 for the perfect reflecting diffuser.}
 
 \item{xyC}{ a numeric 2-vector with xy chromaticity of Illuminant C.
 It can also be one of the strings given in \code{\link{MunsellToxyY}()}. }
 
-\item{hcinterp}{either \code{'bicubic'} or \code{'bilinear'} (partial matching enabled).
+\item{hcinterp}{the type of 2D interpolation for H and C; either \code{'bicubic'} or \code{'bilinear'} (partial matching enabled).
 See \code{\link{MunsellToxyY}()} for details. }
 
-\item{vinterp}{either \code{'cubic'} or \code{'linear'} (partial matching enabled).
+\item{vinterp}{the type of interpolation for V; either \code{'cubic'} or \code{'linear'} (partial matching enabled).
 See \code{\link{MunsellToxyY}()} for details. }
 
 \item{VfromY}{passed as the parameter \code{which} to the function \code{VfromY()}.
@@ -57,7 +68,7 @@ The rownames of HVC are set to those of xyY, unless they are \code{NULL} when th
 If \code{perf} is \code{TRUE} then there are these additional columns:
 \item{time.elapsed}{elapsed time in seconds. If available, the function \code{microbenchmark::get_nanotime()} is used.}
 \item{iterations}{the number of iterations of \code{rootSolve::multiroot()}}
-\item{evalations}{the number of forward (HVC  \rarrow  xyY) function evaluations}
+\item{evaluations}{the number of forward (HVC  \rarrow  xyY) function evaluations}
 \item{estim.precis}{the estimated precision from \code{rootSolve::multiroot()}.
 This is in the HC plane for the Munsell Value computed from Y.}
 
@@ -125,6 +136,7 @@ The Munsell and Kubelka-Munk Toolbox
 \seealso{
 \code{\link{MunsellToxyY}()},
 \code{\link[rootSolve:multiroot]{rootSolve::multiroot()}},
+\code{\link[spacesXYZ:adaptxyY]{spacesXYZ::adaptxyY()}},
 \code{\link[microbenchmark:microbenchmark]{microbenchmark::get_nanotime()}}
 }
 
@@ -133,6 +145,17 @@ The Munsell and Kubelka-Munk Toolbox
 xyYtoMunsell(c(0.310897, 0.306510, 74.613450))
 ##       xyY.1     xyY.2     xyY.3     HVC.H     HVC.V     HVC.C    SAMPLE_NAME
 ## 1  0.310897  0.306510 74.613450 87.541720  8.900000  2.247428   7.5P 8.9/2.2
+
+
+##  The chromaticity of D65 is xy = (0.3127,0.3290) to 4 digits.
+##  If this is passed without chromatic adaptation, the result is not neutral.
+munsellinterpol::xyYtoMunsell( c(0.3127,0.3290,18) )
+
+##      xyY.x   xyY.y   xyY.Y      HVC.H      HVC.V      HVC.C    SAMPLE_NAME
+##  1  0.3127  0.3290 18.0000 37.6679246  4.8519274  0.6461961 7.7GY 4.9/0.65
+
+##  The Chroma is 0.65 instead of 0.
 }
+
 
 \keyword{datasets}

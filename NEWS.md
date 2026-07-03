@@ -1,6 +1,13 @@
 # NEWS for **munsellinterpol** package
 
 
+### Version 3.4-0  [2026-07-03]
+
+* for functions `XYZtoMunsell()` and `MunsellToXYZ()`, add arguments `white` and `adapt`; suggested by Hugo Rodrigues
+* revised the **Soil Colors** vignette to use `XYZtoMunsell()` instead of `LabtoMunsell()`
+* improved the explanations on some man pages
+
+
 ### Version 3.3-2  [2026-03-12]
 
 * in the **Soil Colors** vignette, added Show/Hide buttons to some functions

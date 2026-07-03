@@ -14,14 +14,15 @@ by 40 observers.
 % \usage{<none>}
 
 \format{
-A data frame with 4995 observations of the following 6 variables.
+\code{Munsell2xy} is a data.frame with 4995 rows and these 6 columns:
 \itemize{
 \item{\code{H}} the Munsell Hue. Each \code{H} is a multiple of 2.5 and in the interval (0,100].
 \item{\code{V}} the Munsell Value.  Each \code{V} is an integer from 1 to 10, or one of 0.2, 0.4, 0.6, 0.8
 \item{\code{C}} the Munsell Chroma.  Each \code{C} is a positive even integer.
 \item{\code{x}} the x chromaticity coordinate, for Illuminant C.
 \item{\code{y}} the y chromaticity coordinate, for Illuminant C.
-\item{\code{real}} a logical value. If \code{TRUE} then x,y were published, otherwise they have been extrapolated.
+\item{\code{real}} a logical value. If \code{TRUE} then x,y were published;
+            otherwise they have been extrapolated from the published values.
 }
 Note that the luminance factor Y is *not* here,
 since Y is a simple function of V,

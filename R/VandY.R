@@ -17,26 +17,26 @@ YfromV <- function( V, which='ASTM' )
     if( ! missing(which) )
         {
         w  = pmatchYV( which )
-        
+
         if( is.na(w) )
             {
             log_level( WARN, "which='%s' is invalid.", which )
             return( rep(NA_real_,length(V) ) )
-            }    
+            }
         which   = w
         }
-        
+
     if( which == 'ASTM' )
         out = ( ((((81939*V - 2048400)*V  + 23352000)*V - 22533000)*V + 119140000)*V  ) / 1.e8
     else if( which=='OSA'  ||  which=='MGO' )
         {
         out = ((((8404*V - 210090)*V  + 2395100)*V  - 2311100)*V + 12219000)*V
-        
+
         if( which == 'OSA' )
             out = out / 10256800
-        else 
+        else
             out = out / 1.e7
-        }    
+        }
     else if( which == "MUNSELL" )
         {
         b2  = 1474^2
@@ -53,14 +53,14 @@ YfromV <- function( V, which='ASTM' )
 
     return( out )
     }
-    
-    
+
+
 #   VfromY()
 #
-#   Y   numeric vector of reflectances   
+#   Y   numeric vector of reflectances
 #
 #   make a spline function with a large number of 'knots'
-# 
+#
 VfromY  <- function( Y, which='ASTM' )
     {
     if( ! missing(which) )
@@ -70,10 +70,10 @@ VfromY  <- function( Y, which='ASTM' )
             {
             log_level( WARN, "which='%s' is invalid.", which )
             return( rep(NA_real_,length(Y) ) )
-            }    
+            }
         which   = w
-        }    
-        
+        }
+
 
     if( which %in% names(p.VfromY) )
         out = p.VfromY[[which]](Y)
@@ -85,50 +85,50 @@ VfromY  <- function( Y, which='ASTM' )
         {
         log_level( FATAL, "Internal Error. which='%s' is invalid.", as.character(which) )
         return(NULL)
-        }        
-        
+        }
+
     return( out )
     }
-    
-    
-        
+
+
+
 makeVfromYs <- function()
     {
-    whichvec = c( 'ASTM', 'OSA', 'MGO' ) 
-    
+    whichvec = c( 'ASTM', 'OSA', 'MGO' )
+
     #log_level( INFO, "Making %d splinefuns...", length(whichvec) )
     #time_start  = gettime()
-    
+
     out = list()
-    
+
     #   these lookup Vs derived by some experimentation - see test-VandY.R for the number of digits of accuracy
-    V1  = 0.025 * (-8:119)   # note that 0 is in V1 (this is important so that 0 -> 0).    Old sequence was seq(-0.2,2.98,len=121)
+    V1  = 0.025 * (-8:120)   # note that 0:3 are in V1 (this is important so that 0 -> 0).    Old sequence was seq(-0.2,2.98,len=121)
     V2  = seq( 3^(1/2), 10.5^(1/2), len=181 ) ^ (2)
-    V   = sort( c( V1, V2, 10 ) )   # ensure that 10 is in V
-    
+    V2  = V2[-1]    # drop number approximately 3, since 3 is already in V1
+    V   = sort( c( V1, V2, 4:10 ) )   # ensure that integers 1:10 are in V; these are the grid-point planes
+
     for( w in whichvec )
         {
         #mess    = sprintf("makeVfromYs().  DEBUG.  Making p.VfromY() for '%s'  (%d Values)...\n", w, length(V) )
         #cat( mess, file=stderr() )
-        out[[w]]    = splinefun( YfromV(V,which=w), V, method='fmm' )       # declared in events.R
+        out[[w]]    = splinefun( YfromV(V,which=w), V, method='fmm' )
         }
-    
+
     #log_level( INFO, "done.  [in %g sec]\n", gettime()-time_start )   # less than 0.25 seconds
-    
+
     return( out )
     }
-    
-    
-    
+
+
+
 pmatchYV <- function( which )
     {
     full    = c( 'ASTM', 'OSA', 'MGO', 'MUNSELL', 'PRIEST' )
 
     idx = pmatch( toupper(which), full )
-    
+
     if( is.na(idx) )    return( NA_character_ )
-    
+
     return( full[idx] )
     }
-    
-    
+
