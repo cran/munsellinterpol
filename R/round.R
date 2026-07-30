@@ -11,16 +11,17 @@ roundHVC    <- function( HVC, books )
         #   interpret as Munsell notation
         HVC = HVCfromMunsellName(HVC)
     else
-        {
+        #   interpret as HVC numbers
         HVC = prepareNx3(HVC)
-        if( is.null(HVC) )  return(NULL)
-        }
+
+    if( is.null(HVC) )  return(NULL)
 
     #   check validity of books
     bookvec = strsplit( books, '[ ,]+' )[[1]]   #; cat( "bookvec =", bookvec, '\n' )
     if( length(bookvec) == 0 )
         {
-        log_level( ERROR, "argument books is invalid." )
+        event_level( ERROR, "argument books='%s' is invalid.", books,
+                    class="invalid_argument", extra=list(books=books) )
         return(NULL)
         }
 
@@ -29,7 +30,8 @@ roundHVC    <- function( HVC, books )
     j  = match( "FergusonName", colnames(munsellinterpol::MunsellBooks) )
     if( is.na(j) )
         {
-        log_level( FATAL, "Internal Error. column 'FergusonName' cannot be found." )
+        event_level( FATAL, "Internal Error. column 'FergusonName' cannot be found.",
+                            class="internal_error" )
         return(NULL)
         }
 
@@ -39,7 +41,8 @@ roundHVC    <- function( HVC, books )
     if( any( is.na(idx) ) )
         {
         i   = which( is.na(idx) )[1]
-        log_level( ERROR, "string '%s' in argument 'books' is invalid; it does not match any book.", bookvec[i] )
+        event_level( ERROR, "string '%s' in argument 'books' is invalid; it does not match any book.", bookvec[i],
+                                    class="invalid_argument", extra=list(books=books) )
         return(NULL)
         }
 
@@ -59,16 +62,16 @@ roundHVC    <- function( HVC, books )
     for( k in 1:nrow(HVC) )
         {
         if( any( is.na(HVC[k, ]) ) )    next    # HVC[k, ] is NA
-        
+
         HVCsample   = matrix( HVC[k, ], nrow=nrow(sample_search), ncol=ncol(HVC), byrow=TRUE )
-        
+
         #   symmetric=FALSE results in fewer hue mismatches
         dist        = NickersonColorDifference(  HVCsample, sample_search$HVC, symmetric=FALSE )
-        
+
         #   add very small tie-breaker,  Euclidean distance in V and C/2 multiplied by very small amount, Hue is ignored
         VCsample    = cbind( HVCsample[ ,2], 0.5*HVCsample[ ,3] )
         VCsearch    = cbind( sample_search$HVC[ ,2], 0.5*sample_search$HVC[ ,3] )
-        
+
         dist        = dist +  1.e-6 * sqrt( rowSums( (VCsample - VCsearch)^2 ) )
 
         if( INFO <= log_threshold( namespace="munsellinterpol" ) )
@@ -85,13 +88,13 @@ roundHVC    <- function( HVC, books )
 
 
     rnames  = rownames(HVC)
-    
+
     if( is.null(rnames) )   rnames =  MunsellNameFromHVC( HVC )
 
     if( any(is.na(rnames))  ||  anyDuplicated(rnames) )
         #   rnames is no good because some are NA or duplicated !  Use trivial names instead.
         #   this should be rare
-        rnames = 1:nrow(HVC)   
+        rnames = 1:nrow(HVC)
 
     out = data.frame( row.names=rnames )
 
@@ -100,6 +103,7 @@ roundHVC    <- function( HVC, books )
 
     out[[ "ISCC-NBS Name" ]]    = ColorBlockFromMunsell( HVC )$Name
 
+    #   if any rows of HVCrnd are NA, then MunsellNameFromHVC() will WARN with class "incomplete"
     out$MunsellRounded  = MunsellNameFromHVC( HVCrnd, digits=3 )
     out$FergusonName    = FergusonName
 

@@ -93,9 +93,10 @@ prepareNx3  <-  function( A, M=3 )
 
         Aname = deparse(substitute(A))
 
-        #   notice .topcall assignment which makes log_level() print name of parent function, and *NOT* prepareNx3()
-        log_level( ERROR, "Argument '%s' must be a non-empty numeric Nx%d matrix (with N>0). %s='%s...'",
-                                    Aname, M, Aname, mess, .topcall=sys.call(-1L) )
+        #   notice .topcall assignment
+        #   which makes the logger layout contain the name of the parent function, and *NOT* prepareNx3()
+        event_level( ERROR, "Argument '%s' must be a non-empty numeric Nx%d matrix. %s='%s...'",
+                                    Aname, M, Aname, mess, class="invalid_argument", .topcall=sys.call(-1L) )
         return(NULL)
         }
 
@@ -138,28 +139,3 @@ intercept   <- function( varname, ... )
 
 
 
-#################       deadwood below      #########################
-
-prepareNx3_old  <-  function( A, M=3 )
-    {
-    ok  = is.numeric(A)  &&  ((length(A) %% M)==0)  &&  0<length(A)
-    if( ! ok )
-        {
-        #print( "prepareNx3" )
-        #print( sys.frames() )
-        mess    = substr( as.character(A)[1], 1, 10 )
-        #arglist = list( ERROR, "A must be a non-empty numeric Nx3 matrix (with N>0). A='%s...'", mess )
-        #do.call( log_level, arglist, envir=parent.frame(n=3) )
-        #myfun   = log_level
-        #environment(myfun) = parent.frame(3)
-        log_level( ERROR, "Argument A must be a non-empty numeric Nx%d matrix (with N>0). A='%s...'", M, mess )
-        return(NULL)
-        }
-
-    if( is.null(dim(A)) )
-        A = matrix( A, ncol=M, byrow=TRUE )
-    else if( ncol(A) != M )
-        A = t(A)
-
-    return( A )
-    }

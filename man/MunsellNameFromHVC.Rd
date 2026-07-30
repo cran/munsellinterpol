@@ -10,7 +10,7 @@ Convert Munsell Numeric to Munsell String Notation
 }
 
 \usage{
-MunsellNameFromHVC( HVC, format='g', digits=2 )
+MunsellNameFromHVC( HVC, format='g', digits=2, ctol=0 )
 
 HueStringFromNumber( Hue, format='g', digits=2 )
 }
@@ -29,13 +29,33 @@ which are automatically wrapped to the interval (0,100].}
 \item{format}{determines the meaning of the argument \code{digits},
 and usually equal to \code{'g'} or \code{'f'} though other options are available,
 see \code{\link[base]{formatC}()} for details.
-When \code{format='f'} trailing 0s might be displayed.}
+When \code{format='f'} trailing 0s might be displayed.
+\cr
+For \code{MunsellNameFromHVC()}, \code{format} may have length 2,
+and in that case the first one is applied to Hue,
+and the second one is applied to Value and Chroma.
+It may also have length 3, and in that case the 3 values are applied
+to Hue, Value, and Chroma in that order.
+}
 
 \item{digits}{
 when \code{format='g'} the number of significant digits,
 and when \code{format='f'} the number of digits displayed after the decimal point.
 Both \code{format} and \code{digits} are passed as arguments to
-\code{\link[base]{formatC}()}.}
+\code{\link[base]{formatC}()}.
+\cr
+For \code{MunsellNameFromHVC()}, \code{digits} may have length 2,
+and in that case the first one is applied to Hue,
+and the second one is applied to Value and Chroma.
+It may also have length 3, and in that case the 3 values are applied
+to Hue, Value, and Chroma in that order.
+}
+
+\item{ctol}{
+a small tolerance that is used to "snap" a very small Chroma to 0,
+which is then converted to an exact Munsell Neutral, see \bold{Examples}.
+The default value, \code{ctol=0} has no effect on the Chroma. 
+}
 }
 
 
@@ -46,9 +66,27 @@ Both functions return  a character vector of length N.
 which is useful for labeling plots.
 }
 
+
+
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} event, an error condition is signaled with the additional
+S3 class \code{"invalid_argument"}.
+The invalid argument is added to the condition object.
+
+In case of an \code{WARN} event, a warning condition is signaled with the additional
+S3 class \code{"incomplete"}.
+The condition object also has the submatrix of the invalid rows of \code{HVC},
+or the subvector of invalid elements of \code{Hue},
+as item \code{invalid}, and their indexes as item \code{indexes}.
+}
+
 \note{
-If \code{format='f'}, then Chroma is first \emph{rounded} to to the given \code{digits}.
-Chromas close to 0 may then become 0 and be displayed as a neutral, see \bold{Examples}.
+If \code{format='f'} for Chroma, then Chroma is first \emph{rounded} to the given \code{digits}.
+Chromas close to 0 may then become 0 and be converted to an exact Munsell Neutral,
+see \bold{Examples}.
 \cr
 The \code{width} argument of \code{\link[base]{formatC}()} is always set to 1,
 to suppress leading spaces.
@@ -60,7 +98,7 @@ Standard Practice for Specifying Color by the Munsell System.
 1997
 }
 
-\author{Glenn Davis}
+\author{Glenn Davis and Hugo Rodrigues}
 
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
@@ -72,13 +110,43 @@ Standard Practice for Specifying Color by the Munsell System.
 }
 
 \examples{
-MunsellNameFromHVC( c(39,5.1,7.3,  0,5.1234,0.003 )  )
-##  [1] "9GY 5.1/7.3"    "10RP 5.1/0.003"
+white.D65 = c(95.047,100.000,108.883)
 
-MunsellNameFromHVC( c(39,5.1,7.34,  0,5.1234,0.003 ), format='f' )
-##  [1] "9.00GY 5.10/7.34" "N 5.10/"
+HVC = XYZtoMunsell( c( 0.01*white.D65, 0.1*white.D65), white=white.D65 )
+HVC
+##                            H         V            C
+##  6.6GY 0.86/2.8e-15 36.62033 0.8634072 2.753467e-15
+##  N 3.7/              0.00000 3.7206664 0.000000e+00
 
-HueStringFromNumber( seq( 2.5, 100, by=2.5 ) )   # make nice labels for a plot
+# note that the Chroma in the 2nd row is 0 as it should be,
+# but the Chroma in the first row is a tiny bit off.
+# This is annoying when converted to Munsell notation, using defaults.
+
+MunsellNameFromHVC( HVC )
+##  [1] "6.6GY 0.86/2.8e-15" "N 3.7/"   
+
+# Convert again with a positive ctol.
+
+MunsellNameFromHVC( HVC, ctol=1.e-4 )
+##  [1] "N 0.86/" "N 3.7/"      # now *both* are converted to Munsell Neutrals
+
+
+# setting format='f' can achieve a similar goal
+
+MunsellNameFromHVC( c(39,5.1,7.3,  14.1234,5.1234,0.0003 )  )
+##  [1] "9GY 5.1/7.3"      "4.1YR 5.1/0.0003"
+
+MunsellNameFromHVC( c(39,5.1,7.34,  14.1234,5.1234,0.003 ), format='f' )
+##  [1] "9.00GY 5.10/7.34" "N 5.12/"     
+
+
+#  On the other hand, one may *want* to see more precision for V and C, but not H
+MunsellNameFromHVC( c(39,5.1,7.3,  14.1234,5.1234,0.0003 ), digits=c(2,6)  )
+##  [1] "9GY 5.1/7.3"         "4.1YR 5.1234/0.0003"
+
+
+# make nice labels for a plot with all the Hues
+HueStringFromNumber( seq( 2.5, 100, by=2.5 ) )  
 ##   [1] "2.5R"  "5R"    "7.5R"  "10R"   "2.5YR" "5YR"   "7.5YR" "10YR"  "2.5Y" 
 ##  [10] "5Y"    "7.5Y"  "10Y"   "2.5GY" "5GY"   "7.5GY" "10GY"  "2.5G"  "5G"   
 ##  [19] "7.5G"  "10G"   "2.5BG" "5BG"   "7.5BG" "10BG"  "2.5B"  "5B"    "7.5B" 

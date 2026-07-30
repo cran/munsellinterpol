@@ -79,6 +79,19 @@ those patches are drawn in outline only, and with the clamped RGB coordinates pr
 }
 
 
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} or \code{FATAL} event, an error condition is signaled with one of these additional
+S3 classes: \code{"invalid_argument"} or \code{"package_unavailable"} or \code{"internal_error"},
+whichever is appropriate.
+The invalid argument, or the name of the unavailable package, is added to the condition object.
+
+In case of an \code{WARN} event, a warning condition is signaled with no additional S3 class.
+}
+
+
 \author{Glenn Davis}
 
 \seealso{

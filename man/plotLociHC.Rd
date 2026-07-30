@@ -72,6 +72,23 @@ and \emph{Judd, et. al. (1975)} p. 263.
 }
 
 
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} or \code{FATAL} event, an error condition is signaled with one of these additional
+S3 classes: \code{"invalid_argument"} or \code{"package_unavailable"} or \code{"internal_error"},
+whichever is appropriate.
+The invalid argument, or the name of the unavailable package, is added to the condition object.
+
+In case of an \code{WARN} event, a warning condition is signaled with the additional
+S3 class \code{"incomplete"}.
+The condition object also has the the subvector of Value's that could not be plotted
+as item \code{invalid}, and their indexes as item \code{indexes}.
+}
+
+
+
 \references{
 Newhall, Sidney M.,
 Dorothy Nickerson,
@@ -81,13 +98,13 @@ Journal of the Optical Society of America.
 Vol. 33.  No. 7.  pp. 385-418.
 July 1943.
 
-Judd, Deane B. and Günther Wyszecki.
+Judd, Deane B. and GC<nther Wyszecki.
 \bold{Extension of the Munsell Renotation System to Very Dark Colors}.
 Journal of the Optical Society of America.
 Vol. 46.  No. 4.  pp. 281-284.
 April 1956.
 
-Judd, Deane B. and Günther Wyszecki.
+Judd, Deane B. and GC<nther Wyszecki.
 \bold{Color in Business, Science, and Industry}.
 3rd edition.
 John Wiley & Sons.

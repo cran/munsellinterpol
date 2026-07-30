@@ -24,11 +24,14 @@ xyYtoMunsell  <-  function( xyY,
                             warn=TRUE,
                             perf=FALSE )
     {
-    p   = 'rootSolve'
-    if( ! requireNamespace( p, quietly=TRUE ) )
+    for( p in c('rootSolve','spacesXYZ') )
         {
-        log_level( ERROR, "required package '%s' could not be loaded.", p )
-        return(NULL)
+        if( ! requireNamespace( p, quietly=TRUE ) )
+            {
+            event_level( ERROR, "required package '%s' could not be loaded.", p,
+                            class="package_unavailable", extra=list(package_unavailable=p) )
+            return(NULL)
+            }
         }
 
     time_start  = gettime()
@@ -40,44 +43,49 @@ xyYtoMunsell  <-  function( xyY,
         colnames(xyY)   = c( 'x', 'y', 'Y' )
 
     #   process xyC
-    xyC  = process_xyC( xyC )
+    xyC_org = xyC
+    xyC     = process_xyC( xyC )
     if( any(is.na(xyC)) )
         {
-        log_level( ERROR, "xyC is invalid." )
+        event_level( ERROR, "Argument xyC is invalid.", class="invalid_argument", extra=list(xyC=xyC_org) )
         return(NULL)
         }
 
     # process hcinterp
-    hcinterp    = process_hcinterp(hcinterp)
+    hcinterp_org    = hcinterp
+    hcinterp        = process_hcinterp(hcinterp)
     if( is.na(hcinterp) )
         {
-        log_level( ERROR, "hcinterp='%s' is invalid.", hcinterp )
+        event_level( ERROR, "Argument hcinterp='%s' is invalid.", as.character(hcinterp_org),
+                                class="invalid_argument", extra=list(hcinterp=hcinterp_org) )
         return(NULL)
         }
 
     #   assign function pointer
     if( hcinterp == 'bicubic' )
-        hcinterpfun = bicubicCardinal  # mybicubic
+        hcinterpfun = bicubicCardinal   # mybicubic
     else if( hcinterp == 'bilinear' )
         hcinterpfun = bilinearApprox    # mybilinear
 
 
-
     # process vinterp
-    vinterp    = process_vinterp(vinterp)
+    vinterp_org = vinterp
+    vinterp     = process_vinterp(vinterp)
     if( is.na(vinterp) )
         {
-        log_level( ERROR, "vinterp='%s' is invalid.", as.character(vinterp) )
+        event_level( ERROR, "Argument vinterp='%s' is invalid.", as.character(vinterp_org),
+                                class="invalid_argument", extra=list(vinterp=vinterp_org) )
         return(NULL)
         }
 
 
-    #   process VfromY
+    #   process VfromY.  Only 4 values are allowed; the 5th option 'MgO' is unacceptable.
     full    = c( 'ASTM', 'NBS', 'MUNSELL', 'PRIEST' )
     idx     = pmatch( toupper(VfromY), full )
     if( is.na(idx) )
         {
-        log_level( ERROR, "VfromY='%s' is invalid. ('MgO' is not allowed in this function).", VfromY )
+        event_level( ERROR, "Argument VfromY='%s' is invalid. ('MgO' is not allowed in this function).", VfromY,
+                                class="invalid_argument", extra=list(VfromY=VfromY) )
         return(NULL)
         }
 
@@ -96,7 +104,11 @@ xyYtoMunsell  <-  function( xyY,
 
 
 
-    #   define the "forward" function, which we will try to find the root of
+    #   define the "forward" function, which is called by rootSolve::multiroot().
+    #   forwardfun() takes a 2-vector AB (the rectangular equivalent of the HC plane)
+    #           and returns a 2-vector = a delta in the xy-plane.
+    #   The goal is to find a root of forwardfun().
+    #
     #   AB          input 2-vector.  It changes on each iteration.
     #   value       the Munsell Value.  It remains constant throughout the iteration
     #   vlevel      vector of value indices (not the values) where HC is interpolated.
@@ -276,7 +288,7 @@ xyYtoMunsell  <-  function( xyY,
         if( value==0  ||  all( xy_target == xyC ) )
             {
             #   neutrals are easy.
-            #   Note that value==0 must be pure black !
+            #   Note that value==0 must be neutral too - a pure black !
             #   Note that xy_target must be equal to xyC exactly, with no tolerance;
             #       if the difference is extremely small we depend on approxABfromxyY() to set ABstart=(0,0)
             #       and the rootSolve::multiroot() tolerances to find a root with C=0.
@@ -333,17 +345,23 @@ xyYtoMunsell  <-  function( xyY,
 
         ABstart = approxABfromxyY( xyY[i, ], c(xyC,100), V.vector )
 
-        res = try( rootSolve::multiroot( forwardfun, ABstart, rtol=rtol, atol=atol, ctol=0, verbose=FALSE,
-                                            value=value, vlevel=vlevel, xy_target=xy_target ),  silent=F )
+        res = tryCatch( rootSolve::multiroot( forwardfun, ABstart, rtol=rtol, atol=atol, ctol=0, verbose=FALSE, # these are used by multiroot()
+                                            value=value, vlevel=vlevel, xy_target=xy_target ),                # these are used by forwardfun()
+                                            error = function( e ) {e} )
 
-        if( inherits(res,"try-error" ) )   # class(res) == "try-error" )
+        #   res is now either the list with the root plus 3 more items
+        #   or a condition object derived from "error".
+        #   both of these are lists
+
+        if( inherits(res,"error" ) )   # class(res) == "try-error" )
            {
+           #    res is a condition object
            #    failed to find the root
            # print(res)
            HCstart = unlist( HCfromAB( ABstart[1], ABstart[2] ) )
 
-           log_level( DEBUG, "rootSolve::multiroot() failed.  ABstart=%g,%g.   HCstart=%g,%g.  value=%g",
-                                         ABstart[1], ABstart[2], HCstart[1], HCstart[2], value )
+           log_level( DEBUG, "rootSolve::multiroot() failed. i=%d.  ABstart=%g,%g.   HCstart=%g,%g.  Value=%g.  msg='%s'.",
+                                         i, ABstart[1], ABstart[2], HCstart[1], HCstart[2], value, res$message )
            next
            }
 
@@ -365,7 +383,7 @@ xyYtoMunsell  <-  function( xyY,
 
     #   hue wrap-around to interval (0,100]
     hue         = HVC[ ,1] %% 100
-    mask        = (hue==0)  &  (HVC[ ,3]!=0)    # make exception to hue<-100 when Chroma==0
+    mask        = (hue==0)  &  (0<HVC[ ,3])    # make exception to hue=100 when Chroma==0
     hue[mask]   = 100
     HVC[ , 1]   = hue
 
@@ -401,11 +419,11 @@ xyYtoMunsell  <-  function( xyY,
 
     if( warn )
         {
-        mask    = is.na(HVC[ ,1])  |  is.na(HVC[ ,3])
-        if( any(mask)  )
+        bad = is.na(HVC[ ,1])  |  is.na(HVC[ ,3])
+        if( any(bad)  )
             {
-            log_level( WARN, "%d samples, out of %d, could not be mapped; HVC row set to NA.",
-                                                sum(mask), n )
+            event_level( WARN, "%d xyY's, out of %d, could not be mapped; HVC row set to NA.", sum(bad), length(bad),
+                                 class="incomplete", extra=list( invalid=xyY[bad, ,drop=FALSE], indexes=which(bad) ) )
             }
         }
 
@@ -417,13 +435,6 @@ xyYtoMunsell  <-  function( xyY,
 #   this one uses global variable p.InversionCoeffs
 approxABfromxyY <- function( xyY, xyY.white, V.vector )
     {
-    p   = 'spacesXYZ'
-    if( ! requireNamespace( p, quietly=TRUE ) )
-        {
-        log_level( ERROR, "required package '%s' could not be loaded.", p )
-        return(NULL)
-        }
-
     V   = VfromY( xyY[3] )
     iV  = which.min( abs(V - V.vector) )
 
@@ -456,7 +467,8 @@ approxABfromxyY <- function( xyY, xyY.white, V.vector )
         term    = c( xd, xd2, xd2*xd, yd, xd*yd, xd2*yd, yd2, xd*yd2, yd2*yd )    # compare order here with polym() in makeInversionCoeffs()
         }
     else
-        log_level( FATAL, "vars='%s' is invalid.", vars )
+        event_level( FATAL, "(internal table error) vars='%s' is invalid.", vars,
+                                class = "table_error", extra = list( vars=vars) )
 
     AB  = numeric(2)
     for( k in 1:2 )

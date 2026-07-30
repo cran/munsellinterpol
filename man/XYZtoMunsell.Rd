@@ -58,10 +58,22 @@ when the ouput rownames are set to the Munsell notations for HVC.\cr
 In case of error, it returns \code{NULL}.
 }
 
+
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} or \code{FATAL} event, a condition is signaled with one of these additional
+S3 classes: \code{"invalid_argument"} or \code{"package_unavailable"},
+whichever is appropriate.
+The invalid argument, or the name of the unavailable package, is added to the condition object.
+}
+
+
 \details{
 The conversion is done in these steps:
 \itemize{
-\item If \code{white} is not \code{NULL}, XYZ is chromatically adapted from the given \code{white} to the white point of Illuminant C using the given \code{adapt} method.
+\item If \code{white} is not \code{NULL}, XYZ is chromatically adapted from the given \code{white} to the white point of Illuminant C using \code{\link[spacesXYZ:adaptXYZ]{spacesXYZ::adaptXYZ()}} and the given \code{adapt} method. 
 \item XYZ  \rarrow  xyY using \code{\link[spacesXYZ:xyYfromXYZ]{spacesXYZ::xyYfromXYZ}()} 
 \item xyY  \rarrow  HVC using \code{\link{xyYtoMunsell}()} and \code{...}.  This function does the interpolation over the  Munsell renotation data.
 }
@@ -77,6 +89,7 @@ The Munsell and Kubelka-Munk Toolbox.
 
 \seealso{
 \code{\link{MunsellToXYZ}()},
+\code{\link{xyYtoMunsell}()},
 \code{\link[spacesXYZ:xyYfromXYZ]{spacesXYZ::xyYfromXYZ}()},
 \code{\link[spacesXYZ:adaptXYZ]{spacesXYZ::adaptXYZ()}}
 }

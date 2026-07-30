@@ -104,6 +104,26 @@ In case of error, x and y are set to \code{NA}.
 The rownames of xyY are set to those of HVC, unless they are NULL when they are set to \code{SAMPLE_NAME}.}
 }
 
+
+
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} event, an error condition is signaled with the additional
+S3 class \code{"invalid_argument"}.
+The invalid argument is added to the condition object.
+
+In the case that \code{warn=TRUE}, and not all xyY rows could be computed, 
+a \code{WARN} event is created,
+and a warning condition is signaled with the additional S3 class \code{"incomplete"}.
+The condition object also has the submatrix of invalid \code{HVC}'s as item \code{invalid},
+and their row indexes as item \code{indexes}.
+}
+
+
+
+
 \details{
 In case \code{hcinterp='bicubic'} or \code{vinterp='cubic'} a Catmull-Rom spline is used;
 see the article \emph{Cubic Hermite spline}.

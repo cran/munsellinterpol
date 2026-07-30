@@ -28,6 +28,20 @@ In case of error, it returns \code{NULL}.
 }
 
 
+
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} event, a condition is signaled with one of these additional
+S3 classes: \code{"invalid_argument"} or \code{"package_unavailable"},
+whichever is appropriate.
+The invalid argument, or the name of the unavailable package, is added to the condition object.
+}
+
+
+
+
 \details{
 The conversion is done in these steps:
 \itemize{

@@ -42,9 +42,24 @@ A numeric N-vector with the pairwise differences,
 i.e. between row i of \code{HVC0} and  row i of \code{HVC1}.
 }
 
+
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} event, an error condition is signaled with the additional
+S3 class \code{"invalid_argument"}.
+The invalid argument is added to the condition object.
+
+In the case that not all differences could be computed,
+a warning condition is signaled with the additional S3 class \code{"incomplete"}.
+The condition object also has the indexes of the invalid differences as item \code{indexes}.
+}
+
+
 \details{
 If \code{HVC0}=\eqn{H_0,V_0,C_0} and If \code{HVC1}=\eqn{H_1,V_1,C_1} then the original Nickerson formula is:
-\deqn{NCD(HVC0,HVC1) = 0.4 C_0 \Delta H ~+~ 6 \Delta V  ~+~  3 \Delta C}
+\deqn{NCD(\code{HVC0},\code{HVC1}) = 0.4 C_0 \Delta H ~+~ 6 \Delta V  ~+~  3 \Delta C}
 where \eqn{ \Delta H = |H_0 - H_1| } (on the circle),
 \eqn{ \Delta V = |V_0 - V_1| } and
 \eqn{ \Delta C = |C_0 - C_1| }.
@@ -56,7 +71,7 @@ Another problem is that the difference is not continuous when the second color i
 for rectangular coordinates on a plane of constant V.
 
 Both of these problems are fixed with a slightly modified formula:
-\deqn{NCD(HVC0,HVC1) = 0.4 \min(C_0,C_1) \Delta H ~+~ 6 \Delta V  ~+~  3 \Delta C}
+\deqn{NCD(\code{HVC0},\code{HVC1}) = 0.4 \min(C_0,C_1) \Delta H ~+~ 6 \Delta V  ~+~  3 \Delta C}
 
 For the first formula set \code{symmetric=FALSE} and for the second formula set \code{symmetric=TRUE}.
 }

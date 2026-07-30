@@ -32,17 +32,17 @@ Partial matching is enabled, and it is case insensitive.
 \details{
 \code{'Priest'} is the earliest (1920) transfer function in this package.
 It is implemented as:
-\deqn{V = sqrt(Y)  ~~~~~~and~~~~~~   Y = V^2 }
+\deqn{V = \mathrm{sqrt}(Y)  ~~~~~~and~~~~~~   Y = V^2 }
 One readily checks that when V=10, Y=100, and vice-versa.
 This transfer function has been implemented in colorimeters,
 using analog electric circuits.
 It is used in Hunter Lab - the precursor of CIE Lab.
 
 \code{'Munsell'} is the next (1933) transfer function,
-and was proposed by Munsell's son (Alexander Ector Orr Munsell) and co-workers.   
+and was proposed by Munsell's son (Alexander Ector Orr Munsell) and co-workers.
 It is implemented as:
-\deqn{V = sqrt( 1.474*Y - 0.00474*Y^2 )}
-\deqn{Y = 50 * ( (1474 - sqrt(1474^2 - 4*4740*V^2)) / 474 )}
+\deqn{V = \mathrm{sqrt}( 1.474*Y - 0.00474*Y^2 )}
+\deqn{Y = 50 * ( (1474 - \mathrm{sqrt}(1474^2 - 4*4740*V^2)) / 474 )}
 One readily checks that when V=10, Y=100, and vice-versa.
 The luminance factor Y is \emph{absolute},
 AKA \emph{relative to the perfect reflecting diffuser}.
@@ -82,7 +82,7 @@ but did it a little differently by scaling each coefficient.
 \deqn{Y = ( ((((81939*V - 2048400)*V  + 23352000)*V - 22533000)*V + 119140000)*V  ) / 1.e8 }
 One readily checks that when V=10, Y=100 exactly (for both \code{'OSA'} and \code{'ASTM'}).
 
-The inverses - from Y to V - of all 3 quintics are implemented as 
+The inverses - from Y to V - of all 3 quintics are implemented as
 3 \code{splinefun()}s at a large number (about 300) of points.
 These inverses are both fast and accurate.
 The round-trip Y  \rarrow  V  \rarrow  Y is accurate to 7 digits after the decimal.
@@ -92,6 +92,24 @@ The round-trip V  \rarrow  Y  \rarrow  V is accurate to 8 digits after the decim
 \value{
 a numeric vector the same length as the input
 }
+
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} or \code{FATAL} event, a condition is signaled with one of these additional
+S3 classes: \code{"invalid_argument"} or \code{"internal_error"},
+whichever is appropriate.
+
+In \code{VfromY()} if any computed \code{V}'s are negative,
+those \code{V}'s are clamped to 0 and a condition is signaled with additional S3 class \code{"munsell_clamp"}.
+The condition object list also has the vector of negative \code{V}'s as item \code{Value},
+and their indexes as item \code{indexes}.
+
+Similarly, in \code{YfromV()} if any computed \code{Y}'s are negative,
+those \code{Y}'s are clamped to 0 and a similar condition is signaled.
+}
+
 
 \note{
 The quintic functions \code{'ASTM'} and \code{'OSA'} are very close.
@@ -130,7 +148,7 @@ Standard Practice for Specifying Color by the Munsell System.
 2008
 }
 
-\author{Glenn Davis}
+\author{Glenn Davis and Hugo Rodrigues}
 
 \seealso{
 \code{\link{MunsellToxyY}()},

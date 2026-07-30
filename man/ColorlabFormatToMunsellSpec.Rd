@@ -27,6 +27,15 @@ The rownames of the input are copied to the output,
 but if these are \code{NULL}, the rownames are set to the Munsell notations.
 }
 
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} event, an error condition is signaled with the additional
+S3 class \code{"invalid_argument"}.
+The invalid argument is added to the condition object.
+}
+
 \details{
 Colorlab Munsell format uses 4 numbers.
 \enumerate{

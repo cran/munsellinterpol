@@ -51,6 +51,16 @@ Finally, if these row names have duplicates, they are set to \code{1:N}.
 }
 
 
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} or \code{FATAL} event, a condition is signaled with one of these additional
+S3 classes: \code{"invalid_argument"} or \code{"internal_error"}, whichever is appropriate.
+The invalid argument is added to the condition object.
+}
+
+
 \details{
 First, the set of chips over all selected books is formed - a sub-frame of \code{\link{MunsellBooks}}.
 Then the closest chip in this set to the given HVC is found.

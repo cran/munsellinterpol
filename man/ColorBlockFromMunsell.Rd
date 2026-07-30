@@ -54,6 +54,23 @@ a \code{data.frame} with N rows and these columns:
 The \code{rownames} are set to the input \code{MunsellSpec}.
 }
 
+
+
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} event, an error condition is signaled with the additional
+S3 class \code{"invalid_argument"}.
+The invalid argument is added to the condition object.
+
+In the case that not all color blocks could be computed,
+a warning condition is signaled with the additional S3 class \code{"incomplete"}
+or \code{"table_error"}, as appropriate.
+The condition object also has the indexes of the invalid blocks as item \code{indexes}.
+}
+
+
 \references{
 Munsell Color Company, A.H. Munsell, and A.E.O. Munsell.
 \bold{Munsell book of color: defining, explaining, and illustrating the fundamental characteristics of color}.

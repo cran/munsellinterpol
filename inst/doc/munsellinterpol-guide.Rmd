@@ -623,7 +623,7 @@ For more on these, see the
 
 <br><br>
 
-## Appendix E - Logging
+## Appendix E - Logging and Condition Signaling
 
 Logging is performed using the package **logger**  @logger.
 This is a powerful package that allows a separate configuration
@@ -637,21 +637,96 @@ or
 
 The layout callback function is customized;
 it adds the name of the calling function to the message.
-To change it back again, one can execute:  
+To restore the default, one can execute:  
 `log_layout( layout_simple, namespace="munsellinterpol" )`  
-or to install ones own layout function, one can execute:  
+or to install one's own layout function, one can execute:  
 `log_layout( <your function>, namespace="munsellinterpol" )`.
 
-The appender callback functions is also customized;
-it comes to an immediate stop if the log event level is `FATAL`.
-To continue execution after such a log event, one can execute:  
+The appender callback functions is also customized.
+<!-- it comes to an immediate stop if the log event level is `FATAL`. -->
+To restore the default, one can execute:  
 `log_appender( appender_console, namespace="munsellinterpol" )`
 
 The formatter callback function is initialized to be `formatter_sprintf()`;
-this should not be changed.
+this must not be changed.
+
+If the level is `FATAL`, `ERROR`, or `WARN` then a condition object is constructed
+and signaled.
+The condition object is a list with these items:
+
+<table>
+<tr>
+<td>`message`</td>
+<td>a brief description of the error or warning. It is required in all **R** condition objects.</td>
+</tr>
+
+<tr>
+<td>`call`</td>
+<td>always NULL. It is the expression that created the condition. It is required in all **R** condition objects.</td>
+</tr>
+
+<tr>
+<td>`level`</td>
+<td>The logging level; always  `FATAL`, `ERROR`, or `WARN`.</td>
+</tr>
+
+<tr>
+<td>`package`</td>
+<td>always  `"munsellinterpol"`.</td>
+</tr>
+
+<tr>
+<td>`record`</td>
+<td>The single-line logging record; as returned by current `log_layout()` function.
+`message` is always a trailing substring of `record`.</td>
+</tr>
+
+<tr>
+<td>`...`</td>
+<td>Some functions may add more items to the list; see the man pages for the individual functions.</td>
+</tr>
+</table>
+
+For levels `FATAL` and `ERROR` the S3 `class` attribute is set to
+`c("munsellinterpol_error", "error", "condition")`.
+So if desired, the condition can be handled with either `error = function(e)`
+or `munsellinterpol_error = function(e)`.
+The condition is always signaled, no matter what the current logging threshold is.
+Moreover, some functions may prepend more strings to the `class` that indicate
+the type of error that occurred.
+For example, a very common type of error is `"invalid_argument"`.
+In that case the class attribute is set to
+`c( "invalid_argument", "munsellinterpol_error", "error", "condition")`,
+and the condition can be handled with `invalid_argument = function(e)`.
+See the man pages for the individual functions.
+If the condition is handled, then `record` is *not* appended,
+but it is available in the condition object.
+If the condition is not handled, then `record` is appended (subject to the logging threshold),
+and execution halts.
+If the `record` was appended, then execution halts silently;
+otherwise the `message` is printed and then execution halts.
 
 
+For level `WARN` the S3 `class` attribute is set to
+`c("munsellinterpol_warning", "warning", "condition")`.
+So if desired, the condition can be handled with either `warning = function(w)`
+or `munsellinterpol_warning = function(w)`.
+The condition is always signaled, no matter what the current logging threshold is.
+Moreover, some functions may prepend more strings to the `class` that indicate
+the type of warning.
+For example, many functions convert an entire vector or matrix of values.
+If not all could be converted, i.e. the conversion is not complete,
+then the class attribute might be set to
+`c( "incomplete", "munsellinterpol_warning", "warning", "condition")`,
+and the condition can be handled with `incomplete = function(w)`.
+See the man pages for the individual functions.
+If the condition is not handled, then `record` is appended (subject to the logging threshold),
+unless the calling function is wrapped in `suppressWarnings()`.
+If the condition is handled, then `record` is *not* appended,
+but it is available in the condition object.
+In both cases, execution continues normally.
 
+The condition signaling architecture is designed, and mostly written, by Hugo Rodrigues.
 
 
 <br><br>

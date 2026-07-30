@@ -2,27 +2,29 @@ Package: munsellinterpol
 Type: Package
 Title: Interpolate Munsell Renotation Data from Hue Value/Chroma to
         CIE/RGB
-Version: 3.4-0
+Version: 3.5-1
 Encoding: UTF-8
-Date: 2026-07-03
+Date: 2026-07-30
 Authors@R: c(person(given = "Jose", family = "Gama", role = c("aut","trl"), email = "rxprtgama@gmail.com"),
-        person(given = "Paul", family = "Centore", role = c("aut","cph"), email = "centore@99main.com"),
-        person(given = "Glenn", family = "Davis", role = c("aut","cre"), email = "gdavis@gluonics.com")  )
+    person(given = "Paul", family = "Centore", role = c("aut","cph"), email = "centore@99main.com"),
+    person(given = "Glenn", family = "Davis", role = c("aut","cre"), email = "gdavis@gluonics.com"),
+    person("Hugo", "Rodrigues", email = "rodrigues.machado.hugo@gmail.com", role  = c("ctb"), comment = c(ORCID = "0000-0002-8070-8126")) )
 Description: Methods for interpolating data in the Munsell color system following the ASTM D-1535 standard. Hues and chromas with decimal values can be interpolated and converted to/from the Munsell color system and CIE xyY, CIE XYZ, CIE Lab, CIE Luv, or RGB.  Includes ISCC-NBS color block lookup.  Based on the work by Paul Centore, "The Munsell and Kubelka-Munk Toolbox".
 License: GPL (>= 3)
 LazyLoad: yes
 LazyData: yes
-Depends: R (>= 3.5.0)
-Imports: rootSolve, spacesRGB, spacesXYZ (>= 1.6-0), logger
+Depends: R (>= 4.0.0)
+Imports: rootSolve, spacesRGB, spacesXYZ (>= 1.6-0), logger (>= 0.4.1)
 Suggests: microbenchmark, mgcv, knitr, rmarkdown, colorSpec (>= 1.8-0),
         flextable, OxSR
-Author: Jose Gama [aut, trl],
-  Paul Centore [aut, cph],
-  Glenn Davis [aut, cre]
 Maintainer: Glenn Davis <gdavis@gluonics.com>
 Repository: CRAN
 NeedsCompilation: no
 VignetteBuilder: knitr
 BuildVignettes: yes
-Packaged: 2026-07-03 03:25:11 UTC; Glenn
-Date/Publication: 2026-07-03 14:30:02 UTC
+Packaged: 2026-07-30 01:38:03 UTC; Glenn
+Author: Jose Gama [aut, trl],
+  Paul Centore [aut, cph],
+  Glenn Davis [aut, cre],
+  Hugo Rodrigues [ctb] (ORCID: <https://orcid.org/0000-0002-8070-8126>)
+Date/Publication: 2026-07-30 13:10:02 UTC

@@ -13,16 +13,18 @@ MunsellToXYZ <- function( MunsellSpec, white=NULL, adapt="Bradford", ... )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log_level( ERROR, "required package '%s' could not be loaded.", p )
+        event_level( ERROR, "required package '%s' could not be loaded.", p,
+                        class="package_unavailable", extra=list(package_unavailable=p) )
         return(NULL)
         }
 
     if( ! is.null(white) )
         {
-        white   = process_white(white)
+        white_org   = white
+        white       = process_white(white)
         if( any(is.na(white)) )
             {
-            log_level( ERROR, "argument white is invalid" )
+            event_level( ERROR, "Argument white is invalid.", class="invalid_argument", extra=list(white=white_org) )
             return(NULL)
             }
         }
@@ -44,7 +46,8 @@ MunsellToXYZ <- function( MunsellSpec, white=NULL, adapt="Bradford", ... )
         xy  = process_xyC( xyC )
         if( any(is.na(xy)) )
             {
-            log_level( ERROR, "xyC=%s is invalid.", paste0(as.character(xyC),collapse=',') )
+            event_level( ERROR, "xyC=%s is invalid.", paste0(as.character(xyC),collapse=','),
+                                    class="invalid_argument", extra=list(xyC=xyC) )
             return(NULL)
             }
 
@@ -65,16 +68,21 @@ MunsellToXYZ <- function( MunsellSpec, white=NULL, adapt="Bradford", ... )
 
 
 #   convert XYZ to an HVC matrix
-#   XYZ     N x 3 matrix with XYZ vectors in the rows
+#
+#   XYZ     N x 3 matrix with XYZ vectors in the rows, or a numeric vector with length a multiple of 3
 #   white   if NULL then XYZ must be already adapted to C, and with Y=100 for ref. white V=10
-#   adapt   the chromatic adaptation method
+#   adapt   the chromatic adaptation method; if white=NULL then adapt is ignored
+#
+#   returns N x 3 matrix with HVC in the rows
+
 
 XYZtoMunsell <- function( XYZ, white=NULL, adapt='Bradford', ... )
     {
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log_level( ERROR, "required package '%s' could not be loaded.", p )
+        event_level( ERROR, "required package '%s' could not be loaded.", p,
+                        class="package_unavailable", extra=list(package_unavailable=p) )
         return(NULL)
         }
 
@@ -83,15 +91,17 @@ XYZtoMunsell <- function( XYZ, white=NULL, adapt='Bradford', ... )
 
     if( is.null(white) )
         {
-        #   XYZ is already relative to Illuminant C, so nothing to do
+        #   XYZ is already relative to Illuminant C, so nothing to do.  CAT is the identity.
         XYZ.adapted = XYZ
         }
     else
         {
+        white_saved = white
         white   = process_white(white)
         if( any(is.na(white)) )
             {
-            log_level( ERROR, "argument white is invalid"  )
+            event_level( ERROR, "argument white is invalid",
+                                class="invalid_argument", extra=list(white=white_saved) )
             return(NULL)
             }
 
@@ -105,7 +115,8 @@ XYZtoMunsell <- function( XYZ, white=NULL, adapt='Bradford', ... )
         xy  = process_xyC( xyC )
         if( any(is.na(xy)) )
             {
-            log_level( ERROR, "xyC=%s is invalid.", paste0(as.character(xyC),collapse=',') )
+            event_level( ERROR, "xyC=%s is invalid.", paste0(as.character(xyC),collapse=','),
+                                class="invalid_argument", extra=list(xyC=xyC) )
             return(NULL)
             }
 
@@ -139,8 +150,6 @@ XYZtoMunsell <- function( XYZ, white=NULL, adapt='Bradford', ... )
         print( tmp )
         }
 
-
-
     HVC = tmp$HVC
 
     rnames  = rownames(XYZ)     # if XYZ is not a matrix, then rnames is NULL
@@ -160,26 +169,29 @@ XYZtoMunsell <- function( XYZ, white=NULL, adapt='Bradford', ... )
 
 ################      Munsell  <-->  Lab    #######################
 #   Convert a Munsell specification into CIE Lab coordinates, by interpolating over the extrapolated Munsell renotation data.
+
 MunsellToLab <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
     {
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log_level( ERROR, "required package '%s' could not be loaded.", p )
+        event_level( ERROR, "required package '%s' could not be loaded.", p,
+                               class="package_unavailable", extra=list( package_unavailable=p ) )
         return(NULL)
         }
 
     if( is.character(MunsellSpec) )
-        HVC = HVCfromMunsellName(MunsellSpec)
+        HVC = HVCfromMunsellName( MunsellSpec )
     else
         HVC = prepareNx3( MunsellSpec )
 
     if( is.null(HVC) )  return(NULL)
 
-    white   = process_white(white)
+    white_org   = white
+    white       = process_white(white)
     if( any(is.na(white)) )
         {
-        log_level( ERROR, "argument white is invalid"  )
+        event_level( ERROR, "Argument white is invalid.", class="invalid_argument", extra=list(white=white_org) )
         return(NULL)
         }
 
@@ -204,17 +216,19 @@ LabToMunsell <- function( Lab, white='D65', adapt='Bradford', ... )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log_level( ERROR, "required package '%s' could not be loaded.", p )
+        event_level( ERROR, "required package '%s' could not be loaded.", p,
+                            class="package_unavailable", extra=list(package_unavailable=p) )
         return(NULL)
         }
 
     Lab = prepareNx3( Lab )
     if( is.null(Lab) )  return(NULL)
 
-    white   = process_white(white)
+    white_org   = white
+    white       = process_white(white)
     if( any(is.na(white)) )
         {
-        log_level( ERROR, "argument white is invalid."  )
+        event_level( ERROR, "argument white is invalid.", class="invalid_argument", extra=list(white=white_org) )
         return(NULL)
         }
 
@@ -222,6 +236,7 @@ LabToMunsell <- function( Lab, white='D65', adapt='Bradford', ... )
 
     HVC = XYZtoMunsell( XYZ, white=white, adapt=adapt, ... )
 
+    if( is.null(HVC) )  return(NULL)
 
     #   do an additional test for neutrals
     #   to correct possible roundoff error
@@ -253,7 +268,8 @@ MunsellToLuv <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log_level( ERROR, "required package '%s' could not be loaded.", p )
+        event_level( ERROR, "required package '%s' could not be loaded.", p,
+                               class="package_unavailable", extra=list( package_unavailable=p ) )
         return(NULL)
         }
 
@@ -264,10 +280,11 @@ MunsellToLuv <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
 
     if( is.null(HVC) )  return(NULL)
 
-    white   = process_white(white)
+    white_org   = white
+    white       = process_white(white)
     if( any(is.na(white)) )
         {
-        log_level( ERROR, "argument white is invalid"  )
+        event_level( ERROR, "Argument white is invalid.", class="invalid_argument", extra=list(white=white_org) )
         return(NULL)
         }
 
@@ -294,23 +311,28 @@ LuvToMunsell <- function( Luv, white='D65', adapt='Bradford', ... )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log_level( ERROR, "required package '%s' could not be loaded.", p )
+        event_level( ERROR, "required package '%s' could not be loaded.", p,
+                            class="package_unavailable", extra=list(package_unavailable=p) )
         return(NULL)
         }
 
     Luv = prepareNx3( Luv )
     if( is.null(Luv) )  return(NULL)
 
-    white   = process_white(white)
+
+    white_org   = white
+    white       = process_white(white)
     if( any(is.na(white)) )
         {
-        log_level( ERROR, "argument white is invalid"  )
+        event_level( ERROR, "argument white is invalid.", class="invalid_argument", extra=list(white=white_org) )
         return(NULL)
         }
 
     XYZ = spacesXYZ::XYZfromLuv( Luv, white )
 
     HVC = XYZtoMunsell( XYZ, white=white, adapt=adapt, ... )
+
+    if( is.null(HVC) )  return(NULL)
 
     #   do an additional test for neutrals
     #   to correct possible roundoff error
@@ -332,6 +354,7 @@ LuvToMunsell <- function( Luv, white='D65', adapt='Bradford', ... )
     }
 
 
+
 #   this works, and avoids the call to assign() in .onAttach
 #   however, this method requires an export entry in file NAMESPACE
 LabtoMunsell    <- LabToMunsell
@@ -350,7 +373,8 @@ sRGBtoMunsell <- function( sRGB, maxSignal=255, ... )
         {
         if( ! requireNamespace( p, quietly=TRUE ) )
             {
-            log_level( ERROR, "required package '%s' could not be loaded.", p )
+            event_level( ERROR, "required package '%s' could not be loaded.", p,
+                                class="package_unavailable", extra=list(package_unavailable=p) )
             return(NULL)
             }
         }
@@ -394,7 +418,8 @@ MunsellTosRGB <- function( MunsellSpec, maxSignal=255, ... )
         {
         if( ! requireNamespace( p, quietly=TRUE ) )
             {
-            log_level( ERROR, "required package '%s' could not be loaded.", p )
+            event_level( ERROR, "required package '%s' could not be loaded.", p,
+                                class="package_unavailable", extra=list(package_unavailable=p) )
             return(NULL)
             }
         }

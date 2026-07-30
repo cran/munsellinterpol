@@ -6,16 +6,19 @@ plotLociHC  <-  function( value=5, hue=seq(2.5,100,by=2.5), chroma='auto', coord
     ok  = is.numeric(value)  &&  1<=length(value)  &&  all( 0<value  &  value<=10 )
     if( ! ok )
         {
-        log_level( ERROR, "All Values must be numeric and in the interval (0,10]." )
+        event_level( ERROR, "All Values must be numeric and in the interval (0,10].",
+                                    class="invalid_argument", extra=list(value=value) )
         return(FALSE)
         }
+
+    hue_org = hue
 
     if( is.character(hue) )
         {
         hue = HueNumberFromString(hue)
         if( all( is.na(hue) ) )
             {
-            log_level( "All character hues are invalid." )
+            event_level( ERROR, "All character hues are invalid.", class="invalid_argument", extra=list(hue=hue_org) )
             return(FALSE)
             }
         }
@@ -23,7 +26,7 @@ plotLociHC  <-  function( value=5, hue=seq(2.5,100,by=2.5), chroma='auto', coord
     ok  = is.numeric(hue)  &&  1<=length(hue)
     if( ! ok )
         {
-        log_level( ERROR, "All Hues must be numeric." )
+        event_level( ERROR, "All Hues must be numeric.", class="invalid_argument", extra=list(hue=hue_org) )
         return(FALSE)
         }
 
@@ -34,20 +37,25 @@ plotLociHC  <-  function( value=5, hue=seq(2.5,100,by=2.5), chroma='auto', coord
     ok  = ok || (is.character(chroma) && chroma[1] == 'auto')
     if( ! ok )
         {
-        log_level( ERROR, "All Chromas must be numeric and positive, or the string 'auto'." )
+        event_level( ERROR, "All Chromas must be numeric and positive, or the string 'auto'.",
+                                    class="invalid_argument", extra=list(chroma=chroma) )
         return(FALSE)
         }
 
     if( ! (coords %in% c('xy','ab','AB') ) )
         {
-        log_level( ERROR, "coords = '%s' is invalid.", coords )
+        event_level( ERROR, "Argument coords='%s' is invalid.", coords, class="invalid_argument", extra=list(coords=coords) )
         return(FALSE)
         }
 
     Value.vec   = sort( unique(munsellinterpol::Munsell2xy$V) )
 
-    for( val in value )
+    success     = logical( length(value) )
+
+    for( k in 1:length(value) )
         {
+        val         = value[k]
+
         main.val    = sprintf( main, val )
 
         if( is.character(chroma)  &&  chroma[1] == 'auto' )
@@ -62,7 +70,7 @@ plotLociHC  <-  function( value=5, hue=seq(2.5,100,by=2.5), chroma='auto', coord
                 }
             else
                 {
-                log_level( ERROR, "Cannot determine maximum chroma for value=%g.", val )
+                #   try the next value, success[k] remains FALSE
                 next
                 }
             }
@@ -70,13 +78,22 @@ plotLociHC  <-  function( value=5, hue=seq(2.5,100,by=2.5), chroma='auto', coord
             chromavec  = chroma
 
         if( coords == 'xy' )
-            out = plotLociHC.xy( value, hue, chromavec, main.val, est, ...  )
+            out = plotLociHC.xy( val, hue, chromavec, main.val, est, ...  )
         else if( coords == 'ab' )
-            out = plotLociHC.ab( value, hue, chromavec, main.val, est, ...  )
+            out = plotLociHC.ab( val, hue, chromavec, main.val, est, ...  )
         else if( coords == 'AB' )
-            out = plotLociHC.AB( value, hue, chromavec, main.val, est, ...  )
+            out = plotLociHC.AB( val, hue, chromavec, main.val, est, ...  )
 
-        if( ! out ) break
+        if( ! out ) break       # something is wrong, give up
+
+        success[k]  = TRUE
+        }
+
+    bad = ! success
+    if( any(bad) )
+        {
+        event_level( WARN, "Cannot make plot for %d Values, of %d, because the maximum Chroma cannot be determined.", sum(bad), length(bad),
+                                class="incomplete", extra=list(invalid=value[bad],indexes=which(bad)) )
         }
 
     return( invisible(out) )
@@ -90,7 +107,8 @@ plotLociHC.xy  <-  function( value, hue, chroma, main, est, ... )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log_level( ERROR, "required package '%s' could not be loaded.", p )
+        event_level( ERROR, "required package '%s' could not be loaded.", p,
+                            class="package_unavailable", extra=list(package_unavailable=p) )
         return(NULL)
         }
 
@@ -228,7 +246,8 @@ plotLociHC.ab  <-  function( value, hue, chroma, main, est, ...  )
     p   = 'spacesXYZ'
     if( ! requireNamespace( p, quietly=TRUE ) )
         {
-        log_level( ERROR, "required package '%s' could not be loaded.", p )
+        event_level( ERROR, "required package '%s' could not be loaded.", p,
+                            class="package_unavailable", extra=list(package_unavailable=p) )
         return(NULL)
         }
 
@@ -423,12 +442,17 @@ plotLociHC.AB  <-  function( value, hue, chroma, main, est, ...    )
 plotPatchesH  <-  function( hue, space='sRGB', adapt='Bradford', background='gray50',
                                 main="Hue %s  (H=%g)      [%s   adapt=%s]", value=NULL, chroma=NULL, ...  )
     {
+    hue_org = hue
+
     if( is.character(hue) )
         {
         hue = HueNumberFromString(hue)
-        if( any( is.na(hue) ) )
+
+        bad = is.na(hue)
+        if( any(bad) )
             {
-            log_level( "One or more of the character hues is invalid." )
+            event_level( ERROR, "%d, of %d, character Hue's are invalid.", sum(bad), length(bad),
+                                        class="invalid_argument", extra=list(hue=hue_org) )
             return( invisible(FALSE) )
             }
         }
@@ -436,7 +460,7 @@ plotPatchesH  <-  function( hue, space='sRGB', adapt='Bradford', background='gra
     ok  = is.numeric(hue)  &&  1<=length(hue)
     if( ! ok )
         {
-        log_level( ERROR, "All Hues must be numeric." )
+        event_level( ERROR, "All hues must be numeric.", class="invalid_argument", extra=list(hue=hue_org) )
         return( invisible(FALSE) )
         }
 
@@ -449,7 +473,8 @@ plotPatchesH  <-  function( hue, space='sRGB', adapt='Bradford', background='gra
         ok  = is.numeric(value)  &&  0<length(value)  &&  0<=value[1]  &&  all( 0 < diff(value) )  &&  value[length(value)]<=10
         if( ! ok )
             {
-            log_level( ERROR, "argument 'value' is invalid.  It must be strictly increasing with all values in [0,10]." )
+            event_level( ERROR, "Argument 'value' is invalid.  It must be strictly increasing with all values in [0,10].",
+                                            class="invalid_argument", extra=list(value=value) )
             return( invisible(FALSE) )
             }
         }
@@ -460,7 +485,8 @@ plotPatchesH  <-  function( hue, space='sRGB', adapt='Bradford', background='gra
         ok  = is.numeric(chroma)  &&  0<length(chroma)  &&  0<=chroma[1]  &&  all( 0 < diff(chroma) )
         if( ! ok )
             {
-            log_level( ERROR, "argument 'chroma' is invalid.  It must be non-negative and strictly increasing." )
+            event_level( ERROR, "Argument 'chroma' is invalid.  It must be non-negative and strictly increasing.",
+                                        class="invalid_argument", extra=list(chroma=chroma) )
             return( invisible(FALSE) )
             }
         }
@@ -472,7 +498,7 @@ plotPatchesH  <-  function( hue, space='sRGB', adapt='Bradford', background='gra
         out = plotPatchesH.single( h, space=space, adapt=adapt, background=background, main=main.single,
                                         valuevec=value, chromavec=chroma, ... )
 
-        if( ! out ) break
+        if( ! out ) break   # something is really wrong, give up
         }
 
     return( invisible(out) )

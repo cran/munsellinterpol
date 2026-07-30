@@ -12,7 +12,7 @@ if(!file.exists("figs")) dir.create("figs")
 ## ----packs, echo=TRUE, message=FALSE----------------------------------------------------
 library( munsellinterpol )
 
-## ----lee11, echo=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 8/'----
+## ----lee11, echo=TRUE, warning=TRUE, message=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 8/'----
 par( omi=c(0,0,0,0), mai=c(0.41,0.7,0.6,0.2) )
 plotLociHC( value=8 )
 
@@ -20,11 +20,11 @@ plotLociHC( value=8 )
 par( omi=c(0,0,0,0), mai=c(0.41,0.7,0.6,0.2) )
 plotLociHC( value=8, hue=seq(5,55,by=2.5), chroma=seq(2,34,by=2) )
 
-## ----lee13, echo=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 0.4/'----
+## ----lee13, echo=TRUE, warning=TRUE, message=TRUE,  fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 0.4/'----
 par( omi=c(0,0,0,0), mai=c(0.41,0.7,0.6,0.2) )
 plotLociHC( value=0.4, hue=seq(80,90,by=2.5), chroma=seq(2,12,by=2) )
 
-## ----lee14, echo=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 8/, with bilinear interpolation'----
+## ----lee14, echo=TRUE, warning=TRUE, message=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 8/, with bilinear interpolation'----
 par( omi=c(0,0,0,0), mai=c(0.41,0.7,0.6,0.2) )
 plotLociHC( value=8, hcinterp='bilinear' )
 

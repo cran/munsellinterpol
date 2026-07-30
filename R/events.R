@@ -1,103 +1,206 @@
 
-
-#   private global variables.  The initial 'p.' means private
-
-#   This group is stored in sysdata.rda
-#   p.LookupList        HVC -> xy lookup table(s).  It must be unlocked because the xy of the neutrals (xyC) may be changed during a session.
-#   p.InversionCoeffs   3D table of coefficients for approximating A and B as polynomials of a,b.  It stays locked.
-#   p.xyC               4x2 matrix of xy coords.  It stays locked.
-#   p.sRGB2XYZ          3x3 matrix. It stays locked.
-#   p.XYZ2sRGB          3x3 matrix. It stays locked.
-#   p.OptimalHull       named list of convex hulls of optimal colors, indexed by 'C', 'D65', etc.  It stays locked.
-#   p.xyz1931           the CIE 2-degree color matching functions, at 5nm step. It stays locked.
-#   p.ACDs              illuminants A, C, D50, D55, D65, D75, at 5nm step. It stays locked.
-#   p.System_ISCCNBS    the elementary blocks for the ISCC-NBS naming system. It stays locked.
+#   level       logging level
+#   fmt         format string, passed to sprintf()
+#   ...         extra args passed to sprintf()
+#   class       a string (or even multiple strings) that can be used to give the type of error that occured
+#   extra       named list appended to the custom condition object,
+#               with event data that may be useful to the handler
+#   .topcall    call, from which the name of the calling function is derived
 #
-#   This group is programmatically created during .onLoad()
-#   p.VfromY            list of 3 splinefuns; not safe to store them in sysdata.rda.  It must be unlocked.
-#   p.microbenchmark    logical value, whether the package microbenchmark is loaded.  It must be unlocked.
-#   p.D65toC_CAT        CAT from Illuminant D65 to C.  Used in sRGB conversion.  It must be unlocked.
-#   p.CtoD65_CAT        CAT from Illuminant C to D65.  Used in sRGB conversion.  It must be unlocked.
+#   *)  constructs single-line message - the record - using current log_layout() callback
+#               which is layout_mine() by default
+#
+#   calls appropriate function, depending on level
+#
+#   for levels greater than WARN, event_level() and log_level() are equivalent.
 
-#   These are build options
-#   p.vinterpOverride   if TRUE, change from 'cubic' to 'linear' when Value < 2
-
-
-p.VfromY            = NULL
-p.microbenchmark    = FALSE
-p.D65toC_CAT        = NULL
-p.CtoD65_CAT        = NULL
-
-p.vinterpOverride   = FALSE
-
-
-.onLoad <- function( libname, pkgname )
+event_level <- function( level, fmt, ..., class=character(), extra=NULL, .topcall=sys.call(-1L) )
     {
-    p.microbenchmark    <<- requireNamespace( 'microbenchmark', quietly=TRUE )  #;  cat( "p.microbenchmark=", p.microbenchmark, '\n' )
-    
-    if( requireNamespace( "logger", quietly=FALSE ) )
+    if( logger::WARN < level )
         {
-        #   log_formatter( formatter_mine )
-        #   layout_mine and appender_mine are defined in logger.R
-        log_formatter( logger::formatter_sprintf, namespace=pkgname )   # force sprintf(), even if glue is installed
-        log_layout( layout_mine, namespace=pkgname )                    # put fn() between timestamp and the msg
-        log_appender( appender_mine, namespace=pkgname )                # maybe stop on ERROR or FATAL
-        log_threshold( WARN, namespace=pkgname )                        # default is INFO
+        #   just normal logging, no condition
+        return( logger::log_level( level, fmt, ... , .topcall=.topcall ) )
         }
 
-    p.VfromY            <<- makeVfromYs()    #  this loads the list p.VfromY, and takes less than 0.25 seconds
 
-    if( requireNamespace( "spacesXYZ", quietly=TRUE ) )
-        {
-        #   these 2 are not needed, the variables are unlocked during .onLoad()
-        #unlockBinding( "p.D65toC_CAT", asNamespace('munsellinterpol') )
-        #unlockBinding( "p.CtoD65_CAT", asNamespace('munsellinterpol') )
+    #====   logging work begin  ====#
 
-        white.D65   = c( 0.3127, 0.3290, 1 )    # xy are from the official sRGB standard
-        white.C     = c( p.xyC['NBS',], 100 )
+    message = logger::formatter_sprintf( fmt, ... )
 
-        white.D65   = spacesXYZ::XYZfromxyY( white.D65 )
-        white.C     = spacesXYZ::XYZfromxyY( white.C )
+    #   get the current layout function, and call it to compute the layout record
+    layout  = logger::log_layout( namespace="munsellinterpol" )
 
-        p.D65toC_CAT    <<- spacesXYZ::CAT( white.D65, white.C, method='Bradford' )
-        p.CtoD65_CAT    <<- spacesXYZ::CAT( white.C, white.D65, method='Bradford' )
-        }
+    if( is.symbol(layout) ) layout  = function_from_symbol( layout )
 
-    #assign( "LabToMunsell", function(...) { LabtoMunsell(...) }, pos='package:munsellinterpol' )   fails !
-    #namespaceExport( 'munsellinterpol', "LabToMunsell" )
+    if( ! is.function(layout) )
+        #   cannot log, give up !
+        stop( "In package munsellinterpol. Cannot find the logger layout function." )
+
+    record  = layout( level, message, .topcall=.topcall )
+
+
+    #====   condition work begin    ====#
+
+    extra   = c( list( level=level, package="munsellinterpol", record=record ), extra )
+
+    if( level < logger::WARN )
+        #   level must be ERROR or FATAL
+        out = event_error( message, class, extra )
+    else
+        #   level must be WARN
+        out = event_warn( message, class, extra )
+
+    return( invisible(out) )
     }
 
 
 
-.onAttach <- function( libname, pkgname )
-    {
-    #print( libname )
-    #print( pkgname )
 
-    if( FALSE )
+#   message     a short description of the error
+#   class       extra class strings, added to the class of the condition object, which can indicate the type of error
+#   extra       list of extra data added to condition object, including extra$level and extra$record
+#
+#   *) constructs custom condition object, with passed class and extra, including extra$record.
+#   *) signals the condition
+# If condition is not handled, then:
+#   *)  get current logger threshold
+#   *)  if threshold >= level, writes the record using current log_appender() callback
+#               which is appender_mine() by default
+#   *) if a restart that applies to "abort" is available, invokes it.  Otherwise stops with the same condition object.
+
+event_error <- function( message, class, extra )
+    {
+    #   in the next line, call=.topcall leads to expansion of all the args too !  Which I do not want !
+    cond    = structure( c( list( message=message, call=NULL ), extra ),
+                        class = c( class, "munsellinterpol_error", "error", "condition")
+                        )
+
+    signalCondition(cond)       # exiting handlers leave here
+
+    #   condition was unhandled
+
+    #====   logging work resume   ====#
+
+    #   get current logging threshold, and compare with level
+    thresh  = logger::log_threshold( namespace="munsellinterpol" )
+
+    appended    = FALSE
+
+    if( extra$level <= thresh )
         {
-        info    = library( help='munsellinterpol' )        #eval(pkgname)
-        info    = format( info )
-        mask    = grepl( "^(Version|Author|Built)", info )     #Title
-        info    = gsub( "[ ]+", ' ', info[mask] )
-        mess    = sprintf( "This is %s", pkgname )
-        mess    = paste( c( mess, info ), collapse='.  ' )   #; cat(mess)
-        packageStartupMessage( mess )
+        #   OK to append/write the record
+        #   get the current appender function, and append the layout record
+        appender    = logger::log_appender( namespace="munsellinterpol" )
+
+        if( is.symbol(appender) )   appender  = function_from_symbol( appender )
+
+        if( ! is.function(appender) )
+            #   cannot log, give up !
+            stop( "In package munsellinterpol. Cannot find the logger appender function." )
+
+        appender( extra$record )
+        appended    = TRUE
         }
 
-    for( p in c( "spacesXYZ", "spacesRGB" ) )
+    #====   logging work end   ====#
+
+
+    #====   condition work resume    ====#
+
+    ra <- computeRestarts("abort")
+
+    if( appended && length(ra) )
+        #   The next line silently stops execution.
+        #   The silence is OK because the record has already been appended.
+        invokeRestart(ra[[1L]])             # usually the same as invokeRestart("abort")
+    else
+        #   The next line stops execution, and also reports cond$message,
+        #   which is the right thing to do since nothing has been reported yet.
+        stop( cond )
+
+    #====   condition work end    ====#
+
+
+    invisible(NULL)
+    }
+
+
+
+
+#   message     a short description of the error
+#   class       extra class strings, added to the class of the condition object, which can indicate the type of error
+#   extra       list of extra data added to condition object, including extra$record.  extra$level == WARN always.
+#
+#   *) constructs custom condition object, with passed class and metadata, and the record.
+#   *) signals the condition
+# If condition was not handled with muffleWarning(), then
+#   *)  get current logger threshold
+#   *)  if threshold >= WARN, writes the record using current log_appender() callback
+#               which is appender_mine() by default
+
+event_warn <- function( message, class, extra )
+    {
+    #   in the next line, call=.topcall leads to expansion of all the args too !  Which I do not want !
+    cond    <- structure( c( list( message=message, call=NULL ), extra ),
+                        class = c(class, "munsellinterpol_warning", "warning", "condition")
+                        )
+
+    withRestarts(
         {
-        if( ! requireNamespace( p, quietly=TRUE ) )
+        signalCondition(cond)                   # handlers get first crack
+
+        #====   logging work resumed    ====#
+        #   get current logging threshold, and compare with WARN
+        thresh  = logger::log_threshold( namespace="munsellinterpol" )
+
+        if( WARN <= thresh )
             {
-            mess    = sprintf( "ERROR.  Cannot load package %s.  Many functions will not work !", p )
-            packageStartupMessage( mess )
-            }
-        }
+            #   OK to write/append the record
+            #   get the current appender function, and append the layout record
+            appender    = logger::log_appender( namespace="munsellinterpol" )
 
-    
-    #   surprisingly, *exporting* these 2 functions is not necessary
-    #namespaceExport( 'package:munsellinterpol', "LabToMunsell" )
-    
+            if( is.symbol(appender) )   appender = function_from_symbol( appender )
+
+            if( ! is.function(appender) )
+                #   cannot log, give up
+                stop( "In package munsellinterpol. Cannot find the logger appender function." )
+
+            appender( extra$record )
+            }
+        #====   logging work end    ====#
+        },
+        #   establish the restart named "muffleWarning".
+        #   this is necessary so that suppressWarnings() works with this function, just like it does with warning().
+        muffleWarning = function() { return(NULL) }     # so suppressWarnings() works as it does for warning()
+        )
+
+    #====   condition work end    ====#
+
+    invisible(NULL)
     }
 
 
+#   symb    a symbol
+#
+#   returns a function, or NULL if not found
+
+function_from_symbol    <- function( symb )
+    {
+    #   in this call to base::get(), inherits=TRUE is necessary
+    fun = tryCatch( base::get( symb, mode="function", inherits=TRUE ), error = function(e) { e } )
+
+    if( is.function(fun) ) return( fun )
+
+    #   base::get() failed
+    #   try harder using utils::getAnywhere().  This one takes much longer.
+    lst = utils::getAnywhere( symb )
+
+    if( 1 <= length(lst$objs)  &&  is.function(lst$objs[[1L]]) )
+        {
+        #   the first object found is a function; return it
+        logger::log_level( logger::DEBUG, "utils::getAnywhere() found symbol '%s' in '%s'.", lst$name, lst$where[1] )
+        return( lst$objs[[1L]] )
+        }
+
+    return(NULL)
+    }

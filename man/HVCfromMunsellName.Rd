@@ -10,8 +10,8 @@
 
 \usage{
 HVCfromMunsellName( MunsellName )
-MunsellHVC( MunsellName )
 HueNumberFromString( HueString )
+MunsellHVC( MunsellName )
 }
 
 \arguments{
@@ -30,23 +30,38 @@ Whitespace is optional and ignored.
 Neutrals, denoted by \code{'N'}, are invalid because the hue is undefined.}
 }
 
-
 \value{
 \code{HVCfromMunsellName()}
 returns a numeric Nx3 matrix with HVC in the rows.
 For neutral colors, both H and C are set to 0.
 If a string cannot be parsed, the entire row is set to \code{NA}s.
 The rownames are set to \code{MunsellName}.
-\cr
+
+\code{HueNumberFromString()} returns the hue number H.
+If the string cannot be parsed, the output is set to \code{NA}.
+
+For the 2 previous functions the Hue Number is wrapped to (0,100],
+except when Chroma==0 and then Hue=0.
+
 \code{MunsellHVC()}
-returns a character Nx3 matrix with HVC in the rows,
-and is there for backward compatibility with older versions of the package.
+returns a \emph{character} Nx3 matrix with HVC in the rows.
+It is deprecated and and is here for backward compatibility with older versions of the package.
 For neutral colors, H is set to \code{'N'} and C is set to \code{'0'}.
-\cr
-\code{HueNumberFromString()} returns the hue number H (in (0,100]).
-If the string cannot be parsed, or the color is neutral, the output is set to \code{NA}.
-\cr
-For all functions the Hue Number is wrapped to (0,100].
+}
+
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} event, an error condition is signaled with the additional
+S3 class \code{"invalid_argument"}.
+The invalid argument is added to the condition object.
+
+In the case that not all HVC rows, or Hue numbers, could be computed,
+because some of the strings are invalid,
+a warning condition is signaled with the additional S3 class \code{"incomplete"}.
+The condition object also has the subvector of invalid strings as item \code{invalid},
+and their indexes as item \code{indexes}.
 }
 
 \note{
@@ -78,10 +93,7 @@ or even earlier in \emph{ASTM D 1525-58T (1958)}.
 Interestingly, in the \emph{Atlas of the Munsell Color System (1915)} there were only
 5 principal hues (with no intermediate hues) and each of the 5 arcs was assigned a 10-point scale.
 If the entire hue circle of 1915 were assigned a scale, it would have been a 50-point scale.
-
 }
-
-
 
 \references{
 Nimeroff, I.

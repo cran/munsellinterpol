@@ -21,7 +21,7 @@ The reference white is asssumed to have Y=100.}
 
 \details{
 The \emph{MacAdam Limit} is the boundary of the
-\emph{optimal color solid} (also called the \emph{Rösch Farbkörper}),
+\emph{optimal color solid} (also called the \emph{RC6sch FarbkC6rper}),
 in XYZ coordinates.
 The optimal color solid is convex and depends on the illuminant.
 Points on the boundary of the solid are called \emph{optimal colors}.
@@ -78,6 +78,16 @@ The row names of the output value are set equal to the row names of \code{xyY}.
 }
 
 
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} event, a condition is signaled with one of these additional
+S3 classes: \code{"invalid_argument"} or \code{"package_unavailable"},
+whichever is appropriate.
+The invalid argument, or the name of the unavailable package, is added to the condition object.
+}
+
 
 \references{
 Centore, Paul.
@@ -88,8 +98,8 @@ No. 2.
 pp. 110-119.
 April 2013.
 
-Rösch, S.
-\bold{Darstellung der Farbenlehre für die Zwecke des Mineralogen}.
+RC6sch, S.
+\bold{Darstellung der Farbenlehre fC<r die Zwecke des Mineralogen}.
 Fortschr. Mineral. Krist. Petrogr.
 Vol. 13 No. 143.
 1929.

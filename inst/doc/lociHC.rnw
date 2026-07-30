@@ -89,7 +89,7 @@ library( munsellinterpol )
 
 Pick value 8/ for demonstration
 
-<<lee11, echo=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 8/' >>=
+<<lee11, echo=TRUE, warning=TRUE, message=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 8/' >>=
 par( omi=c(0,0,0,0), mai=c(0.41,0.7,0.6,0.2) )
 plotLociHC( value=8 )
 @
@@ -120,7 +120,7 @@ And so we see that \code{all.dat} goes up to C=32 for 10GY, 2.5G, and 5G.
 
 For inversion, the region that gave me the most grief was V < 1 and H near 5P (85).
 Here is a sample
-<<lee13, echo=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 0.4/' >>=
+<<lee13, echo=TRUE, warning=TRUE, message=TRUE,  fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 0.4/' >>=
 par( omi=c(0,0,0,0), mai=c(0.41,0.7,0.6,0.2) )
 plotLociHC( value=0.4, hue=seq(80,90,by=2.5), chroma=seq(2,12,by=2) )
 @
@@ -146,7 +146,7 @@ The alternative is bilinear, which only requires a 2x2 grid.
 The difference in "flops" is roughly a factor of 4
 (the difference in time only about 2 or 3) - but is that really worth it ?
 Here is the original plot, except using bilinear interpolation
-<<lee14, echo=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 8/, with bilinear interpolation' >>=
+<<lee14, echo=TRUE, warning=TRUE, message=TRUE, fig.pos="H", fig.height=5, out.width='1.0\\linewidth', fig.cap='Loci of Constant Hue and Chroma for Value 8/, with bilinear interpolation' >>=
 par( omi=c(0,0,0,0), mai=c(0.41,0.7,0.6,0.2) )
 plotLociHC( value=8, hcinterp='bilinear' )
 @

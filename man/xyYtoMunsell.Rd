@@ -48,9 +48,9 @@ Option \code{'MGO'} is not allowed because then Y>100 when V=10.
 \item{atol}{absolute tolerance passed to \code{\link[rootSolve:multiroot]{rootSolve::multiroot()}} }
 
 \item{warn}{if an xyY cannot be mapped
-(usually because the root finder has wandered afar),
-its H and V are set to \code{NA} in the returned \code{data.frame}.
-Just before returning, if any rows in HVC have an \code{NA}, and \code{warn == TRUE},
+(usually because the root finder has wandered afar because Chroma is too large),
+its Hue and Chroma are set to \code{NA} in the returned \code{data.frame}.
+Just before returning, if any rows in the returned HVC have an \code{NA}, and \code{warn == TRUE},
 then a warning is logged.
 }
 
@@ -75,6 +75,28 @@ This is in the HC plane for the Munsell Value computed from Y.}
 %If the rownames of xyY are not \code{NULL} and have no duplicates,
 %they are copied to the returned data frame.
 }
+
+
+
+
+\section{Condition Signaling}{
+For an overview see:
+\href{../doc/munsellinterpol-guide.html#appendix-e---logging-and-condition-signaling}{\bold{Appendix E - Logging and Condition Signaling}} in the User Guide.
+
+In case of an \code{ERROR} event, an error condition is signaled with the additional
+S3 class \code{"invalid_argument"} or \code{"package_unavailable"}, as appropriate.
+The invalid argument, or the name of the unavailable package, is added to the condition object.
+
+In the case that \code{warn=TRUE}, and not all HVC rows could be computed, 
+a \code{WARN} event is created,
+and a warning condition is signaled with the additional S3 class \code{"incomplete"}.
+The condition object also has the submatrix of invalid \code{xyY}'s as item \code{invalid},
+and their row indexes as item \code{indexes}.
+}
+
+
+
+
 
 \details{
 See \code{\link{MunsellToxyY}()} and the \bold{User Guide - Appendix C}.

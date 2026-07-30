@@ -1,6 +1,12 @@
 # NEWS for **munsellinterpol** package
 
 
+### Version 3.5-1  [2026-07-30]
+
+* added signaling of conditions for error and warning events, thanks to Hugo Rodrigues
+* for function `MunsellNameFromHVC()`, add argument `ctol` and allowed arguments `format` and `digits` to be vectors
+
+
 ### Version 3.4-0  [2026-07-03]
 
 * for functions `XYZtoMunsell()` and `MunsellToXYZ()`, add arguments `white` and `adapt`; suggested by Hugo Rodrigues
@@ -11,7 +17,7 @@
 ### Version 3.3-2  [2026-03-12]
 
 * in the **Soil Colors** vignette, added Show/Hide buttons to some functions
-* in the **Soil Colors** vignette, simplified the function soil_data()
+* in the **Soil Colors** vignette, simplified the function `soil_data()`
 * in the **User Guide**, added Pantone Color of the Year for 2026
 * move data.frame on the Munsell books from private to public, and documented it
 * added Glossy and Matte finish Munsell books to `roundHVC()`
