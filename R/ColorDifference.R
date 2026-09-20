@@ -23,6 +23,15 @@ NickersonColorDifference <- function( HVC0, HVC1, symmetric=TRUE, coeffs=c(0.4,6
         if( is.null(HVC1) )  return(NULL)
         }
 
+    if( symmetric )
+        {
+        HVC0 = prepareHVC( HVC0 )
+        if( is.null(HVC0) )  return(NULL)
+
+        HVC1 = prepareHVC( HVC1 )
+        if( is.null(HVC1) )  return(NULL)
+        }
+
     if( nrow(HVC0)==1  &&  1<nrow(HVC1) )
         #   replicate HVC0
         HVC0    = matrix(HVC0,nrow(HVC1),3,byrow=TRUE)

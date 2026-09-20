@@ -229,6 +229,9 @@ MunsellNameFromHVC <- function( HVC, format='g', digits=2, ctol=0 )
     HVC = prepareNx3(HVC)
     if( is.null(HVC) )  return(NULL)
 
+    HVC = prepareHVC(HVC)
+    if( is.null(HVC) )  return(NULL)
+
     #   check format
     ok  = is.character(format)  &&  length(format) %in% 1:3
     if( ! ok )
@@ -269,7 +272,7 @@ MunsellNameFromHVC <- function( HVC, format='g', digits=2, ctol=0 )
         return(out)
         }
 
-    #   snap Chroma to 0 if appropriate
+    #   snap Chroma to 0 if appropriate using digits[3]
     Chroma  = HVC[ ,3]
 
     if( format[3] == 'f' )  Chroma = round( Chroma, digits=digits[3] )

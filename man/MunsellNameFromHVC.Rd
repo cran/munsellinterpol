@@ -77,7 +77,7 @@ S3 class \code{"invalid_argument"}.
 The invalid argument is added to the condition object.
 
 In case of an \code{WARN} event, a warning condition is signaled with the additional
-S3 class \code{"incomplete"}.
+S3 class \code{"incomplete"} or \code{"munsell_clamp"} as appropriate.
 The condition object also has the submatrix of the invalid rows of \code{HVC},
 or the subvector of invalid elements of \code{Hue},
 as item \code{invalid}, and their indexes as item \code{indexes}.

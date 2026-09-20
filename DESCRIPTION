@@ -2,9 +2,9 @@ Package: munsellinterpol
 Type: Package
 Title: Interpolate Munsell Renotation Data from Hue Value/Chroma to
         CIE/RGB
-Version: 3.5-1
+Version: 3.6-0
 Encoding: UTF-8
-Date: 2026-07-30
+Date: 2026-09-19
 Authors@R: c(person(given = "Jose", family = "Gama", role = c("aut","trl"), email = "rxprtgama@gmail.com"),
     person(given = "Paul", family = "Centore", role = c("aut","cph"), email = "centore@99main.com"),
     person(given = "Glenn", family = "Davis", role = c("aut","cre"), email = "gdavis@gluonics.com"),
@@ -22,9 +22,9 @@ Repository: CRAN
 NeedsCompilation: no
 VignetteBuilder: knitr
 BuildVignettes: yes
-Packaged: 2026-07-30 01:38:03 UTC; Glenn
+Packaged: 2026-09-16 23:43:54 UTC; Glenn
 Author: Jose Gama [aut, trl],
   Paul Centore [aut, cph],
   Glenn Davis [aut, cre],
   Hugo Rodrigues [ctb] (ORCID: <https://orcid.org/0000-0002-8070-8126>)
-Date/Publication: 2026-07-30 13:10:02 UTC
+Date/Publication: 2026-09-20 00:10:02 UTC

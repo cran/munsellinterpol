@@ -15,6 +15,9 @@ roundHVC    <- function( HVC, books )
         HVC = prepareNx3(HVC)
 
     if( is.null(HVC) )  return(NULL)
+      
+    HVC = prepareHVC(HVC)
+    if( is.null(HVC) )  return(NULL)    
 
     #   check validity of books
     bookvec = strsplit( books, '[ ,]+' )[[1]]   #; cat( "bookvec =", bookvec, '\n' )

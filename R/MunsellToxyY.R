@@ -31,6 +31,9 @@ MunsellToxyY  <-  function( MunsellSpec,
         HVC = prepareNx3( MunsellSpec )
         if( is.null(HVC) )  return(NULL)
 
+        HVC = prepareHVC( HVC )
+        if( is.null(HVC) )  return(NULL)
+
         SAMPLE_NAME = MunsellNameFromHVC( HVC, digits=3 )
         #rownames(HVC)   = MunsellNameFromHVC( HVC, digits=3 )
 
@@ -57,7 +60,7 @@ MunsellToxyY  <-  function( MunsellSpec,
         return(NULL)
         }
 
-    #   assign function pointer
+    #   assign function pointer hcinterpfun
     if( hcinterp == 'bicubic' )
         hcinterpfun = bicubicCardinal   # mybicubic
     else if( hcinterp == 'bilinear' )
@@ -222,12 +225,27 @@ MunsellToxyY  <-  function( MunsellSpec,
 
     if( warn )
         {
+        #   special warning when Value==0 and 0<Chroma
+        bad_black   = HVC[ ,2] == 0  &  0 < HVC[ ,3]
+
+        bad_black[ is.na(bad_black) ]   = FALSE
+
+        if( any(bad_black) )
+            {
+            event_level( WARN, "%d samples (out of %d) have Value=0 and Chroma>0; xy is undefined and set to NA.",
+                                sum(bad_black), length(bad_black),
+                                class="incomplete", extra=list( invalid=HVC[bad_black, ,drop=FALSE], indexes=which(bad_black) )  )
+            }
+
         #   check for mapping failure
-        bad = is.na(xyY[ ,1])  |  is.na(xyY[ ,2])
+        bad = (is.na(xyY[ ,1])  |  is.na(xyY[ ,2]))  &  ! bad_black
+
+        bad[ is.na(bad) ]   = FALSE
 
         if( any(bad) )
             {
-            event_level( WARN, "%d samples, out of %d, could not be mapped; xy set to NA.", sum(bad), length(bad),
+            event_level( WARN, "%d samples (out of %d) could not be mapped; xy set to NA.",
+                                sum(bad), length(bad),
                                 class="incomplete", extra=list( invalid=HVC[bad, ,drop=FALSE], indexes=which(bad) )  )
             }
 

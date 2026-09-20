@@ -52,6 +52,11 @@ For an overview see:
 In case of an \code{ERROR} event, an error condition is signaled with the additional
 S3 class \code{"invalid_argument"}.
 The invalid argument is added to the condition object.
+
+In case of an \code{WARN} event, a warning condition is signaled with the additional
+S3 class \code{"munsell_clamp"}.
+The condition object also has the submatrix of the invalid rows of \code{HVC}
+as item \code{invalid}, and their indexes as item \code{indexes}.
 }
 
 \references{

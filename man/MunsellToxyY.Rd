@@ -116,7 +116,8 @@ The invalid argument is added to the condition object.
 
 In the case that \code{warn=TRUE}, and not all xyY rows could be computed, 
 a \code{WARN} event is created,
-and a warning condition is signaled with the additional S3 class \code{"incomplete"}.
+and a warning condition is signaled
+with the additional S3 class \code{"incomplete"} or \code{"munsell_clamp"}, as appropriate.
 The condition object also has the submatrix of invalid \code{HVC}'s as item \code{invalid},
 and their row indexes as item \code{indexes}.
 }

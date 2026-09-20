@@ -54,6 +54,12 @@ The invalid argument is added to the condition object.
 In the case that not all differences could be computed,
 a warning condition is signaled with the additional S3 class \code{"incomplete"}.
 The condition object also has the indexes of the invalid differences as item \code{indexes}.
+
+If any of the input Values or Chromas are out of range,
+a \code{WARN} event is issued, and a warning condition is signaled with the additional
+S3 class \code{"munsell_clamp"}.
+The condition object also has the submatrix of the invalid rows of \code{HVC0} or \code{HVC1}
+as item \code{invalid}, and their indexes as item \code{indexes}.
 }
 
 

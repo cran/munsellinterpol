@@ -1,10 +1,18 @@
 # NEWS for **munsellinterpol** package
 
 
+
+### Version 3.6-0  [2026-09-19]
+
+* for functions that convert Munsell HVC to other color spaces, clamp negative Chroma to 0 and signal a warning condition
+* for the same functions, clamp Values outside the interval [0,10] to the interval and signal a warning condition
+
+
 ### Version 3.5-1  [2026-07-30]
 
 * added signaling of conditions for error and warning events, thanks to Hugo Rodrigues
-* for function `MunsellNameFromHVC()`, add argument `ctol` and allowed arguments `format` and `digits` to be vectors
+* for function `MunsellNameFromHVC()`, made it possible for `format` and `digits` to be set individually for H,V, and C
+* for function `MunsellNameFromHVC()`, added argument `ctol`
 
 
 ### Version 3.4-0  [2026-07-03]

@@ -187,6 +187,9 @@ MunsellToLab <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
 
     if( is.null(HVC) )  return(NULL)
 
+    HVC = prepareHVC( HVC )
+    if( is.null(HVC) )  return(NULL)
+
     white_org   = white
     white       = process_white(white)
     if( any(is.na(white)) )
@@ -278,6 +281,9 @@ MunsellToLuv <- function( MunsellSpec, white='D65', adapt='Bradford', ... )
     else
         HVC = prepareNx3( MunsellSpec )
 
+    if( is.null(HVC) )  return(NULL)
+
+    HVC = prepareHVC( HVC )
     if( is.null(HVC) )  return(NULL)
 
     white_org   = white

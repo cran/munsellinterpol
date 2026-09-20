@@ -642,7 +642,7 @@ To restore the default, one can execute:
 or to install one's own layout function, one can execute:  
 `log_layout( <your function>, namespace="munsellinterpol" )`.
 
-The appender callback functions is also customized.
+The appender callback function is also customized.
 <!-- it comes to an immediate stop if the log event level is `FATAL`. -->
 To restore the default, one can execute:  
 `log_appender( appender_console, namespace="munsellinterpol" )`

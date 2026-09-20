@@ -70,10 +70,7 @@ r
 
 ###########     argument processing     ##############
 #
-#   A   a non-empty numeric Nx3 matrix, or something that can be converted to be one
-#
-#   returns such a matrix, or NULL in case of error
-#
+
 
 #   A   a non-empty numeric NxM matrix, or something that can be converted to be one
 #
@@ -105,6 +102,78 @@ prepareNx3  <-  function( A, M=3 )
 
     return( A )
     }
+
+
+#   HVC     a non-empty numeric Nx3 matrix, with HVC in the rows
+#
+#   returns the matrix with variables checked and possibly clamped,
+#   or NULL in case of error
+#
+#   This is intended to check user-supplied HVC matrix.
+#
+#   in all calls to event_level(), note the .topcall assignment
+#   which makes the logger layout contain the name of the parent function, and *NOT* prepareHVC()
+
+prepareHVC  <-  function( HVC )
+    {
+    ok  = is.numeric(HVC)  &&  is.matrix(HVC)  &&  1<=nrow(HVC)  &&   ncol(HVC)==3
+
+    if( ! ok )
+        {
+        event_level( ERROR, "Argument HVC is not a numeric non-empty Nx3 matrix.",
+                                    class="invalid_argument", .topcall=sys.call(-1L) )
+        return(NULL)
+        }
+
+    #   check Chroma
+    bad = HVC[ ,3] < 0
+    bad[ is.na(bad) ]   = FALSE
+    
+    if( any(bad) )
+        {
+        event_level( WARN, "%d Munsell Chroma(s) (of %d) are < 0 (min Chroma = %.5f); clamped to 0.",
+                           sum(bad), length(bad), min(HVC[bad,3]),
+                           class = "munsell_clamp",
+                           extra = list(Chroma = HVC[bad,3], indexes=which(bad)), .topcall=sys.call(-1L) )
+        HVC[bad,3]  = 0
+        }
+
+    #   check Value
+    bad = HVC[ ,2] < 0
+    bad[ is.na(bad) ]   = FALSE
+    
+    if( any(bad) )
+        {
+        event_level( WARN, "%d Munsell Value(s) (of %d) are < 0 (min Value = %.5f); clamped to 0.",
+                           sum(bad), length(bad), min(HVC[bad,2]),
+                           class = "munsell_clamp",
+                           extra = list(Value = HVC[bad,2], indexes=which(bad)), .topcall=sys.call(-1L) )
+        HVC[bad,2]  = 0
+        }
+
+    bad = 10 < HVC[ ,2]
+    bad[ is.na(bad) ]   = FALSE
+    
+    if( any(bad) )
+        {
+        event_level( WARN, "%d Munsell Value(s) (of %d) are > 10 (max Value = %.5f); clamped to 10.",
+                           sum(bad), length(bad), max(HVC[bad,2]),
+                           class = "munsell_clamp",
+                           extra = list(Value = HVC[bad,2], indexes=which(bad)), .topcall=sys.call(-1L) )
+        HVC[bad,2]  = 10
+        }
+
+    #   wrap Hue, no clamping necessary
+    hue         = HVC[ ,1] %% 100
+
+    # bump 0 to 100 when 0<Chroma, but when Chroma==0, leave Hue==0
+    mask        = (hue==0)  &  (0<HVC[ ,3])
+    hue[mask]   = 100
+    HVC[ , 1]   = hue
+
+    return( HVC )
+    }
+
 
 
 #   varname name to search for, case-insensitive

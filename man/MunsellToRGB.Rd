@@ -60,6 +60,12 @@ For an overview see:
 In case of an \code{ERROR} event, a condition is signaled with the additional
 S3 classes \code{"package_unavailable"}.
 The name of the unavailable package is added to the condition object.
+
+If any of the input Values or Chromas are out of range,
+a \code{WARN} event is issued, and a warning condition is signaled with the additional
+S3 class \code{"munsell_clamp"}.
+The condition object also has the submatrix of the invalid rows of \code{HVC}
+as item \code{invalid}, and their indexes as item \code{indexes}.
 }
 
 

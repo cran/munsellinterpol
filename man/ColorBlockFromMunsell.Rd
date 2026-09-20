@@ -66,7 +66,7 @@ The invalid argument is added to the condition object.
 
 In the case that not all color blocks could be computed,
 a warning condition is signaled with the additional S3 class \code{"incomplete"}
-or \code{"table_error"}, as appropriate.
+or \code{"table_error"} or \code{"munsell_clamp"}, as appropriate.
 The condition object also has the indexes of the invalid blocks as item \code{indexes}.
 }
 

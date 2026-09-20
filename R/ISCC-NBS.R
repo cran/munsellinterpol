@@ -55,6 +55,9 @@ ColorBlockFromMunsell  <-  function( MunsellSpec )
 
         colnames(HVC)   = c('H','V','C')
         }
+        
+    HVC = prepareHVC( HVC )
+    if( is.null(HVC) )  return(NULL)
 
     n   = nrow(HVC)
 
@@ -69,7 +72,7 @@ ColorBlockFromMunsell  <-  function( MunsellSpec )
         {
         hvc = HVC[i, ]
 
-        valid   = all( is.finite(hvc) )  &&  (0 <= hvc[2])  &&  (hvc[2] <= vmax)  &&  (0 <= hvc[3])
+        valid   = all( is.finite(hvc) )     # &&  (0 <= hvc[2])  &&  (hvc[2] <= vmax)  &&  (0 <= hvc[3])
 
         if( ! valid )   next
 
